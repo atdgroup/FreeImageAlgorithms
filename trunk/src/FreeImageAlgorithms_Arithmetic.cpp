@@ -1,3 +1,4 @@
+#include "FreeImageAlgorithms_Error.h"
 #include "FreeImageAlgorithms_Arithmetic.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include <limits>
@@ -259,18 +260,24 @@ ARITHMATIC<Tsrc>::DivideImages(FIBITMAP* dst, FIBITMAP* src)
 template<class Tsrc> int 
 ARITHMATIC<Tsrc>::AddImages(FIBITMAP* dst, FIBITMAP* src)
 {
-	if(dst == NULL || src == NULL)
+    if(dst == NULL || src == NULL) {
+        FreeImageAlgorithms_SendOutputMessage("NULL Parameter");
 		return FREEIMAGE_ALGORITHMS_ERROR;
+    }
 
-	if(CheckDimensions(dst, src) ==  FREEIMAGE_ALGORITHMS_ERROR)
-		return  FREEIMAGE_ALGORITHMS_ERROR;
+    if(CheckDimensions(dst, src) ==  FREEIMAGE_ALGORITHMS_ERROR) {
+	    FreeImageAlgorithms_SendOutputMessage("Image destination and source have different dimensions");
+        return  FREEIMAGE_ALGORITHMS_ERROR;
+    }
 
     // Make sure dst is a double or float so it can hold all the results of
 	// the arithmetic.
 	FREE_IMAGE_TYPE type = FreeImage_GetImageType(dst);
 
-    if(type != FIT_DOUBLE && type != FIT_FLOAT)
+    if(type != FIT_DOUBLE && type != FIT_FLOAT) {
+        FreeImageAlgorithms_SendOutputMessage("Image destination was not a FIT_FLOAT or FIT_DOUBLE");
 		return FREEIMAGE_ALGORITHMS_ERROR;
+    }
 
     int width = FreeImage_GetWidth(src);
     int height = FreeImage_GetHeight(src);
