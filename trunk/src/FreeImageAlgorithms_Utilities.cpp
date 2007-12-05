@@ -1120,17 +1120,17 @@ FreeImageAlgorithms_InPlaceConvertToStandardType(FIBITMAP **src, int scale)
 }
 
 
-int DLL_CALLCONV
+FIBITMAP* DLL_CALLCONV
 FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign)
 {
     if(src == NULL)
-		return FREEIMAGE_ALGORITHMS_ERROR;
+		return NULL;
 
     FREE_IMAGE_TYPE type = FreeImage_GetImageType(src);
 
 	// Mask has to be 8 bit 
 	if(type != FIT_FLOAT && type != FIT_DOUBLE)
-		return FREEIMAGE_ALGORITHMS_ERROR;
+		return NULL;
 
 	int width = FreeImage_GetWidth(src);
 	int height = FreeImage_GetHeight(src);
@@ -1163,5 +1163,5 @@ FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign)
         }
     }
 
-    return FREEIMAGE_ALGORITHMS_SUCCESS;
+    return dst;
 }

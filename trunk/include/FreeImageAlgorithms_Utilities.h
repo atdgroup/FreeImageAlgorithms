@@ -549,7 +549,7 @@ FreeImageAlgorithms_GetPixelValue(FIBITMAP *src, int x, int y, double* val);
 DLL_API int DLL_CALLCONV
 FreeImageAlgorithms_InPlaceConvertToStandardType(FIBITMAP **src, int scale);
 
-DLL_API int DLL_CALLCONV
+DLL_API FIBITMAP* DLL_CALLCONV
 FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
 
 #ifdef __cplusplus
