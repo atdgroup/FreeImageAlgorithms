@@ -1118,3 +1118,50 @@ FreeImageAlgorithms_InPlaceConvertToStandardType(FIBITMAP **src, int scale)
 
     return FREEIMAGE_ALGORITHMS_SUCCESS;
 }
+
+
+int DLL_CALLCONV
+FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign)
+{
+    if(src == NULL)
+		return FREEIMAGE_ALGORITHMS_ERROR;
+
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType(src);
+
+	// Mask has to be 8 bit 
+	if(type != FIT_FLOAT && type != FIT_DOUBLE)
+		return FREEIMAGE_ALGORITHMS_ERROR;
+
+	int width = FreeImage_GetWidth(src);
+	int height = FreeImage_GetHeight(src);
+
+    FIBITMAP *dst = NULL;
+
+    if(sign) {
+
+        dst = FreeImage_AllocateT(FIT_INT16, width, height, 16, 0, 0, 0);
+
+        for(register int y = 0; y < height; y++) { 
+		
+		    double *src_ptr = (double *)FreeImage_GetScanLine(src, y);
+		    short *dst_ptr = (short *)FreeImage_GetScanLine(dst, y);
+
+		    for(register int x=0; x < width; x++)
+                    dst_ptr[x] = (short) src_ptr[x];
+	    }
+    }
+    else {
+        dst = FreeImage_AllocateT(FIT_UINT16, width, height, 16, 0, 0, 0);
+
+        for(register int y = 0; y < height; y++) { 
+		
+		    double *src_ptr = (double *)FreeImage_GetScanLine(src, y);
+		    unsigned short *dst_ptr = (unsigned short *) FreeImage_GetScanLine(dst, y);
+
+		    for(register int x=0; x < width; x++)
+                    dst_ptr[x] = (unsigned short) src_ptr[x];
+        }
+    }
+
+    return FREEIMAGE_ALGORITHMS_SUCCESS;
+}
