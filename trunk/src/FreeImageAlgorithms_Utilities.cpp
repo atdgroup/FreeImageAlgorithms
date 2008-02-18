@@ -211,46 +211,46 @@ FreeImageAlgorithms_FindDoubleMinMax(const double *data, long n, double *min, do
 }
 
 
-char DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindCharMax(const char *data, long n, char *max)
 {
-	return (char) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
-unsigned char DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindUCharMax(const unsigned char *data, long n, unsigned char *max)
 {
-	return (unsigned char) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
-int DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindIntMax(const int *data, long n, int *max)
 {
-	return (int) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
-short DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindShortMax(const short *data, long n, short *max)
 {
-	return (short) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
-unsigned short DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindUShortMax(const unsigned short *data, long n, unsigned short *max)
 {
-	return (unsigned short) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
-float DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindFloatMax(const float *data, long n, float *max)
 {
-	return (float) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
-double DLL_CALLCONV
+long DLL_CALLCONV
 FreeImageAlgorithms_FindDoubleMax(const double *data, long n, double *max)
 {
-	return (double) FINDMAX(data, n, *max);
+	return FINDMAX(data, n, *max);
 }
 
 
@@ -1163,5 +1163,37 @@ FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign)
         }
     }
 
+    return dst;
+}
+
+
+FIBITMAP* DLL_CALLCONV
+FreeImageAlgorithms_ConvertInt16ToUInt16(FIBITMAP *src)
+{
+    if(src == NULL)
+		return NULL;
+
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType(src);
+
+	// Mask has to be 8 bit 
+	if(type != FIT_INT16)
+		return NULL;
+
+	int width = FreeImage_GetWidth(src);
+	int height = FreeImage_GetHeight(src);
+
+    FIBITMAP *dst = FreeImage_AllocateT(FIT_UINT16, width, height, 16, 0, 0, 0);
+
+    unsigned short factor = -SHRT_MIN;
+
+    for(register int y = 0; y < height; y++) { 
+		
+		short *src_ptr = (short *)FreeImage_GetScanLine(src, y);
+		unsigned short *dst_ptr = (unsigned short *) FreeImage_GetScanLine(dst, y);
+
+		for(register int x=0; x < width; x++)
+            dst_ptr[x] = (unsigned short) (src_ptr[x] + factor);
+    }
+ 
     return dst;
 }

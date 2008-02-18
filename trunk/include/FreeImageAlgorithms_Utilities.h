@@ -135,7 +135,7 @@ FreeImageAlgorithms_FindDoubleMinMax(const double *data, long n, double *min, do
  *  \param max Maximum value to found in the data.
  *  \return char the max value found.
 */
-DLL_API char DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindCharMax(const char *data, long n, char *max);
 
 /** \brief Find the maximum values in a unsigned char array.
@@ -143,9 +143,9 @@ FreeImageAlgorithms_FindCharMax(const char *data, long n, char *max);
  *  \param data Array of unsigned char data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return unsigned char the max value found.
+ *  \return long the index that the max value was found.
 */
-DLL_API unsigned char DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindUCharMax(const unsigned char *data, long n, unsigned char *max);
 
 /** \brief Find the maximum values in a int array.
@@ -153,9 +153,9 @@ FreeImageAlgorithms_FindUCharMax(const unsigned char *data, long n, unsigned cha
  *  \param data Array of int data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return int the max value found.
+ *  \return long the index that the max value was found.
 */
-DLL_API int DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindIntMax(const int *data, long n, int *max);
 
 /** \brief Find the maximum values in a short int array.
@@ -163,9 +163,9 @@ FreeImageAlgorithms_FindIntMax(const int *data, long n, int *max);
  *  \param data Array of short int data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return short the max value found.
+ *  \return long the index that the max value was found.
 */
-DLL_API short DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindShortMax(const short *data, long n, short *max);
 
 /** \brief Find the maximum values in a unsigned short array.
@@ -173,9 +173,9 @@ FreeImageAlgorithms_FindShortMax(const short *data, long n, short *max);
  *  \param data Array of unsigned short data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return unsigned short the max value found.
+ *  \return long the index that the max value was found.
 */
-DLL_API unsigned short DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindUShortMax(const unsigned short *data, long n, unsigned short *max);
 
 /** \brief Find the maximum values in a float array.
@@ -183,9 +183,9 @@ FreeImageAlgorithms_FindUShortMax(const unsigned short *data, long n, unsigned s
  *  \param data Array of float data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return float the max value found.
+ *  \return long the index that the max value was found.
 */
-DLL_API float DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindFloatMax(const float *data, long n, float *max);
 
 /** \brief Find the maximum values in a double array.
@@ -193,9 +193,9 @@ FreeImageAlgorithms_FindFloatMax(const float *data, long n, float *max);
  *  \param data Array of double data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return double the max value found.
+ *  \return long the index that the max value was found.
 */
-DLL_API double DLL_CALLCONV
+DLL_API long DLL_CALLCONV
 FreeImageAlgorithms_FindDoubleMax(const double *data, long n, double *max);
 
 /** \brief Find the mininum and maximum values in a greyscale FIBITMAP.
@@ -551,6 +551,9 @@ FreeImageAlgorithms_InPlaceConvertToStandardType(FIBITMAP **src, int scale);
 
 DLL_API FIBITMAP* DLL_CALLCONV
 FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
+
+DLL_API FIBITMAP* DLL_CALLCONV
+FreeImageAlgorithms_ConvertInt16ToUInt16(FIBITMAP *src);
 
 #ifdef __cplusplus
 }
