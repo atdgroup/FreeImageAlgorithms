@@ -35,6 +35,9 @@ Statistic<Tsrc>::CalculateHistogram(FIBITMAP *src, double min, double max, int n
 
 	if(min >= max)
 		return FREEIMAGE_ALGORITHMS_ERROR;
+
+	if(number_of_bins<1)
+		return FREEIMAGE_ALGORITHMS_ERROR;
  
 	// Clear histogram array
 	memset(hist, 0, number_of_bins * sizeof(unsigned long) );
@@ -42,12 +45,16 @@ Statistic<Tsrc>::CalculateHistogram(FIBITMAP *src, double min, double max, int n
 	Tsrc tmp_min = (Tsrc) min;
 	Tsrc tmp_max = (Tsrc) max;
 	Tsrc range = tmp_max - tmp_min; 
-	Tsrc range_per_bin = range / (number_of_bins - 1);     
+//	Tsrc range_per_bin = range / (number_of_bins - 1);     
+	double range_per_bin = (double)range / (double)(number_of_bins-1);     // bins-1 as we need the histogram range to exceed the image range by one extra bin to accomodate the pixels with max intensity
+
+	if(range_per_bin==0)
+		range_per_bin = 1.0E-10;
 
 	int width = FreeImage_GetWidth(src);
 	int height = FreeImage_GetHeight(src);   
 
-	Tsrc *bits = (Tsrc *) FreeImage_GetBits(src);
+	Tsrc *bits; // = (Tsrc *) FreeImage_GetBits(src);
 	Tsrc pixel;
 	unsigned int bin;
 
@@ -66,6 +73,10 @@ Statistic<Tsrc>::CalculateHistogram(FIBITMAP *src, double min, double max, int n
 					bin = (int) (pixel - tmp_min);
 				else
 					bin = (int) ((pixel - tmp_min) / range_per_bin);
+
+//				belt and braces check, but may be slow
+//				if (bin<0 || bin>(number_of_bins-1))
+//					return FREEIMAGE_ALGORITHMS_ERROR;
 
 				hist[bin]++;
 			}
