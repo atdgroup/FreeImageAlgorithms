@@ -319,7 +319,7 @@ ConvertComplexImageToAbsoluteValued(FIBITMAP *src, bool squared)
 	if(!dst)
 		return NULL;
 
-	FICOMPLEX *src_bits; 	
+	FICOMPLEX *src_bits, *src_bit; 	
 	double	  *dst_bits; 
 
 	if(squared) {
@@ -331,8 +331,9 @@ ConvertComplexImageToAbsoluteValued(FIBITMAP *src, bool squared)
 
 			for(x=0; x < width; x++) {
 				
-				*(dst_bits + x) = (double) (pow( (double)((src_bits + x)->r), (double) 2.0) + 
-							    pow( (double)((src_bits + x)->i), (double) 2.0));
+                src_bit = src_bits + x;
+
+				*(dst_bits + x) = (double) ((src_bit->r * src_bit->r) + (src_bit->i * src_bit->i));
 		
 			}
 		}
@@ -346,8 +347,9 @@ ConvertComplexImageToAbsoluteValued(FIBITMAP *src, bool squared)
 
 			for(x=0; x < width; x++) {
 				
-				*(dst_bits + x) = (double) sqrt(pow( (double)((src_bits + x)->r), (double) 2.0) + 
-										pow( (double)((src_bits + x)->i), (double) 2.0));
+                src_bit = src_bits + x;
+
+				*(dst_bits + x) = (double) ((src_bit->r * src_bit->r) + (src_bit->i * src_bit->i));
 		
 			}
 		}
