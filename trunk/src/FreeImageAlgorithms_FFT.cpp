@@ -20,7 +20,7 @@ static FFT2D<long>			fftLongImage;
 static FFT2D<float>			fftFloatImage;
 static FFT2D<double>			fftDoubleImage;
 
-static void GetAbsoluteXValues(kiss_fft_cpx* fftbuf, double *out_values, int size)
+static inline void GetAbsoluteXValues(kiss_fft_cpx* fftbuf, double *out_values, int size)
 {
 	int x;
 
@@ -32,7 +32,7 @@ static void GetAbsoluteXValues(kiss_fft_cpx* fftbuf, double *out_values, int siz
 	}
 }
 
-static void GetAbsoluteShiftedXValues(kiss_fft_cpx* fftbuf, double *out_values, int size)
+static inline void GetAbsoluteShiftedXValues(kiss_fft_cpx* fftbuf, double *out_values, int size)
 {
 	int x, xhalf = size / 2;
 
@@ -51,20 +51,28 @@ static void GetAbsoluteShiftedXValues(kiss_fft_cpx* fftbuf, double *out_values, 
 }
 
 
-static void GetShiftedComplexXValues(kiss_fft_cpx* fftbuf, FICOMPLEX *out_values, int size)
+static inline void GetShiftedComplexXValues(kiss_fft_cpx* fftbuf, FICOMPLEX *out_values, int size)
 {
 	int x, xhalf = size / 2;
+    FICOMPLEX *out_value;
+    kiss_fft_cpx* buf_value;
 
 	for(x=0; x < xhalf; x++) {
 				
-		(out_values + x + xhalf)->r = (double)((fftbuf + x)->r);
-		(out_values + x + xhalf)->i = (double)((fftbuf + x)->i);			  
+        out_value = out_values + x + xhalf;
+        buf_value = fftbuf + x;
+
+		out_value->r = (double)buf_value->r;
+		out_value->i = (double)buf_value->i;			  
 	}
 
 	for(x=xhalf; x < size; x++) {
-				
-		(out_values + x - xhalf)->r = (double)((fftbuf + x)->r); 
-		(out_values + x - xhalf)->i = (double)((fftbuf + x)->i); 
+		
+        out_value = out_values + x - xhalf;
+        buf_value = fftbuf + x;
+
+		out_value->r = (double)buf_value->r; 
+		out_value->i = (double)buf_value->i; 
 	}
 }
 
@@ -132,7 +140,7 @@ FFT2D<Tsrc>::TransformStandardToComplexImage(FIBITMAP *src, int inverse, int shi
 			tmp_fftoutbuf += width;
 		}
 
-		for(y = height -1; y >= yhalf; y--) { 
+		for(y = height - 1; y >= yhalf; y--) { 
 		
 			outbits = (FICOMPLEX *) FreeImage_GetScanLine(dst, y);
 
@@ -163,7 +171,6 @@ Error:
     free(fftbuf);
     free(fftoutbuf);
     free(st);
-
 
 	return dst;
 }

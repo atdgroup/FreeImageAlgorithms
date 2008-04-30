@@ -49,7 +49,7 @@ TestFreeImageAlgorithms_FillholeTest(CuTest* tc)
 static void
 TestFreeImageAlgorithms_ParticleInfoTest(CuTest* tc)
 {
-	char *file = IMAGE_DIR "\\fillhole_test.bmp";
+	char *file = IMAGE_DIR "\\test.bmp";
 	//char *file = "C:\\Documents and Settings\\Pierce\\Desktop\\particle-test.bmp";
 	//char *file = "C:\\Documents and Settings\\Pierce\\Desktop\\shouldbe.bmp";
 
@@ -186,10 +186,10 @@ CuGetFreeImageAlgorithmsParticleSuite(void)
 {
 	CuSuite* suite = CuSuiteNew();
 
-	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FillholeTest);
+	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FillholeTest);
 	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_ParticleInfoTest);
-	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FindImageMaximaTest);
-    SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FindImageMaximaTest2);
+	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FindImageMaximaTest);
+    //SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FindImageMaximaTest2);
 
 	return suite;
 }
