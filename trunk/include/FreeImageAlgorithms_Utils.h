@@ -29,12 +29,13 @@ MIN(T a, T b)
  The design and analysis of computer algorithms, 
  Addison-Wesley, Reading, 1974.
 */
+/*
 template <class T> inline void 
 MAXMIN(const T* L, long n, T& max, T& min)
 {
 	long i1, i2, i, j;
-	T x1, x2;
-	long k1, k2;
+	register T x1, x2;
+	register long k1, k2;
 
 	i1 = 0; i2 = 0; min = L[0]; max = L[0]; j = 0;
 	if((n % 2) != 0)  j = 1;
@@ -48,10 +49,158 @@ MAXMIN(const T* L, long n, T& max, T& min)
 		if(x1 < min) {
 			min = x1;  i1 = k1;
 		}
-		if(x2 > max) {
+		else if(x2 > max) {
 			max = x2;  i2 = k2;
 		}
 	}
+}
+*/
+
+
+/*
+template <class T> inline void 
+MAXMIN(const T* L, long n, T& max, T& min)
+{
+    min = L[0];
+    max = L[0];
+
+    for(register int i=1; i < n; i++) {
+
+        if(L[i] < min)
+            min = L[i];
+        else if(L[i] > max)
+            max = L[i];
+    }
+}
+*/
+
+#define BLOCKSIZE 32
+
+
+template <class T> inline void
+UpdateMinMax(const T& LVAL, T& min, T& max)
+{
+//    PROFILE_START("UpdateMinMax");
+
+     if(LVAL < min)
+        min = LVAL;
+     else if(LVAL > max)
+        max = LVAL;
+
+  //   PROFILE_STOP("UpdateMinMax");
+}
+
+
+
+template <class T> inline void 
+MAXMIN(const T* L, long n, T& max, T& min)
+{
+    min = L[0];
+    max = L[0];
+
+    int x_max_block_size = (n / BLOCKSIZE) * BLOCKSIZE;
+    int x_reminder = n % x_max_block_size;
+    register int j = 0;
+
+ //   PROFILE_START("Loop");
+
+    for(register int x=0; x < x_max_block_size; x+=BLOCKSIZE) {
+
+  //      PROFILE_START("UpdateMinMax");
+
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);  
+
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max); 
+
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max); 
+
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max);
+        UpdateMinMax(L[j++], min, max); 
+
+  //      PROFILE_STOP("UpdateMinMax");
+    }
+
+    switch(x_reminder) {
+
+		case 7: 
+
+			UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+
+        break;
+		
+		case 6:
+			UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+	    break;
+		
+		case 5:
+		    UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+		break;
+
+		case 4:
+			UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+		break;
+		
+		case 3:
+			UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+            UpdateMinMax(L[j++], min, max);
+		break;
+
+		case 2:
+			 UpdateMinMax(L[j++], min, max);
+             UpdateMinMax(L[j++], min, max);
+		break; 
+
+		case 1:
+			  UpdateMinMax(L[j++], min, max);
+    } 
+
+//    PROFILE_STOP("Loop");
 }
 
 

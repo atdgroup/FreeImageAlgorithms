@@ -271,7 +271,7 @@ FIND_MINMAX_FOR_DIB<Tsrc>::find(FIBITMAP *src, double *min, double *max)
 	int height = FreeImage_GetHeight(src);
 
 	double temp_min, temp_max;
-	Tsrc l_min, l_max;
+	register Tsrc l_min, l_max;
 
 	// Get the first two pixel values for initialisation
 	Tsrc *bits = reinterpret_cast<Tsrc*>(FreeImage_GetScanLine(src, 0));
@@ -281,7 +281,9 @@ FIND_MINMAX_FOR_DIB<Tsrc>::find(FIBITMAP *src, double *min, double *max)
 
 		bits = reinterpret_cast<Tsrc*>(FreeImage_GetScanLine(src, y));
 
+      //  PROFILE_START("MAXMIN");
 		MAXMIN(bits, width, l_max, l_min);
+      //  PROFILE_STOP("MAXMIN");
 
 		if(l_max > temp_max) temp_max = l_max;
 		if(l_min < temp_min) temp_min = l_min;
@@ -1196,4 +1198,205 @@ FreeImageAlgorithms_ConvertInt16ToUInt16(FIBITMAP *src)
     }
  
     return dst;
+}
+
+
+template<class Tsrc>
+class FastSimpleResample
+{
+public:
+    FIBITMAP* IntegerRescaleToHalf(FIBITMAP* src);
+    FIBITMAP* ColourRescaleToHalf(FIBITMAP* src);
+    FIBITMAP* FloatRescaleToHalf(FIBITMAP* src);
+};
+
+template<typename Tsrc> FIBITMAP* 
+FastSimpleResample<Tsrc>::IntegerRescaleToHalf(FIBITMAP* src)
+{
+    int src_width = FreeImage_GetWidth(src);
+    int src_height = FreeImage_GetHeight(src);
+
+    int dst_width = src_width / 2;
+    int dst_height = src_height / 2;
+    
+    FIBITMAP* dst = FreeImageAlgorithms_CloneImageType(src, dst_width, dst_height);
+ 
+    long average;
+    int startx = 0, starty = 0, startxplus1;
+
+    for(register int y=0; y < dst_height; y++)
+    {
+        Tsrc *dst_ptr = (Tsrc *)FreeImage_GetScanLine(dst, y);
+        starty = y * 2;
+
+        Tsrc *src_ptr = (Tsrc *)FreeImage_GetScanLine(src, starty);
+        Tsrc *src_next_line_ptr = (Tsrc *)FreeImage_GetScanLine(src, starty + 1);
+		
+        for(register int x=0; x < dst_width; x++)
+        { 
+            startx = x * 2;
+            startxplus1 = startx + 1;
+
+            average = src_ptr[startx] + src_ptr[startxplus1] + 
+                      src_next_line_ptr[startx] + src_next_line_ptr[startxplus1];
+
+            dst_ptr[x] = (average >> 2);
+        } 
+    } 
+
+    return dst;
+}
+
+static FIBITMAP* 
+ColourRescaleToHalf(FIBITMAP* src)
+{
+    int src_width = FreeImage_GetWidth(src);
+    int src_height = FreeImage_GetHeight(src);
+
+    int dst_width = src_width / 2;
+    int dst_height = src_height / 2;
+    
+    FIBITMAP* dst = FreeImageAlgorithms_CloneImageType(src, dst_width, dst_height);
+ 
+    int startx = 0, starty = 0, startxplus1;
+    int dstx;
+
+    // Calculate the number of bytes per pixel (3 for 24-bit or 4 for 32-bit) 
+	int bytespp = FreeImage_GetLine(src) / src_width; 
+    register int tmp, tmp2;
+
+    for(register int y=0; y < dst_height; y++)
+    {
+        BYTE *dst_ptr = (BYTE *)FreeImage_GetScanLine(dst, y);
+        starty = y * 2;
+
+        BYTE *src_ptr = (BYTE *)FreeImage_GetScanLine(src, starty);
+        BYTE *src_next_line_ptr = (BYTE *)FreeImage_GetScanLine(src, starty + 1);
+		
+        for(register int x=0; x < dst_width; x++)
+        { 
+            dstx = x * bytespp;
+            startx = dstx * 2;
+            startxplus1 = startx + bytespp;
+      
+            tmp = startx + FI_RGBA_RED;
+            tmp2 = startxplus1 + FI_RGBA_RED;
+            dst_ptr[dstx + FI_RGBA_RED] = ((src_ptr[tmp] + src_ptr[tmp2] + 
+                          src_next_line_ptr[tmp] + src_next_line_ptr[tmp2]) >> 2);
+
+            tmp = startx + FI_RGBA_GREEN;
+            tmp2 = startxplus1 + FI_RGBA_GREEN;
+            dst_ptr[dstx + FI_RGBA_GREEN] = ((src_ptr[tmp] + src_ptr[tmp2] + 
+                          src_next_line_ptr[tmp] + src_next_line_ptr[tmp2]) >> 2);
+
+            tmp = startx + FI_RGBA_BLUE;
+            tmp2 = startxplus1 + FI_RGBA_BLUE;
+            dst_ptr[dstx + FI_RGBA_BLUE] = ((src_ptr[tmp] + src_ptr[tmp2] + 
+                          src_next_line_ptr[tmp] + src_next_line_ptr[tmp2]) >> 2);
+
+            if(bytespp == 4) {
+
+                tmp = startx + FI_RGBA_ALPHA;
+                tmp2 = startxplus1 + FI_RGBA_ALPHA;
+                dst_ptr[dstx + FI_RGBA_ALPHA] = ((src_ptr[tmp] + src_ptr[tmp2] + 
+                          src_next_line_ptr[tmp] + src_next_line_ptr[tmp2]) >> 2);
+            }
+        } 
+    } 
+
+    return dst;
+}
+
+
+template<typename Tsrc> FIBITMAP* 
+FastSimpleResample<Tsrc>::FloatRescaleToHalf(FIBITMAP* src)
+{
+    int src_width = FreeImage_GetWidth(src);
+    int src_height = FreeImage_GetHeight(src);
+
+    int dst_width = src_width / 2;
+    int dst_height = src_height / 2;
+    
+    FIBITMAP* dst = FreeImageAlgorithms_CloneImageType(src, dst_width, dst_height);
+ 
+    double average;
+    int startx = 0, starty = 0, startxplus1;
+
+    for(register int y=0; y < dst_height; y++)
+    {
+        Tsrc *dst_ptr = (Tsrc *)FreeImage_GetScanLine(dst, y);
+        starty = y * 2;
+
+        Tsrc *src_ptr = (Tsrc *)FreeImage_GetScanLine(src, starty);
+        Tsrc *src_next_line_ptr = (Tsrc *)FreeImage_GetScanLine(src, starty + 1);
+		
+        for(register int x=0; x < dst_width; x++)
+        { 
+            startx = x * 2;
+            startxplus1 = startx + 1;
+
+            average = src_ptr[startx] + src_ptr[startxplus1] + 
+                      src_next_line_ptr[startx] + src_next_line_ptr[startxplus1];
+
+            dst_ptr[x] = (average / 4.0);
+        } 
+    } 
+
+    return dst;
+}
+
+
+FastSimpleResample<unsigned char>		fastResampleUCharImage;
+FastSimpleResample<unsigned short>		fastResampleUShortImage;
+FastSimpleResample<short>				fastResampleShortImage;
+FastSimpleResample<unsigned long>		fastResampleULongImage;
+FastSimpleResample<long>				fastResampleLongImage;
+FastSimpleResample<float>				fastResampleFloatImage;
+FastSimpleResample<double>				fastResampleDoubleImage;
+
+
+FIBITMAP* DLL_CALLCONV
+FreeImageAlgorithms_RescaleToHalf(FIBITMAP *src)
+{
+	FIBITMAP *dst = NULL;
+
+	if(!src)
+		return NULL;
+
+	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
+
+	switch(src_type) {
+		case FIT_BITMAP:	// standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+			if(FreeImage_GetBPP(src) == 8)
+				dst = fastResampleUCharImage.IntegerRescaleToHalf(src);
+            else
+                dst = ColourRescaleToHalf(src);
+			break;
+		case FIT_UINT16:	// array of unsigned short: unsigned 16-bit
+			dst = fastResampleUShortImage.IntegerRescaleToHalf(src);
+			break;
+		case FIT_INT16:		// array of short: signed 16-bit
+			dst = fastResampleShortImage.IntegerRescaleToHalf(src);
+			break;
+		case FIT_UINT32:	// array of unsigned long: unsigned 32-bit
+			dst = fastResampleULongImage.IntegerRescaleToHalf(src);
+			break;
+		case FIT_INT32:		// array of long: signed 32-bit
+			dst = fastResampleLongImage.IntegerRescaleToHalf(src);
+			break;
+		case FIT_FLOAT:		// array of float: 32-bit
+			dst = fastResampleFloatImage.FloatRescaleToHalf(src);
+			break;
+		case FIT_DOUBLE:	// array of double: 64-bit
+			dst = fastResampleDoubleImage.FloatRescaleToHalf(src);
+			break;
+		case FIT_COMPLEX:	// array of FICOMPLEX: 2 x 64-bit
+			break;
+	}
+
+	if(NULL == dst) {
+		FreeImage_OutputMessageProc(FIF_UNKNOWN, "FREE_IMAGE_TYPE: Unable to convert from type %d to type %d.\n No such conversion exists.", src_type, FIT_BITMAP);
+	}
+
+	return dst;
 }

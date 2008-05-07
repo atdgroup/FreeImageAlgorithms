@@ -35,28 +35,26 @@ static void BorderTest(CuTest* tc)
 }
 
 
-/*
 static void
 TestFreeImageAlgorithms_FindMinMaxTest(CuTest* tc)
 {
-	const int total = 1000000;
+	double min, max;
 
-	float *data = (float*) _aligned_malloc(total * sizeof(float), 16);
+	char *file = IMAGE_DIR "\\wallpaper_river-gs.jpg";
 
-	for(int i=0; i < total; i++)
-		data[i] = rand();
+	//FIBITMAP *dib = FreeImageAlgorithms_LoadFIBFromFile(file);
+    FIBITMAP *dib = FreeImage_AllocateT(FIT_UINT16, 1280, 1024, 16, 0, 0, 0);
 
-	float min, max, min_fast, max_fast;
+    PROFILE_START("FreeImageAlgorithms_FindMinMax");
 
-	FreeImageAlgorithms_FindFloatMinMax(data, total, &min, &max);
-	FreeImageAlgorithms_SSEFindFloatMinMax(data, total, &min_fast, &max_fast);
+    for(int i=0; i < 1000; i++)
+	    FreeImageAlgorithms_FindMinMax(dib, &min, &max);
 
-	_aligned_free(data);
+    PROFILE_STOP("FreeImageAlgorithms_FindMinMax");
 
-	CuAssertTrue(tc, min == min_fast);
-	CuAssertTrue(tc, max == max_fast);
+    std::cout << "Min " << min << " Max " << max << std::endl;    
 }
-*/
+
 
 
 static void
@@ -123,17 +121,44 @@ TestFreeImageAlgorithms_DistanceTransformTest(CuTest* tc)
 	FreeImage_Unload(dib3);
 }
 
+
+DLL_API FIBITMAP* DLL_CALLCONV
+FreeImageAlgorithms_FastSimpleResample(FIBITMAP *src, int dst_width, int dst_height);
+
+static void
+TestFreeImageAlgorithms_FastSimpleResampleTest(CuTest* tc)
+{
+	char *file = IMAGE_DIR "\\wallpaper_river.jpg";
+
+	FIBITMAP *dib = FreeImageAlgorithms_LoadFIBFromFile(file);
+    FIBITMAP *dst = NULL;
+  
+    dst = FreeImageAlgorithms_RescaleToHalf(dib);   
+    FreeImageAlgorithms_SaveFIBToFile(dst, "C:\\test.bmp", BIT24);
+    FreeImage_Unload(dst);
+
+    PROFILE_START("FreeImageAlgorithms_RescaleToHalf");
+
+    for(int i=0; i < 1000; i++) {
+	    dst = FreeImageAlgorithms_RescaleToHalf(dib);
+        FreeImage_Unload(dst);
+    }
+
+    PROFILE_STOP("FreeImageAlgorithms_RescaleToHalf"); 
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
 	CuSuite* suite = CuSuiteNew();
 
-    SUITE_ADD_TEST(suite, BorderTest);
-	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_UtilityTest);
-	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_UtilityCompareTest);
-	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_DistanceTransformTest);
+    //SUITE_ADD_TEST(suite, BorderTest);
+	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_UtilityTest);
+	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_UtilityCompareTest);
+	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_DistanceTransformTest);
 	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FindMinMaxTest);
-	//SUITE_ADD_TEST(suite, BorderTest);
+	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FastSimpleResampleTest);
+    //SUITE_ADD_TEST(suite, BorderTest);
 	
 	return suite;
 }

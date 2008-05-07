@@ -555,6 +555,17 @@ FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
 DLL_API FIBITMAP* DLL_CALLCONV
 FreeImageAlgorithms_ConvertInt16ToUInt16(FIBITMAP *src);
 
+/** \brief Rescales an image to half its size.
+ * 
+ *	This is much much faster than the freeimage rescale function.
+ *  Obviously it is also much more limited.
+ *
+ *  \param src Image to resize.
+ *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
+*/
+DLL_API FIBITMAP* DLL_CALLCONV
+FreeImageAlgorithms_RescaleToHalf(FIBITMAP *src);
+
 #ifdef __cplusplus
 }
 #endif
