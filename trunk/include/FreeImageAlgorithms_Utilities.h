@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FIA.
+ *
+ * FIA is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FIA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FIA.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_UTILITIES__
 #define __FREEIMAGE_ALGORITHMS_UTILITIES__
 
@@ -46,7 +65,7 @@ DLL_API int DLL_CALLCONV
 _os_support(int feature);
 
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_SSEFindFloatMinMax(const float *data, long n, float *min, float *max);
+FIA_SSEFindFloatMinMax(const float *data, long n, float *min, float *max);
 
 /** \brief Find the mininum and maximum values in a char array.
  *
@@ -56,7 +75,7 @@ FreeImageAlgorithms_SSEFindFloatMinMax(const float *data, long n, float *min, fl
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindCharMinMax(const char *data, long n, char *min, char *max);
+FIA_FindCharMinMax(const char *data, long n, char *min, char *max);
 
 /** \brief Find the mininum and maximum values in a int array.
  *
@@ -66,7 +85,7 @@ FreeImageAlgorithms_FindCharMinMax(const char *data, long n, char *min, char *ma
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindIntMinMax(const int *data, long n, int *min, int *max);
+FIA_FindIntMinMax(const int *data, long n, int *min, int *max);
 
 /** \brief Find the mininum and maximum values in a short array.
  *
@@ -76,7 +95,7 @@ FreeImageAlgorithms_FindIntMinMax(const int *data, long n, int *min, int *max);
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindShortMinMax(const short *data, long n, short *min, short *max);
+FIA_FindShortMinMax(const short *data, long n, short *min, short *max);
 
 /** \brief Find the mininum and maximum values in a unsigned short array.
  *
@@ -86,7 +105,7 @@ FreeImageAlgorithms_FindShortMinMax(const short *data, long n, short *min, short
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindUShortMinMax(const unsigned short *data, long n, unsigned short *min, unsigned short *max);
+FIA_FindUShortMinMax(const unsigned short *data, long n, unsigned short *min, unsigned short *max);
 
 /** \brief Find the mininum and maximum values in a long array.
  *
@@ -96,7 +115,7 @@ FreeImageAlgorithms_FindUShortMinMax(const unsigned short *data, long n, unsigne
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindLongMinMax(const long *data, long n, long *min, long *max);
+FIA_FindLongMinMax(const long *data, long n, long *min, long *max);
 
 /** \brief Find the mininum and maximum values in a unsigned long array.
  *
@@ -106,7 +125,7 @@ FreeImageAlgorithms_FindLongMinMax(const long *data, long n, long *min, long *ma
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindULongMinMax(const unsigned long *data, long n, unsigned long *min, unsigned long *max);
+FIA_FindULongMinMax(const unsigned long *data, long n, unsigned long *min, unsigned long *max);
 
 /** \brief Find the mininum and maximum values in a float array.
  *
@@ -116,7 +135,7 @@ FreeImageAlgorithms_FindULongMinMax(const unsigned long *data, long n, unsigned 
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindFloatMinMax(const float *data, long n, float *min, float *max);
+FIA_FindFloatMinMax(const float *data, long n, float *min, float *max);
 
 /** \brief Find the mininum and maximum values in a double array.
  *
@@ -126,7 +145,7 @@ FreeImageAlgorithms_FindFloatMinMax(const float *data, long n, float *min, float
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindDoubleMinMax(const double *data, long n, double *min, double *max);
+FIA_FindDoubleMinMax(const double *data, long n, double *min, double *max);
 
 /** \brief Find the maximum values in a char array.
  *
@@ -136,67 +155,67 @@ FreeImageAlgorithms_FindDoubleMinMax(const double *data, long n, double *min, do
  *  \return char the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindCharMax(const char *data, long n, char *max);
+FIA_FindCharMax(const char *data, long n, char *max);
 
 /** \brief Find the maximum values in a unsigned char array.
  *
  *  \param data Array of unsigned char data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return long the index that the max value was found.
+ *  \return unsigned char the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindUCharMax(const unsigned char *data, long n, unsigned char *max);
+FIA_FindUCharMax(const unsigned char *data, long n, unsigned char *max);
 
 /** \brief Find the maximum values in a int array.
  *
  *  \param data Array of int data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return long the index that the max value was found.
+ *  \return int the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindIntMax(const int *data, long n, int *max);
+FIA_FindIntMax(const int *data, long n, int *max);
 
 /** \brief Find the maximum values in a short int array.
  *
  *  \param data Array of short int data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return long the index that the max value was found.
+ *  \return short the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindShortMax(const short *data, long n, short *max);
+FIA_FindShortMax(const short *data, long n, short *max);
 
 /** \brief Find the maximum values in a unsigned short array.
  *
  *  \param data Array of unsigned short data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return long the index that the max value was found.
+ *  \return unsigned short the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindUShortMax(const unsigned short *data, long n, unsigned short *max);
+FIA_FindUShortMax(const unsigned short *data, long n, unsigned short *max);
 
 /** \brief Find the maximum values in a float array.
  *
  *  \param data Array of float data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return long the index that the max value was found.
+ *  \return float the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindFloatMax(const float *data, long n, float *max);
+FIA_FindFloatMax(const float *data, long n, float *max);
 
 /** \brief Find the maximum values in a double array.
  *
  *  \param data Array of double data.
  *  \param n Number of entries in the array.
  *  \param max Maximum value to found in the data.
- *  \return long the index that the max value was found.
+ *  \return double the max value found.
 */
 DLL_API long DLL_CALLCONV
-FreeImageAlgorithms_FindDoubleMax(const double *data, long n, double *max);
+FIA_FindDoubleMax(const double *data, long n, double *max);
 
 /** \brief Find the mininum and maximum values in a greyscale FIBITMAP.
  *
@@ -205,7 +224,16 @@ FreeImageAlgorithms_FindDoubleMax(const double *data, long n, double *max);
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindMinMax(FIBITMAP *src, double *min, double *max);
+FIA_FindMinMax(FIBITMAP *src, double *min, double *max);
+
+/** \brief Find the maximum value and the given x y point in a greyscale FIBITMAP.
+ *
+ *  \param src FIBITMAP bitmap.
+ *  \param max Maximum value to found in the data.
+ *  \param FIAPOINT* the position that the maximum value is found at.
+*/
+DLL_API void DLL_CALLCONV
+FIA_FindMaxXY(FIBITMAP *src, double *max, FIAPOINT *pt);
 
 /** \brief Find the mininum and maximum values in a colour FIBITMAP.
  *
@@ -214,7 +242,7 @@ FreeImageAlgorithms_FindMinMax(FIBITMAP *src, double *min, double *max);
  *  \param max Maximum value to found in the data.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FindMinMaxForColourImage(FIBITMAP *src, double *min, double *max);
+FIA_FindMinMaxForColourImage(FIBITMAP *src, double *min, double *max);
 
 /** \brief Reverse a array of char.
  *
@@ -223,7 +251,7 @@ FreeImageAlgorithms_FindMinMaxForColourImage(FIBITMAP *src, double *min, double 
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_CharArrayReverse(char *array, long size);
+FIA_CharArrayReverse(char *array, long size);
 
 /** \brief Reverse a array of unsigned char.
  *
@@ -232,7 +260,7 @@ FreeImageAlgorithms_CharArrayReverse(char *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_UCharArrayReverse(unsigned char *array, long size);
+FIA_UCharArrayReverse(unsigned char *array, long size);
 
 /** \brief Reverse a array of short int.
  *
@@ -241,7 +269,7 @@ FreeImageAlgorithms_UCharArrayReverse(unsigned char *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_ShortArrayReverse(short *array, long size);
+FIA_ShortArrayReverse(short *array, long size);
 
 /** \brief Reverse a array of unsigned short int.
  *
@@ -250,7 +278,7 @@ FreeImageAlgorithms_ShortArrayReverse(short *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_UShortArrayReverse(unsigned short *array, long size);
+FIA_UShortArrayReverse(unsigned short *array, long size);
 
 /** \brief Reverse a array of int.
  *
@@ -259,7 +287,7 @@ FreeImageAlgorithms_UShortArrayReverse(unsigned short *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_IntArrayReverse(int *array, long size);
+FIA_IntArrayReverse(int *array, long size);
 
 /** \brief Reverse a array of unsigned int.
  *
@@ -268,7 +296,7 @@ FreeImageAlgorithms_IntArrayReverse(int *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_UIntArrayReverse(unsigned int *array, long size);
+FIA_UIntArrayReverse(unsigned int *array, long size);
 
 /** \brief Reverse a array of long int.
  *
@@ -277,7 +305,7 @@ FreeImageAlgorithms_UIntArrayReverse(unsigned int *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_LongArrayReverse(long *array, long size);
+FIA_LongArrayReverse(long *array, long size);
 
 /** \brief Reverse a array of unsigned long int.
  *
@@ -286,7 +314,7 @@ FreeImageAlgorithms_LongArrayReverse(long *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_ULongArrayReverse(unsigned long *array, long size);
+FIA_ULongArrayReverse(unsigned long *array, long size);
 
 /** \brief Reverse a array of float.
  *
@@ -295,7 +323,7 @@ FreeImageAlgorithms_ULongArrayReverse(unsigned long *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_FloatArrayReverse(float *array, long size);
+FIA_FloatArrayReverse(float *array, long size);
 
 /** \brief Reverse a array of double.
  *
@@ -304,7 +332,7 @@ FreeImageAlgorithms_FloatArrayReverse(float *array, long size);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DoubleArrayReverse(double *array, long size);
+FIA_DoubleArrayReverse(double *array, long size);
 
 /** \brief Return 1 if a 16bit image is really 12bit.
  *
@@ -312,7 +340,7 @@ FreeImageAlgorithms_DoubleArrayReverse(double *array, long size);
  *  \return 1 if the image is 12bit 0 if not.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_Is16BitReally12BitImage(FIBITMAP *src);
+FIA_Is16BitReally12BitImage(FIBITMAP *src);
 
 /** \brief Returns the maximum allowed value for a greyscale FREE_IMAGE_TYPE type.
  *
@@ -320,7 +348,7 @@ FreeImageAlgorithms_Is16BitReally12BitImage(FIBITMAP *src);
  *  \param *max Returned value.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_GetMaxPosibleValueForGreyScaleType(FREE_IMAGE_TYPE type, double *max);
+FIA_GetMaxPosibleValueForGreyScaleType(FREE_IMAGE_TYPE type, double *max);
 
 /** \brief Returns the minimum allowed value for a greyscale FREE_IMAGE_TYPE type.
  *
@@ -328,7 +356,7 @@ FreeImageAlgorithms_GetMaxPosibleValueForGreyScaleType(FREE_IMAGE_TYPE type, dou
  *  \param *min Returned value.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_GetMinPosibleValueForGreyScaleType(FREE_IMAGE_TYPE type, double *min);
+FIA_GetMinPosibleValueForGreyScaleType(FREE_IMAGE_TYPE type, double *min);
 
 /** \brief Returns the maximum allowed value for a FIBITMAP image.
  *
@@ -336,7 +364,7 @@ FreeImageAlgorithms_GetMinPosibleValueForGreyScaleType(FREE_IMAGE_TYPE type, dou
  *  \param *max Returned value.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_GetMaxPosibleValueForFib(FIBITMAP *src, double *max);
+FIA_GetMaxPosibleValueForFib(FIBITMAP *src, double *max);
 
 /** \brief Returns the minimum allowed value for a FIBITMAP image.
  *
@@ -344,7 +372,7 @@ FreeImageAlgorithms_GetMaxPosibleValueForFib(FIBITMAP *src, double *max);
  *  \param *min Returned value.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_GetMinPosibleValueForFib(FIBITMAP *src, double *min);
+FIA_GetMinPosibleValueForFib(FIBITMAP *src, double *min);
 
 /** \brief Returns 1 if the FIBITMAP is a greyscale image.
  *
@@ -356,7 +384,7 @@ FreeImageAlgorithms_GetMinPosibleValueForFib(FIBITMAP *src, double *min);
  *  \return 1 if the image is greyscale.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_IsGreyScale(FIBITMAP *src);
+FIA_IsGreyScale(FIBITMAP *src);
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image consists of char data.
@@ -368,7 +396,7 @@ FreeImageAlgorithms_IsGreyScale(FIBITMAP *src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetCharPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, char *values); 
+FIA_GetCharPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, char *values); 
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image consists of unsigned char data.
@@ -380,7 +408,7 @@ FreeImageAlgorithms_GetCharPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPO
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetUCharPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, unsigned char *values);
+FIA_GetUCharPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, unsigned char *values);
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image consists of short int data.
@@ -392,7 +420,7 @@ FreeImageAlgorithms_GetUCharPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAP
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetShortPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, short *values); 
+FIA_GetShortPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, short *values); 
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image consists of unsigned short data.
@@ -404,7 +432,7 @@ FreeImageAlgorithms_GetShortPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAP
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetUShortPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, unsigned short *values); 
+FIA_GetUShortPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, unsigned short *values); 
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image consists of float data.
@@ -416,7 +444,7 @@ FreeImageAlgorithms_GetUShortPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIA
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetFloatPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, float *values); 
+FIA_GetFloatPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, float *values); 
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image consists of double data.
@@ -428,7 +456,7 @@ FreeImageAlgorithms_GetFloatPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAP
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetDoublePixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double *values); 
+FIA_GetDoublePixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double *values); 
 
 /** \brief Gets the pixels values along a line on an image where the 
  *         image is a colour image.
@@ -442,16 +470,16 @@ FreeImageAlgorithms_GetDoublePixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIA
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetRGBPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, BYTE *red_values, BYTE *green_values, BYTE *blue_values);
+FIA_GetRGBPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, BYTE *red_values, BYTE *green_values, BYTE *blue_values);
 
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_GetDistanceMap (int width, int height, float *distance_map);
+FIA_GetDistanceMap (int width, int height, float *distance_map);
 
 // Hopefully this is a temp solution until FreeImage paste supports greyscale that is
 // above 8bits.
 // This function is very limited.
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_SimplePaste(FIBITMAP *dst, FIBITMAP *src, int left, int bottom);
+FIA_SimplePaste(FIBITMAP *dst, FIBITMAP *src, int left, int bottom);
 
 /** \brief Performs a bitwise compare between two images.
  *		   Returns 1 for images that are the same.
@@ -461,7 +489,7 @@ FreeImageAlgorithms_SimplePaste(FIBITMAP *dst, FIBITMAP *src, int left, int bott
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_BitwiseCompare(FIBITMAP *dib1, FIBITMAP *dib2);
+FIA_BitwiseCompare(FIBITMAP *dib1, FIBITMAP *dib2);
 
 /** \brief Clones an image type.
  *
@@ -473,7 +501,7 @@ FreeImageAlgorithms_BitwiseCompare(FIBITMAP *dib1, FIBITMAP *dib2);
  *  \return FIBITMAP* on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_CloneImageType(FIBITMAP *src, int width, int height);
+FIA_CloneImageType(FIBITMAP *src, int width, int height);
 
 /** \brief Converts to a float image even if the image is in colour.
  *
@@ -482,7 +510,7 @@ FreeImageAlgorithms_CloneImageType(FIBITMAP *src, int width, int height);
  *  \return FIT_FLOAT image.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertToGreyscaleFloatType(FIBITMAP *src, FREE_IMAGE_TYPE type);
+FIA_ConvertToGreyscaleFloatType(FIBITMAP *src, FREE_IMAGE_TYPE type);
 
 /** \brief Performs a threshold on greyscale images.
  *
@@ -498,7 +526,7 @@ FreeImageAlgorithms_ConvertToGreyscaleFloatType(FIBITMAP *src, FREE_IMAGE_TYPE t
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_Threshold(FIBITMAP *src, double min, double max, double new_value);
+FIA_Threshold(FIBITMAP *src, double min, double max, double new_value);
 
 /** \brief Performs a in place threshold on greyscale images.
  *
@@ -514,7 +542,7 @@ FreeImageAlgorithms_Threshold(FIBITMAP *src, double min, double max, double new_
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_InPlaceThreshold(FIBITMAP *src, double min, double max, double new_value);
+FIA_InPlaceThreshold(FIBITMAP *src, double min, double max, double new_value);
 
 
 /** \brief Find if an image is 8bit.
@@ -523,7 +551,7 @@ FreeImageAlgorithms_InPlaceThreshold(FIBITMAP *src, double min, double max, doub
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_Is8Bit(FIBITMAP *src);
+FIA_Is8Bit(FIBITMAP *src);
 
 /** \brief Compute a distance transform of an image.
  *
@@ -531,7 +559,7 @@ FreeImageAlgorithms_Is8Bit(FIBITMAP *src);
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_DistanceTransform(FIBITMAP *src);
+FIA_DistanceTransform(FIBITMAP *src);
 
 /** \brief Get the value of a particular pixel.
  * 
@@ -544,16 +572,16 @@ FreeImageAlgorithms_DistanceTransform(FIBITMAP *src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_GetPixelValue(FIBITMAP *src, int x, int y, double* val);
+FIA_GetPixelValue(FIBITMAP *src, int x, int y, double* val);
 
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_InPlaceConvertToStandardType(FIBITMAP **src, int scale);
+FIA_InPlaceConvertToStandardType(FIBITMAP **src, int scale);
 
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
+FIA_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
 
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertInt16ToUInt16(FIBITMAP *src);
+FIA_ConvertInt16ToUInt16(FIBITMAP *src);
 
 /** \brief Rescales an image to half its size.
  * 
@@ -564,7 +592,7 @@ FreeImageAlgorithms_ConvertInt16ToUInt16(FIBITMAP *src);
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_RescaleToHalf(FIBITMAP *src);
+FIA_RescaleToHalf(FIBITMAP *src);
 
 #ifdef __cplusplus
 }

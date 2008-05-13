@@ -1,24 +1,41 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FIA.
+ *
+ * FIA is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FIA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FIA.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "FreeImageAlgorithms_Utils.h"
 #include "FreeImageAlgorithms_FFT.h"
 
 #include "kiss_fftnd.h"
 
-template<class Tsrc>
-class FFT2D
+template<class Tsrc> class FFT2D
 {
-public:
-	FIBITMAP*		TransformStandardToComplexImage(FIBITMAP *src, int inverse, int shift);
+    public:
+        FIBITMAP* TransformStandardToComplexImage(FIBITMAP *src, int inverse, int shift);
 };
 
-
 // Do FFT for type X
-static FFT2D<unsigned char>		fftUCharImage;
-static FFT2D<unsigned short>		fftUShortImage;
-static FFT2D<short>			fftShortImage;
-static FFT2D<unsigned long>		fftULongImage;
-static FFT2D<long>			fftLongImage;
-static FFT2D<float>			fftFloatImage;
-static FFT2D<double>			fftDoubleImage;
+static FFT2D<unsigned char> fftUCharImage;
+static FFT2D<unsigned short> fftUShortImage;
+static FFT2D<short> fftShortImage;
+static FFT2D<unsigned long> fftULongImage;
+static FFT2D<long> fftLongImage;
+static FFT2D<float> fftFloatImage;
+static FFT2D<double> fftDoubleImage;
 
 static inline void GetAbsoluteXValues(kiss_fft_cpx* fftbuf, double *out_values, int size)
 {
@@ -80,8 +97,6 @@ template<class Tsrc> FIBITMAP*
 FFT2D<Tsrc>::TransformStandardToComplexImage(FIBITMAP *src, int inverse, int shift)
 {
 	int height, width;
-
-	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
 
 	int i=0, x, y;
 	int dims[2];
@@ -268,7 +283,7 @@ TransformComplexToComplexImage(FIBITMAP *src, int inverse, int shift)
 
 
 FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_FFT(FIBITMAP *src, int inverse, int shift)
+FIA_FFT(FIBITMAP *src, int inverse, int shift)
 {
 	if(!src)
 		return NULL;
@@ -277,7 +292,8 @@ FreeImageAlgorithms_FFT(FIBITMAP *src, int inverse, int shift)
 
 	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
 
-	switch(src_type) {
+	switch (src_type)
+    {
 
 		case FIT_BITMAP:	// standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
 			if(FreeImage_GetBPP(src) == 8)
@@ -303,6 +319,9 @@ FreeImageAlgorithms_FFT(FIBITMAP *src, int inverse, int shift)
 			
 		case FIT_COMPLEX:	// array of FICOMPLEX: 2 x 64-bit
 			return TransformComplexToComplexImage(src, inverse, shift);
+			
+		default:
+			break;
 	}
 
 	FreeImage_OutputMessageProc(FIF_UNKNOWN, "FREE_IMAGE_TYPE: Unable to perform FFT for type %d.", src_type);
@@ -366,13 +385,13 @@ ConvertComplexImageToAbsoluteValued(FIBITMAP *src, bool squared)
 }
 
 FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertComplexImageToAbsoluteValuedSquared(FIBITMAP *src)
+FIA_ConvertComplexImageToAbsoluteValuedSquared(FIBITMAP *src)
 {
 	return ConvertComplexImageToAbsoluteValued(src, true);
 }
 
 FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertComplexImageToAbsoluteValued(FIBITMAP *src)
+FIA_ConvertComplexImageToAbsoluteValued(FIBITMAP *src)
 {
 	return ConvertComplexImageToAbsoluteValued(src, false);
 }

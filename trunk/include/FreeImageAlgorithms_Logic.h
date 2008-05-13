@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_LOGIC__
 #define __FREEIMAGE_ALGORITHMS_LOGIC__
 
@@ -19,7 +38,7 @@ extern "C" {
  *  \param mask FIBITMAP bitmap used as mask. Must be an 8bit image.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_MaskImage(FIBITMAP* src, FIBITMAP* mask);
+FIA_MaskImage(FIBITMAP* src, FIBITMAP* mask);
 
 /** \brief Masks an image.
  *
@@ -30,7 +49,7 @@ FreeImageAlgorithms_MaskImage(FIBITMAP* src, FIBITMAP* mask);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_ReverseMaskImage(FIBITMAP* mask, unsigned char foreground_val);
+FIA_ReverseMaskImage(FIBITMAP* mask, unsigned char foreground_val);
 
 #ifdef __cplusplus
 }

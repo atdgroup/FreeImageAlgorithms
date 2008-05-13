@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_ARITHMETIC__
 #define __FREEIMAGE_ALGORITHMS_ARITHMETIC__
 
@@ -18,7 +37,7 @@ extern "C" {
  *  \param src FIBITMAP bitmap to transpose.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_Transpose(FIBITMAP *src);
+FIA_Transpose(FIBITMAP *src);
 
 /** \brief Return the log image.
  *
@@ -27,7 +46,7 @@ FreeImageAlgorithms_Transpose(FIBITMAP *src);
  *  \param src FIBITMAP bitmap to perform the log operation on.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_Log(FIBITMAP *src);
+FIA_Log(FIBITMAP *src);
 
 /** \brief Multiply two greylevel images.
  *
@@ -36,7 +55,7 @@ FreeImageAlgorithms_Log(FIBITMAP *src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_MultiplyGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
+FIA_MultiplyGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
 
 /** \brief Divide two greylevel images.
  *
@@ -45,7 +64,7 @@ FreeImageAlgorithms_MultiplyGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_DivideGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
+FIA_DivideGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
 
 /** \brief Add two greylevel images.
  *
@@ -54,7 +73,7 @@ FreeImageAlgorithms_DivideGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_AddGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
+FIA_AddGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
 
 /** \brief Subtract two greylevel images.
  *
@@ -63,7 +82,7 @@ FreeImageAlgorithms_AddGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_SubtractGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
+FIA_SubtractGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
 
 /** \brief Multiply a greylevel image by a constant.
  *
@@ -72,7 +91,7 @@ FreeImageAlgorithms_SubtractGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_MultiplyGreyLevelImageConstant(FIBITMAP* dst, double constant);
+FIA_MultiplyGreyLevelImageConstant(FIBITMAP* dst, double constant);
 
 /** \brief Divide a greylevel image by a constant.
  *
@@ -81,7 +100,7 @@ FreeImageAlgorithms_MultiplyGreyLevelImageConstant(FIBITMAP* dst, double constan
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_DivideGreyLevelImageConstant(FIBITMAP* dst, double constant);
+FIA_DivideGreyLevelImageConstant(FIBITMAP* dst, double constant);
 
 /** \brief Add a greylevel image by a constant.
  *
@@ -90,7 +109,7 @@ FreeImageAlgorithms_DivideGreyLevelImageConstant(FIBITMAP* dst, double constant)
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_AddGreyLevelImageConstant(FIBITMAP* dst, double constant);
+FIA_AddGreyLevelImageConstant(FIBITMAP* dst, double constant);
 
 /** \brief Subtract a greylevel image by a constant.
  *
@@ -99,7 +118,7 @@ FreeImageAlgorithms_AddGreyLevelImageConstant(FIBITMAP* dst, double constant);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_SubtractGreyLevelImageConstant(FIBITMAP* dst, double constant);
+FIA_SubtractGreyLevelImageConstant(FIBITMAP* dst, double constant);
 
 /** \brief Calculate the complex conjugate of a complex image.
  *
@@ -107,7 +126,7 @@ FreeImageAlgorithms_SubtractGreyLevelImageConstant(FIBITMAP* dst, double constan
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_ComplexConjugate(FIBITMAP* src);
+FIA_ComplexConjugate(FIBITMAP* src);
 
 /** \brief Multiply two complex images.
  *
@@ -116,7 +135,7 @@ FreeImageAlgorithms_ComplexConjugate(FIBITMAP* src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_MultiplyComplexImages(FIBITMAP* dst, FIBITMAP* src);
+FIA_MultiplyComplexImages(FIBITMAP* dst, FIBITMAP* src);
 
 /** \brief Returns the sum of all the pixels in an image where the mask allows.
  *
@@ -125,7 +144,7 @@ FreeImageAlgorithms_MultiplyComplexImages(FIBITMAP* dst, FIBITMAP* src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_SumOfAllPixels(FIBITMAP* src, FIBITMAP* mask, double *sum);
+FIA_SumOfAllPixels(FIBITMAP* src, FIBITMAP* mask, double *sum);
 
 /** \brief Returns the image containing the maximum equivilent pixels in the two images.
  *
@@ -134,7 +153,7 @@ FreeImageAlgorithms_SumOfAllPixels(FIBITMAP* src, FIBITMAP* mask, double *sum);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
-FreeImageAlgorithms_GetMaxIntensityFromImages(FIBITMAP* dst, FIBITMAP* src);
+FIA_GetMaxIntensityFromImages(FIBITMAP* dst, FIBITMAP* src);
 
 #ifdef __cplusplus
 }

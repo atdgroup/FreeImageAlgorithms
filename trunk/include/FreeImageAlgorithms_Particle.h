@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_FIND_MAXIMA__
 #define __FREEIMAGE_ALGORITHMS_FIND_MAXIMA__
 
@@ -49,16 +68,16 @@ typedef struct
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_ParticleInfo(FIBITMAP* src, PARTICLEINFO** info, unsigned char white_on_black);
+FIA_ParticleInfo(FIBITMAP* src, PARTICLEINFO** info, unsigned char white_on_black);
 
 
-/** \brief Frees the data returned by FreeImageAlgorithms_ParticleInfo.
+/** \brief Frees the data returned by FIA_ParticleInfo.
  *
  *  \param info PARTICLEINFO* pointer to particle information.
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FreeParticleInfo(PARTICLEINFO* info);
+FIA_FreeParticleInfo(PARTICLEINFO* info);
 
 
 /** \brief Fills the hole in a particle or blob image.
@@ -70,7 +89,7 @@ FreeImageAlgorithms_FreeParticleInfo(PARTICLEINFO* info);
  *  \return FIBITMAP on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_Fillholes(FIBITMAP* src,
+FIA_Fillholes(FIBITMAP* src,
 							 unsigned char white_on_black);
 
 
@@ -91,19 +110,19 @@ FreeImageAlgorithms_Fillholes(FIBITMAP* src,
  *  \return FIBITMAP on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_FindImageMaxima(FIBITMAP* src, FIBITMAP *mask,
+FIA_FindImageMaxima(FIBITMAP* src, FIBITMAP *mask,
                                     unsigned char threshold,
 						            int min_separation, FIAPeak **peaks,
                                     int number, int *peaks_found);
 
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_FreePeaks(FIAPeak *peaks);
+FIA_FreePeaks(FIAPeak *peaks);
 
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_ATrousWaveletTransform(FIBITMAP* src, int levels, FIBITMAP** W);
+FIA_ATrousWaveletTransform(FIBITMAP* src, int levels, FIBITMAP** W);
 
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_MultiscaleProducts(FIBITMAP* src, int start_level, int levels);
+FIA_MultiscaleProducts(FIBITMAP* src, int start_level, int levels);
 
 #ifdef __cplusplus
 }

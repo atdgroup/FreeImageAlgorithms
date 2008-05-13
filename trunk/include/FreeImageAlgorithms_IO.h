@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_IO__
 #define __FREEIMAGE_ALGORITHMS_IO__
 
@@ -19,7 +38,7 @@ extern "C" {
  *  \return FIBITMAP* on success NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_LoadFIBFromFile(const char *filepath);
+FIA_LoadFIBFromFile(const char *filepath);
 
 
 /** \brief Save a FIBITMAP to a file.
@@ -31,7 +50,7 @@ FreeImageAlgorithms_LoadFIBFromFile(const char *filepath);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_SaveFIBToFile (FIBITMAP *dib, const char *filepath, FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_depth);
+FIA_SaveFIBToFile (FIBITMAP *dib, const char *filepath, FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_depth);
 
 /** \brief Copy an array of bytes to FIBITMAP
  *	
@@ -40,7 +59,7 @@ FreeImageAlgorithms_SaveFIBToFile (FIBITMAP *dib, const char *filepath, FREEIMAG
  *  \param padded Is the data padded to 32 bit boundaries.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_CopyBytesToFBitmap(FIBITMAP *src, BYTE *data, int padded);
+FIA_CopyBytesToFBitmap(FIBITMAP *src, BYTE *data, int padded);
 
 /** \brief Load a greyscale FIBITMAP from an array of bytes
  *	
@@ -54,7 +73,7 @@ FreeImageAlgorithms_CopyBytesToFBitmap(FIBITMAP *src, BYTE *data, int padded);
  *  \return FIBITMAP* on success and NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_LoadGreyScaleFIBFromArrayData (BYTE *data, int bpp, int width, int height,
+FIA_LoadGreyScaleFIBFromArrayData (BYTE *data, int bpp, int width, int height,
 												   FREE_IMAGE_TYPE data_type, int padded, int vertical_flip);
 
 /** \brief Load a rgb FIBITMAP from an array of bytes
@@ -68,7 +87,7 @@ FreeImageAlgorithms_LoadGreyScaleFIBFromArrayData (BYTE *data, int bpp, int widt
  *  \return FIBITMAP* on success and NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_LoadColourFIBFromArrayData (BYTE *data, int bpp, int width, int height,
+FIA_LoadColourFIBFromArrayData (BYTE *data, int bpp, int width, int height,
 												int padded, int vertical_flip, COLOUR_ORDER colour_order);
 
 #ifdef __cplusplus

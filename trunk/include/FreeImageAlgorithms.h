@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS__
 #define __FREEIMAGE_ALGORITHMS__
 
@@ -15,9 +34,9 @@
 extern "C" {
 #endif
 
-//#ifndef _WIN32
-//#define __cdecl
-//#endif
+#ifndef WIN32
+#define __cdecl
+#endif
 
 /** Data structure for FIABITMAP type (FIBITMAP with a border)
 */
@@ -62,8 +81,8 @@ typedef enum
 
 } COLOUR_ORDER;
 
-#define FREEIMAGE_ALGORITHMS_SUCCESS 1
-#define FREEIMAGE_ALGORITHMS_ERROR 0
+#define FIA_SUCCESS 1
+#define FIA_ERROR 0
 
 #define U12BIT_MAX 4096
 #define U14BIT_MAX 16384
@@ -88,7 +107,7 @@ typedef enum {BIT8, BIT24} FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH;
  *  \param src FIABITMAP bitmap.
 */
 DLL_API void DLL_CALLCONV
-FreeImageAlgorithms_Unload(FIABITMAP* src);
+FIA_Unload(FIABITMAP* src);
 
 
 /** \brief Adds a border to an image.
@@ -104,7 +123,7 @@ FreeImageAlgorithms_Unload(FIABITMAP* src);
  *  \return A FIABITMAP structure containing a FIBITMAP and a border size.
 */
 DLL_API FIABITMAP* DLL_CALLCONV
-FreeImageAlgorithms_SetBorder(FIBITMAP *src, int xborder, int yborder, BorderType type, double constant);
+FIA_SetBorder(FIBITMAP *src, int xborder, int yborder, BorderType type, double constant);
 
 /** \brief Adds a zero border to an image.
  *
@@ -115,7 +134,7 @@ FreeImageAlgorithms_SetBorder(FIBITMAP *src, int xborder, int yborder, BorderTyp
  *  \return A FIABITMAP structure containing a FIBITMAP and a border size.
 */
 DLL_API FIABITMAP* DLL_CALLCONV
-FreeImageAlgorithms_SetZeroBorder(FIBITMAP *src, int xborder, int yborder);
+FIA_SetZeroBorder(FIBITMAP *src, int xborder, int yborder);
 
 #ifdef __cplusplus
 }

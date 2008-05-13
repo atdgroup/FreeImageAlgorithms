@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_CONVOLUTION__
 #define __FREEIMAGE_ALGORITHMS_CONVOLUTION__
 
@@ -29,21 +48,26 @@ typedef struct
  *  \return FilterKernel.
 */
 DLL_API FilterKernel DLL_CALLCONV
-FreeImageAlgorithms_NewKernel(int x_radius, int y_radius, 
+FIA_NewKernel(int x_radius, int y_radius, 
 							  const double *values, double divider);
 
 /** \brief Convolve and image with a kernel.
  *
  *  \param src FIBITMAP bitmap to perform the convolution on.
- *  \param kernel FilterKernel The kernel created with FreeImageAlgorithms_NewKernel.
+ *  \param kernel FilterKernel The kernel created with FIA_NewKernel.
  *  \return FIBITMAP on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_Convolve(FIABITMAP *src, const FilterKernel kernel);
+FIA_Convolve(FIABITMAP *src, const FilterKernel kernel);
 
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_SeparableConvolve(FIABITMAP *src, FilterKernel horz_kernel, FilterKernel vert_kernel);
+FIA_SeparableConvolve(FIABITMAP *src, FilterKernel horz_kernel, FilterKernel vert_kernel);
 
+DLL_API int DLL_CALLCONV
+FIA_CorrelateImages(FIBITMAP *src1, FIBITMAP *src2, FIAPOINT *pt);
+
+DLL_API int DLL_CALLCONV
+FIA_CorrelateImageRegions(FIBITMAP *src1, FIARECT rect1, FIBITMAP *src2,  FIARECT rect2, FIAPOINT *pt);
 
 #ifdef __cplusplus
 }

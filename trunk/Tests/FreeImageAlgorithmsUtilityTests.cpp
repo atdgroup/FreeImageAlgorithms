@@ -1,3 +1,5 @@
+#include "Constants.h"
+
 #include "FreeImageAlgorithms.h"
 #include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Utils.h"
@@ -16,57 +18,59 @@
 
 static void BorderTest(CuTest* tc)
 {
-	char *file = IMAGE_DIR "\\border_test.bmp";
+	const char *file = TEST_DATA_DIR "drone-bee-greyscale.jpg";
 
-	FIBITMAP *src = FreeImageAlgorithms_LoadFIBFromFile(file);
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
 
-	ProfileStart("FreeImageAlgorithms_AddBorder");
+	PROFILE_START("FreeImageAlgorithms_AddBorder");
 
-	FIABITMAP *dst = FreeImageAlgorithms_SetBorder(src, 10, 10, BorderType_Mirror, 255);
+	FIABITMAP *dst = FIA_SetBorder(src, 10, 10, BorderType_Mirror, 255);
 
-	ProfileStop("FreeImageAlgorithms_AddBorder");
+	PROFILE_STOP("FreeImageAlgorithms_AddBorder");
 
-	ProfilePrint();
+	PROFILE_PRINT();
 
-	FreeImageAlgorithms_SaveFIBToFile(dst->fib, TEMP_DIR "\\border_test_result.bmp", BIT8);
+	FIA_SaveFIBToFile(dst->fib, TEST_DATA_OUTPUT_DIR "border_test_result.bmp", BIT8);
 	
 	FreeImage_Unload(src);
-	FreeImageAlgorithms_Unload(dst);
+	FIA_Unload(dst);
 }
 
 
+/*
 static void
-TestFreeImageAlgorithms_FindMinMaxTest(CuTest* tc)
+TestFIA_FindMinMaxTest(CuTest* tc)
 {
-	double min, max;
+	const int total = 1000000;
 
-	char *file = IMAGE_DIR "\\wallpaper_river-gs.jpg";
+	float *data = (float*) _aligned_malloc(total * sizeof(float), 16);
 
-	//FIBITMAP *dib = FreeImageAlgorithms_LoadFIBFromFile(file);
-    FIBITMAP *dib = FreeImage_AllocateT(FIT_UINT16, 1280, 1024, 16, 0, 0, 0);
+	for(int i=0; i < total; i++)
+		data[i] = rand();
 
-    PROFILE_START("FreeImageAlgorithms_FindMinMax");
+	float min, max, min_fast, max_fast;
 
-    for(int i=0; i < 1000; i++)
-	    FreeImageAlgorithms_FindMinMax(dib, &min, &max);
+	FIA_FindFloatMinMax(data, total, &min, &max);
+	FIA_SSEFindFloatMinMax(data, total, &min_fast, &max_fast);
 
-    PROFILE_STOP("FreeImageAlgorithms_FindMinMax");
+	_aligned_free(data);
 
-    std::cout << "Min " << min << " Max " << max << std::endl;    
+	CuAssertTrue(tc, min == min_fast);
+	CuAssertTrue(tc, max == max_fast);
 }
-
+*/
 
 
 static void
-TestFreeImageAlgorithms_UtilityTest(CuTest* tc)
+TestFIA_UtilityTest(CuTest* tc)
 {
 	double min, max;
 
-	char *file = IMAGE_DIR "\\24bit_colour.jpg";
+	const char *file = TEST_DATA_DIR "drone-bee.jpg";
 
-	FIBITMAP *dib = FreeImageAlgorithms_LoadFIBFromFile(file);
+	FIBITMAP *dib = FIA_LoadFIBFromFile(file);
 	
-	FreeImageAlgorithms_FindMinMaxForColourImage(dib, &min, &max);
+	FIA_FindMinMaxForColourImage(dib, &min, &max);
 
 	FreeImage_Unload(dib);
 
@@ -74,20 +78,21 @@ TestFreeImageAlgorithms_UtilityTest(CuTest* tc)
 	CuAssertTrue(tc, max == 255.0);
 }
 
+/*
 static void
-TestFreeImageAlgorithms_UtilityCompareTest(CuTest* tc)
+TestFIA_UtilityCompareTest(CuTest* tc)
 {
-	char *file = IMAGE_DIR "\\24bit_colour.jpg";
+	const char *file = TEST_DATA_DIR "drone-bee.jpg";
 
-	FIBITMAP *dib1 = FreeImageAlgorithms_LoadFIBFromFile(file);
-	FIBITMAP *dib2 = FreeImageAlgorithms_LoadFIBFromFile(file);
-	FIBITMAP *dib3 = FreeImageAlgorithms_LoadFIBFromFile(IMAGE_DIR "\\24bit_colour_slight_change.jpg");
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+	FIBITMAP *dib2 = FIA_LoadFIBFromFile(file);
+	FIBITMAP *dib3 = FIA_LoadFIBFromFile(IMAGE_DIR "\\24bit_colour_slight_change.jpg");
 
-	int res = FreeImageAlgorithms_BitwiseCompare(dib1, dib2);
+	int res = FIA_BitwiseCompare(dib1, dib2);
 
 	CuAssertTrue(tc, res == 1);
 
-	res = FreeImageAlgorithms_BitwiseCompare(dib1, dib3);
+	res = FIA_BitwiseCompare(dib1, dib3);
 
 	CuAssertTrue(tc, res == 0);
 
@@ -95,14 +100,14 @@ TestFreeImageAlgorithms_UtilityCompareTest(CuTest* tc)
 	FreeImage_Unload(dib2);
 	FreeImage_Unload(dib3);
 }
-
+*/
 
 static void
-TestFreeImageAlgorithms_DistanceTransformTest(CuTest* tc)
+TestFIA_DistanceTransformTest(CuTest* tc)
 {
-	char *file = IMAGE_DIR "\\distance-transform-test.gif";
+	const char *file = TEST_DATA_DIR "drone-bee-greyscale.jpg";
 
-	FIBITMAP *dib1 = FreeImageAlgorithms_LoadFIBFromFile(file);
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
 	CuAssertTrue(tc, dib1 != NULL);
 
@@ -110,41 +115,15 @@ TestFreeImageAlgorithms_DistanceTransformTest(CuTest* tc)
 
 	CuAssertTrue(tc, dib2 != NULL);
 
-	FIBITMAP *dib3 = FreeImageAlgorithms_DistanceTransform(dib2);
+	FIBITMAP *dib3 = FIA_DistanceTransform(dib2);
 
 	CuAssertTrue(tc, dib3 != NULL);
 
-	FreeImageAlgorithms_SaveFIBToFile(dib3, TEMP_DIR "\\distance-transform.jpg", BIT24);
+	FIA_SaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "distance-transform.jpg", BIT24);
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib2);
 	FreeImage_Unload(dib3);
-}
-
-
-DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_FastSimpleResample(FIBITMAP *src, int dst_width, int dst_height);
-
-static void
-TestFreeImageAlgorithms_FastSimpleResampleTest(CuTest* tc)
-{
-	char *file = IMAGE_DIR "\\wallpaper_river.jpg";
-
-	FIBITMAP *dib = FreeImageAlgorithms_LoadFIBFromFile(file);
-    FIBITMAP *dst = NULL;
-  
-    dst = FreeImageAlgorithms_RescaleToHalf(dib);   
-    FreeImageAlgorithms_SaveFIBToFile(dst, "C:\\test.bmp", BIT24);
-    FreeImage_Unload(dst);
-
-    PROFILE_START("FreeImageAlgorithms_RescaleToHalf");
-
-    for(int i=0; i < 1000; i++) {
-	    dst = FreeImageAlgorithms_RescaleToHalf(dib);
-        FreeImage_Unload(dst);
-    }
-
-    PROFILE_STOP("FreeImageAlgorithms_RescaleToHalf"); 
 }
 
 CuSuite* DLL_CALLCONV
@@ -152,13 +131,9 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
 	CuSuite* suite = CuSuiteNew();
 
-    //SUITE_ADD_TEST(suite, BorderTest);
-	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_UtilityTest);
-	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_UtilityCompareTest);
-	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_DistanceTransformTest);
-	//SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FindMinMaxTest);
-	SUITE_ADD_TEST(suite, TestFreeImageAlgorithms_FastSimpleResampleTest);
-    //SUITE_ADD_TEST(suite, BorderTest);
-	
+    SUITE_ADD_TEST(suite, BorderTest);
+	SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
+	SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
+
 	return suite;
 }

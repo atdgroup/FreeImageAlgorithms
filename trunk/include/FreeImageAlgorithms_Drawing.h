@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_DRAWING__
 #define __FREEIMAGE_ALGORITHMS_DRAWING__
 
@@ -22,7 +41,7 @@ extern "C" {
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawColourLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, RGBQUAD colour,
+FIA_DrawColourLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, RGBQUAD colour,
                                     int line_width, int antialiased);
 
 /** \brief Draw a rectangle outline in colour.
@@ -34,7 +53,7 @@ FreeImageAlgorithms_DrawColourLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, RGB
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawColourRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour, int line_width);
+FIA_DrawColourRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour, int line_width);
 
 /** \brief Draw a solid rectangle in colour.
  *
@@ -44,7 +63,7 @@ FreeImageAlgorithms_DrawColourRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour,
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawColourSolidRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour);
+FIA_DrawColourSolidRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour);
 
 /** \brief Draw a solid rectangle in greyscale.
  *
@@ -54,7 +73,7 @@ FreeImageAlgorithms_DrawColourSolidRect (FIBITMAP *src, FIARECT rect, RGBQUAD co
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawSolidGreyscaleRect (FIBITMAP *src, FIARECT rect, double value);
+FIA_DrawSolidGreyscaleRect (FIBITMAP *src, FIARECT rect, double value);
 
 /** \brief Draw a greyscale line on an image.
  *
@@ -67,7 +86,7 @@ FreeImageAlgorithms_DrawSolidGreyscaleRect (FIBITMAP *src, FIARECT rect, double 
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawGreyscaleLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double value,
+FIA_DrawGreyscaleLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double value,
                                        int line_width, int antialiased);
 
 /** \brief Floodfills part of a greyscale image.
@@ -81,7 +100,7 @@ FreeImageAlgorithms_DrawGreyscaleLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, 
  *  \return FIBITMAP* return flood filled image or NULL.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_FloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
+FIA_FloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
 
 /** \brief Floodfills part of a greyscale image.
  *
@@ -94,7 +113,7 @@ FreeImageAlgorithms_FloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_co
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_InPlaceFloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
+FIA_InPlaceFloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
 
 
 /** \brief Draw a polygon from an array of FIAPOINT's.
@@ -107,7 +126,7 @@ FreeImageAlgorithms_InPlaceFloodFill(FIBITMAP* src, int seed_x, int seed_y, int 
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawGreyscalePolygon (FIBITMAP *src, FIAPOINT *points, int number_of_points,
+FIA_DrawGreyscalePolygon (FIBITMAP *src, FIAPOINT *points, int number_of_points,
                                           unsigned char value, int antialiased);
 
 /** \brief Draw a convexhull for points on an image.
@@ -119,10 +138,10 @@ DLL_API FIBITMAP* DLL_CALLCONV
 FreeImage_ConvexHull(FIBITMAP *src);
 
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawGreyscaleRect (FIBITMAP *src, FIARECT rect, double colour, int line_width);
+FIA_DrawGreyscaleRect (FIBITMAP *src, FIARECT rect, double colour, int line_width);
 
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_DrawSolidGreyscaleEllipse (FIBITMAP *src, FIARECT rect, unsigned char value, int antialiased);
+FIA_DrawSolidGreyscaleEllipse (FIBITMAP *src, FIARECT rect, unsigned char value, int antialiased);
 
 #ifdef __cplusplus
 }

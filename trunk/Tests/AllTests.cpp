@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include "CuTest.h"
+#include "FreeImage.h"
 #include "FreeImageAlgorithms.h"
-#include "FreeImageAlgorithms_Error.h"
 
 #include <iostream>
 
@@ -24,25 +24,18 @@ void RunAllTests(void)
 	CuString *output = CuStringNew();
 	CuSuite* suite = CuSuiteNew();
 
-    /*
 	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsColourSuite());
-	
+	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsUtilitySuite());
 	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsStatisticSuite());
-	
-	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
 	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsIOSuite());
-	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
-	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsMorphologySuite());
+	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsMorphologySuite());
 	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsLogicSuite());
-    
-	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsDrawingSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsParticleSuite());
     CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsLinearScaleSuite());
-    */
-
-    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsFFTSuite());
-    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
-    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsUtilitySuite());
-    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsParticleSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsDrawingSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsFFTSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);
@@ -52,20 +45,16 @@ void RunAllTests(void)
 	PROFILE_PRINT();
 }
 
-static void OnError(const char *msg)
+static void OnError(FREE_IMAGE_FORMAT fif, const char *msg)
 {
     std::cout << "Error: " << msg << std::endl;
 }
 
 int __cdecl main(void)
 {
-	char string[10];
-
-    FreeImageAlgorithms_SetOutputMessage(OnError);
-
+    FreeImage_SetOutputMessage(OnError);
+    
 	RunAllTests();
-
-	gets(string);
 
 	return 0;
 }

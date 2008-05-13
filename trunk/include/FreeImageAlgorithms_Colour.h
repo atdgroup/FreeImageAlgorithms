@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_COLOUR__
 #define __FREEIMAGE_ALGORITHMS_COLOUR__
 
@@ -22,7 +41,7 @@ extern "C" {
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_RGBToHSV( unsigned char red, unsigned char green, unsigned char blue,
+FIA_RGBToHSV( unsigned char red, unsigned char green, unsigned char blue,
 							double *hue, double *satuation, double *value);
 
 /** \brief Convert hue, satuation and value values to red, green and blue.
@@ -36,7 +55,7 @@ FreeImageAlgorithms_RGBToHSV( unsigned char red, unsigned char green, unsigned c
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_HSVToRGB( double hue, double satuation, double value,
+FIA_HSVToRGB( double hue, double satuation, double value,
 							unsigned char *red, unsigned char *green, unsigned char *blue);
 
 /** \brief Convert red, green and blue values to hue, satuation and luminosity.
@@ -50,7 +69,7 @@ FreeImageAlgorithms_HSVToRGB( double hue, double satuation, double value,
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_RGBToHSL( unsigned char red, unsigned char green, unsigned char blue,
+FIA_RGBToHSL( unsigned char red, unsigned char green, unsigned char blue,
 							double *hue, double *satuation, double *luminosity);
 
 /** \brief Convert hue, satuation and luminosity values to red, green and blue.
@@ -64,7 +83,7 @@ FreeImageAlgorithms_RGBToHSL( unsigned char red, unsigned char green, unsigned c
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_HSLToRGB( double hue, double satuation, double luminosity,
+FIA_HSLToRGB( double hue, double satuation, double luminosity,
 							unsigned char *red, unsigned char *green, unsigned char *blue);
 
 #ifdef __cplusplus

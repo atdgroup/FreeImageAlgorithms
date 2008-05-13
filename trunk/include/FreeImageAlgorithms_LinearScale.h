@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_LINEAR_SCALE__
 #define __FREEIMAGE_ALGORITHMS_LINEAR_SCALE__
 
@@ -24,7 +43,7 @@ extern "C" {
  *  \param max_within_image Maximum value to found in original image.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_LinearScaleToStandardType(FIBITMAP *src, double min, double max, double *min_within_image, double *max_within_image);
+FIA_LinearScaleToStandardType(FIBITMAP *src, double min, double max, double *min_within_image, double *max_within_image);
 
 /** \brief Stretches an image to the full range of an image type.
  *
@@ -35,11 +54,11 @@ FreeImageAlgorithms_LinearScaleToStandardType(FIBITMAP *src, double min, double 
  *  \param max Max value to stretch to.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_StretchImageToType(FIBITMAP *src, FREE_IMAGE_TYPE type, double max);
+FIA_StretchImageToType(FIBITMAP *src, FREE_IMAGE_TYPE type, double max);
 
 
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_StretchImageAcrossRange(FIBITMAP *src, double min, double max);
+FIA_StretchImageAcrossRange(FIBITMAP *src, double min, double max);
 
 #ifdef __cplusplus
 }

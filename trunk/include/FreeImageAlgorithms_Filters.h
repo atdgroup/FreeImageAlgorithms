@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_FILTERS__
 #define __FREEIMAGE_ALGORITHMS_FILTERS__
 
@@ -16,7 +35,7 @@ extern "C" {
  *  \return FIBITMAP on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_MedianFilter(FIABITMAP* src, int kernel_x_radius, int kernel_y_radius);
+FIA_MedianFilter(FIABITMAP* src, int kernel_x_radius, int kernel_y_radius);
 
 /** \brief Perform a sobel filtering.
  *
@@ -24,7 +43,7 @@ FreeImageAlgorithms_MedianFilter(FIABITMAP* src, int kernel_x_radius, int kernel
  *  \return FIBITMAP on success or NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_Sobel(FIBITMAP *src);
+FIA_Sobel(FIBITMAP *src);
 
 #define SOBEL_HORIZONTAL 1     // (0000 0001)
 #define SOBEL_VERTICAL   2     // (0000 0010) 
@@ -41,7 +60,7 @@ FreeImageAlgorithms_Sobel(FIBITMAP *src);
  *  \return FIBITMAP on success or NULL on error.
 */
 DLL_API int DLL_CALLCONV
-FreeImageAlgorithms_SobelAdvanced(FIBITMAP *src,
+FIA_SobelAdvanced(FIBITMAP *src,
                                   FIBITMAP** vertical,
                                   FIBITMAP** horizontal,
                                   FIBITMAP** magnitude);

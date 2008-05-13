@@ -1,3 +1,22 @@
+/*
+ * Copyright 2007 Glenn Pierce
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ * 
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_FFT__
 #define __FREEIMAGE_ALGORITHMS_FFT__
 
@@ -19,7 +38,7 @@ extern "C" {
  *  \return FIBITMAP* on success and NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_FFT(FIBITMAP *src, int inverse, int shift);
+FIA_FFT(FIBITMAP *src, int inverse, int shift);
 
 /** \brief Creates a FIT_DOUBLE absolute image from a complex image.
  *	
@@ -27,7 +46,7 @@ FreeImageAlgorithms_FFT(FIBITMAP *src, int inverse, int shift);
  *  \return FIBITMAP* on success and NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertComplexImageToAbsoluteValued(FIBITMAP *src);
+FIA_ConvertComplexImageToAbsoluteValued(FIBITMAP *src);
 
 /** \brief Creates a FIT_DOUBLE absolute image from a complex image.
  *	
@@ -35,7 +54,7 @@ FreeImageAlgorithms_ConvertComplexImageToAbsoluteValued(FIBITMAP *src);
  *  \return FIBITMAP* on success and NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
-FreeImageAlgorithms_ConvertComplexImageToAbsoluteValuedSquared(FIBITMAP *src);
+FIA_ConvertComplexImageToAbsoluteValuedSquared(FIBITMAP *src);
 
 #ifdef __cplusplus
 }
