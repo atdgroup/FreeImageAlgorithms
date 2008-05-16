@@ -420,6 +420,17 @@ namespace FreeImage
             }
         }
 
+        public bool Is12Bit
+        {
+            get
+            {
+                if (this.BitsPerPixel != 16)
+                    return false;
+
+                return FreeImageAlgorithmsNativeMethods.Is16BitReally12BitImage(this.dib);
+            }
+        }
+
         public FreeImageType FreeImageType
         {
             get
