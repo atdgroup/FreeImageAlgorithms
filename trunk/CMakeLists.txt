@@ -12,14 +12,13 @@ SUBDIRS(src Tests)
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 # Look for the FreeImage library
-FIND_PACKAGE(FreeImage) 
+FIND_PACKAGE(FreeImage REQUIRED) 
 
 # Make sure the compiler can find include files from our library.
 INCLUDE_DIRECTORIES(include Tests ${FREEIMAGE_INCLUDE_PATH})
 
 SET (LIBRARY_OUTPUT_PATH ${FreeImageAlgorithms_BINARY_DIR}/bin)
 SET (EXECUTABLE_OUTPUT_PATH ${FreeImageAlgorithms_BINARY_DIR}/bin)
-SET (CMAKE_CXX_STANDARD_LIBRARIES, "user32.lib gdi32.lib" FORCE)
 
 CONFIGURE_FILE(${FreeImageAlgorithms_SOURCE_DIR}/Tests/Constants.h.template ${FreeImageAlgorithms_SOURCE_DIR}/Tests/Constants.h)
 

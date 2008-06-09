@@ -52,6 +52,36 @@ namespace FreeImage
         }
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FIARECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+
+        public FIARECT(int left, int top, int right, int bottom)
+        {
+            this.left = left;
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FIAPOINT
+    {
+        public int x;
+        public int y;
+
+        public FIAPOINT(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }    
+    }
+
     public class FreeImageBitmap : IDisposable
     {
         private uint dib;
@@ -508,6 +538,36 @@ namespace FreeImage
             FreeImageNativeMethods.Unload(this.dib);
 
             this.dib = tmp_dib;
+        }
+
+        public FIAPOINT Correlate(FIARECT rect1, FreeImageBitmap src2, FIARECT rect2, out double max)
+        {
+            FIAPOINT pt = new FIAPOINT();
+
+            FreeImageAlgorithmsNativeMethods.CorrelateImageRegions(this.dib, rect1,
+                src2.dib, rect2, out pt, out max);
+
+            return pt;
+        }
+
+        public FIAPOINT CorrelateImageAlongRightEdge(FreeImageBitmap src2, uint thickness, out double max)
+        {
+            FIAPOINT pt = new FIAPOINT();
+
+            FreeImageAlgorithmsNativeMethods.CorrelateImagesAlongRightEdge(this.dib,
+                src2.dib, thickness, out pt, out max);
+
+            return pt;
+        }
+
+        public FIAPOINT CorrelateImageAlongBottomEdge(FreeImageBitmap src2, uint thickness, out double max)
+        {
+            FIAPOINT pt = new FIAPOINT();
+
+            FreeImageAlgorithmsNativeMethods.CorrelateImagesAlongBottomEdge(this.dib,
+                src2.dib, thickness, out pt, out max);
+
+            return pt;
         }
     }
 }

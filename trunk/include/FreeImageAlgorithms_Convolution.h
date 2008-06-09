@@ -64,11 +64,27 @@ DLL_API FIBITMAP* DLL_CALLCONV
 FIA_SeparableConvolve(FIABITMAP *src, FilterKernel horz_kernel, FilterKernel vert_kernel);
 
 DLL_API int DLL_CALLCONV
-FIA_CorrelateImages(FIBITMAP *src1, FIBITMAP *src2, FIAPOINT *pt);
+FIA_CorrelateImages(FIBITMAP *src1, FIBITMAP *src2, FIAPOINT *pt, double *max);
 
 DLL_API int DLL_CALLCONV
-FIA_CorrelateImageRegions(FIBITMAP *src1, FIARECT rect1, FIBITMAP *src2,  FIARECT rect2, FIAPOINT *pt);
+FIA_CorrelateImageRegions(FIBITMAP *src1, FIARECT rect1, FIBITMAP *src2,  FIARECT rect2,
+                FIAPOINT *pt, double *max);
 
+DLL_API int DLL_CALLCONV
+FIA_CorrelateImagesAlongRightEdge(FIBITMAP *src1, FIBITMAP *src2,
+                unsigned int edge_thickness, FIAPOINT *pt, double *max);
+
+DLL_API int DLL_CALLCONV
+FIA_CorrelateImagesAlongBottomEdge(FIBITMAP *src1, FIBITMAP *src2,
+                unsigned int edge_thickness, FIAPOINT *pt, double *max);
+
+DLL_API int DLL_CALLCONV
+FIA_CorrelateImagesFFT(FIBITMAP *src1, FIBITMAP *src2, FIAPOINT *pt, double *max);
+
+DLL_API int DLL_CALLCONV
+FIA_FFTCorrelateImagesAlongRightEdge(FIBITMAP *src1, FIBITMAP *src2,
+                unsigned int edge_thickness, FIAPOINT *pt);
+                
 #ifdef __cplusplus
 }
 #endif

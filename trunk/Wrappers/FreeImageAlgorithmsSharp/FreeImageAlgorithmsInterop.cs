@@ -62,9 +62,12 @@ namespace FreeImage
         internal static extern bool Is16BitReally12BitImage(uint src);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_CorrelateImageRegions")]
-        internal static extern bool CorrelateImageRegions(uint src, Rectangle rect);
-        DLL_API int DLL_CALLCONV
-(FIBITMAP *src1, FIARECT rect1, FIBITMAP *src2,  FIARECT rect2,
-                FIAPOINT *pt, double *max);
+        internal static extern bool CorrelateImageRegions(uint src1, FIARECT rect1, uint src2, FIARECT rect2, out FIAPOINT pt, out double max);
+    
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_CorrelateImagesAlongRightEdge")]
+        internal static extern bool CorrelateImagesAlongRightEdge(uint src1, uint src2, uint thickness,  out FIAPOINT pt, out double max);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_CorrelateImagesAlongBottomEdge")]
+        internal static extern bool CorrelateImagesAlongBottomEdge(uint src1, uint src2, uint thickness, out FIAPOINT pt, out double max);
     }
 }

@@ -1,4 +1,4 @@
-FIND_PATH(FREEIMAGE_INCLUDE_PATH Freeimage.h /usr/include /usr/local/include)
+FIND_PATH(FREEIMAGE_INCLUDE_PATH FreeImage.h /usr/include /usr/local/include)
 FIND_LIBRARY(FREEIMAGE_LIBRARY NAMES freeimage PATH /usr/lib ${LIBRARY_OUTPUT_PATH})
 
 IF (FREEIMAGE_INCLUDE_DIR AND FREEIMAGE_LIBRARY)
