@@ -254,18 +254,18 @@ FIA_IFFT(FIBITMAP *src)
 
 	st = kiss_fftnd_alloc (dims, ndims, 1, 0, 0);
 	
-		for(y = height - 1; y >= 0; y--) { 
+	for(y = height - 1; y >= 0; y--) { 
 			
-			bits = (FICOMPLEX*) FreeImage_GetScanLine(src, y);
+		bits = (FICOMPLEX*) FreeImage_GetScanLine(src, y);
 			
-			for(x=0; x < width; x++) {	
+		for(x=0; x < width; x++) {	
 
-				fftbuf[i].r = (float) bits[x].r;
-   				fftbuf[i].i = (float) bits[x].i;
+			fftbuf[i].r = (float) bits[x].r;
+   			fftbuf[i].i = (float) bits[x].i;
 	        
-   				i++;
-			}
+   			i++;
 		}
+	}
 
 	kiss_fftnd(st, fftbuf, tmp_fftoutbuf);
 
@@ -285,7 +285,7 @@ FIA_IFFT(FIBITMAP *src)
 		tmp_fftoutbuf += width;
 	}
 
-	return ComplexImageToRealValued(dst);
+	return dst;
 
 Error:
  
@@ -406,7 +406,7 @@ FIA_ConvertComplexImageToAbsoluteValued(FIBITMAP *src)
 }
 
 FIBITMAP*
-ComplexImageToRealValued(FIBITMAP *src)
+FIA_ComplexImageToRealValued(FIBITMAP *src)
 {
 	FIBITMAP *dst = NULL;
 	unsigned x, y;
