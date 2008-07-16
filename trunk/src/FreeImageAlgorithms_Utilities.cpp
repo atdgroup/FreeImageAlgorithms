@@ -43,7 +43,7 @@
  *   Returns 1 if OS support exist and 0 when OS doesn't support it.
  *
  ****************************************************************/
-/*
+
 int DLL_CALLCONV
 _os_support (int feature)
 {
@@ -117,7 +117,6 @@ FIA_SSEFindFloatMinMax (const float *data, long n, float *min, float *max)
     x.m = max128;
     *max = max (x.f[0], max (x.f[1], max (x.f[2], x.f[3])));
 }
-*/
 
 /*******************************************************************************
  Rounding from a float to the nearest integer can be done several ways.
@@ -131,7 +130,6 @@ FIA_SSEFindFloatMinMax (const float *data, long n, float *min, float *max)
  Caller is expected to range check 'v' before attempting to round.
  Valid range is INT_MIN to INT_MAX inclusive.
  *******************************************************************************/
-/*
 __forceinline int
 Round (double v)
 {
@@ -146,7 +144,6 @@ Round (double v)
 
     return result;
 }
-*/
 
 #endif //  _MSC_VER
 FIAPOINT DLL_CALLCONV
