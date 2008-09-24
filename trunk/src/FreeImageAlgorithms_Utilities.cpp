@@ -130,6 +130,7 @@ FIA_SSEFindFloatMinMax (const float *data, long n, float *min, float *max)
  Caller is expected to range check 'v' before attempting to round.
  Valid range is INT_MIN to INT_MAX inclusive.
  *******************************************************************************/
+/*
 __forceinline int
 Round (double v)
 {
@@ -144,6 +145,7 @@ Round (double v)
 
     return result;
 }
+*/
 
 #endif //  _MSC_VER
 FIAPOINT DLL_CALLCONV

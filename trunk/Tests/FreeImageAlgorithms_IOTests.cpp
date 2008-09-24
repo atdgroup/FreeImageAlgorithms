@@ -37,7 +37,34 @@ TestFIA_IO(CuTest* tc)
 	FreeImage_Unload(dib2);
 }
 
+static void
+TestFIA_IOLoadColourArrayData(CuTest* tc)
+{
+	FIBITMAP *dib1 = NULL, *dib2 = NULL;
+	FREE_IMAGE_TYPE type;
+	int bpp, err;
+    
+    const char *file = TEST_DATA_DIR "lucy_pinder.jpg";
+	dib1 = FIA_LoadFIBFromFile(file);
 
+	CuAssertTrue(tc, dib1 != NULL);
+
+	dib2 = FreeImage_AllocateT (FIT_BITMAP, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1), 24, 0, 0, 0);
+
+	PROFILE_START("CopyColourBytesToFIBitmap");
+
+	for(int i=0; i < 500; i++) {
+
+		CopyColourBytesToFIBitmap (dib2, FreeImage_GetBits(dib1), 0, 1, COLOUR_ORDER_RGB);
+	}
+
+	PROFILE_STOP("CopyColourBytesToFIBitmap");
+
+	FIA_SaveFIBToFile (dib2, TEST_DATA_OUTPUT_DIR "/IO/save-colour-test.bmp", BIT24);
+
+	FreeImage_Unload(dib1);
+	FreeImage_Unload(dib2);
+}
 
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsIOSuite(void)
@@ -47,6 +74,7 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO");
 
 	SUITE_ADD_TEST(suite, TestFIA_IO);
-	
+	SUITE_ADD_TEST(suite, TestFIA_IOLoadColourArrayData);
+
 	return suite;
 }
