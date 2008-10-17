@@ -52,6 +52,10 @@ FIA_LoadFIBFromFile(const char *filepath);
 DLL_API int DLL_CALLCONV
 FIA_SaveFIBToFile (FIBITMAP *dib, const char *filepath, FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_depth);
 
+
+DLL_API int DLL_CALLCONV
+FIA_SimpleSaveFIBToFile (FIBITMAP * dib, const char *filepath);
+
 /** \brief Copy an array of bytes to FIBITMAP
  *	
  *  \param src FreeImage Bitmap to copy bytes to.
