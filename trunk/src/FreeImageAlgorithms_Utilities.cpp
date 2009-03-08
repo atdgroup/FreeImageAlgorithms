@@ -1190,33 +1190,101 @@ FIA_GetDistanceMap (int width, int height, int *distance_map)
     }
 }
 
-int DLL_CALLCONV
-FIA_SimplePaste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
+// Find two intersecting rects
+static int IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3)
 {
+    int fIntersect = (r2.left < r1.right && r2.right > r1.left && r2.top < r1.bottom && r2.bottom > r1.top); 
 
+	MakeFIARect(0,0,0,0);
+
+    if(fIntersect)
+    {
+        r3->left = max(r1.left, r2.left);
+        r3->top = max(r1.top, r2.top);
+        r3->right = min(r1.right, r2.right);
+        r3->bottom = min(r1.bottom, r2.bottom);
+    }
+
+    return fIntersect;
+}
+
+static FIARECT SetRectRelativeToPoint(FIARECT *rect, FIAPOINT pt)
+{
+	FIARECT r;
+
+	r.left = rect->left - pt.x;
+	r.right = rect->right - pt.x;
+	r.top = rect->top - pt.y;
+	r.bottom = rect->bottom - pt.y;
+
+	return r;
+}
+
+BYTE* DLL_CALLCONV
+FIA_GetScanLineFromTop (FIBITMAP *src, int line)
+{
+	return (BYTE*) FreeImage_GetScanLine(src, FreeImage_GetHeight(src) - 1 - line);	
+}
+
+int DLL_CALLCONV
+FIA_SimplePasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
+{
+	int lines, dst_start = 0;
+	int src_width = FreeImage_GetWidth (src);
     int src_height = FreeImage_GetHeight (src);
+	int dst_width = FreeImage_GetWidth (dst);
+    int dst_height = FreeImage_GetHeight (dst);
     int dst_pitch = FreeImage_GetPitch (dst);
+	FIARECT src_rect, intersect_rect;
+    FIAPOINT pt;
+
+	if (FreeImage_GetImageType (dst) != FreeImage_GetImageType (src))
+    {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Destination and src image are not of the same type");
+        return FIA_ERROR;
+    }
 
     int src_line_bytes = FreeImage_GetLine (src);
 
     // calculate the number of bytes per pixel
     int bytespp = FreeImage_GetLine (dst) / FreeImage_GetWidth (dst);
 
-    //int dst_scan_line = dst_height - src_height - top;
-    BYTE *dst_bits = FreeImage_GetScanLine (dst, bottom);
+	if(IntersectingRect(MakeFIARect(0, 0, dst_width - 1, dst_height - 1), 
+		MakeFIARect(left, top, left + src_width - 1, top + src_height - 1), &intersect_rect) == 0)
+	{	
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Destination and src image do not intersect");
+		return FIA_ERROR;
+	}
 
-    dst_bits += (left * bytespp);
+	pt.x = left;
+	pt.y = top;
+	src_rect = SetRectRelativeToPoint(&intersect_rect, pt);
 
+	dst_start = bytespp * intersect_rect.left;
+    src_line_bytes = bytespp * (intersect_rect.right - intersect_rect.left + 1);
+
+    BYTE *dst_bits = FreeImage_GetScanLine (dst, dst_height - intersect_rect.bottom - 1);
     BYTE *src_bits;
 
-    for(int i = 0; i < src_height; i++)
+	lines = intersect_rect.bottom - intersect_rect.top + 1;
+
+    for(int i = 0; i < lines; i++)
     {
-        src_bits = FreeImage_GetScanLine (src, i);
+        src_bits = FIA_GetScanLineFromTop (src, src_rect.top + i) + src_rect.left;
+		dst_bits = FIA_GetScanLineFromTop (dst, intersect_rect.top + i) + intersect_rect.left;
         memcpy (dst_bits, src_bits, src_line_bytes);
-        dst_bits += dst_pitch;
     }
 
     return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_SimplePaste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
+{
+	return FIA_SimplePasteFromTopLeft (dst, src, left,
+		FreeImage_GetHeight(dst) - 1 - bottom - FreeImage_GetHeight(src));
 }
 
 int DLL_CALLCONV

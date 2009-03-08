@@ -170,12 +170,6 @@ Error:
 	return dst;
 }
 
-
-static void* FIA_GetScanLineFromTop(FIBITMAP *src, int line)
-{
-	return FreeImage_GetScanLine(src, FreeImage_GetHeight(src) - 1 - line);	
-}
-
 FIBITMAP* DLL_CALLCONV
 FIA_ShiftImageEdgeToCenter(FIBITMAP *src)
 {

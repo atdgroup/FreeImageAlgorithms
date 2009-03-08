@@ -119,6 +119,22 @@ TestFIA_DistanceTransformTest(CuTest* tc)
 	FreeImage_Unload(dib3);
 }
 
+
+static void PasteTest(CuTest* tc)
+{
+	const char *file1 = TEST_DATA_DIR "drone-bee-greyscale.jpg";
+	const char *file2 = TEST_DATA_DIR "drone-bee-greyscale.jpg";
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file1);
+	FIBITMAP *dst = FIA_LoadFIBFromFile(file2);
+
+	FIA_SimplePaste(dst, src, -100, -100);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/paste_result.bmp", BIT8);
+	
+	FreeImage_Unload(src);
+	FreeImage_Unload(dst);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
@@ -126,9 +142,10 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
-    SUITE_ADD_TEST(suite, BorderTest);
-	SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
-	SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
+    //SUITE_ADD_TEST(suite, BorderTest);
+	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
+	//SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
+	SUITE_ADD_TEST(suite, PasteTest);
 
 	return suite;
 }

@@ -481,6 +481,12 @@ FIA_GetDistanceMap (int width, int height, float *distance_map);
 DLL_API int DLL_CALLCONV
 FIA_SimplePaste(FIBITMAP *dst, FIBITMAP *src, int left, int bottom);
 
+DLL_API BYTE* DLL_CALLCONV
+FIA_GetScanLineFromTop (FIBITMAP *src, int line);
+
+DLL_API int DLL_CALLCONV
+FIA_SimplePasteFromTopLeft (FIBITMAP *dst, FIBITMAP * src, int left, int top);
+
 /** \brief Performs a bitwise compare between two images.
  *		   Returns 1 for images that are the same.
  *
