@@ -60,12 +60,7 @@ class FIAImage(FI.Image):
         MessageOutput = C.WINFUNCTYPE(VOID, C.c_char_p)
     else:
         MessageOutput = C.CFUNCTYPE(VOID, C.c_char_p)
-    
-    def printErrors(self, message):
-        print 'Error returned. ', message
-    
-    
-    
+
     def __init__(self, f=None):
         """
         Init method for the class
@@ -79,14 +74,16 @@ class FIAImage(FI.Image):
         
         self.initCalled = 0
         self.__lib = LoadLibrary("freeimagealgorithms")
-        self.funct_printErrors = self.MessageOutput(self.printErrors)
-        self.__lib.FIA_SetOutputMessage(self.funct_printErrors)
     
-#    def setRainBowPalette(self):
-#        """ Set a rainbow palette for the bitmap.
-#        """
-#        return self.__lib.SetRainBowPalette(self.getBitmap())
-
+    def clone(self):
+        new_inst = FIAImage()
+        new_inst.loadFromBitmap(self.Clone(self.getBitmap()))
+        return new_inst
+    
+    def setRainBowPalette(self):
+        """ Set a rainbow palette for the bitmap.
+        """
+        return self.__lib.FIA_SetRainBowPalette(self.getBitmap())
 
     def getHistogram(self, min, max, bins):
         "Get the histogram of a greylevel image"
