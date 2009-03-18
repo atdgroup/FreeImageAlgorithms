@@ -43,7 +43,7 @@ def LoadLibrary(libraryName):
             
     return lib
             
-            
+       
 class FIAImage(FI.Image):
     
     """ 
@@ -54,6 +54,8 @@ class FIAImage(FI.Image):
         
     @author: Glenn Pierce
     """
+    
+    __lib = LoadLibrary("freeimagealgorithms")
     
     # Enable the message output
     if sys.platform == 'win32':
@@ -70,20 +72,18 @@ class FIAImage(FI.Image):
         @type libraryName: string
         """
         
-        super(FIAImage, self).__init__(f, None)
-        
+        super(FIAImage, self).__init__(f, None)      
         self.initCalled = 0
-        self.__lib = LoadLibrary("freeimagealgorithms")
     
-    def clone(self):
-        new_inst = FIAImage()
-        new_inst.loadFromBitmap(self.Clone(self.getBitmap()))
-        return new_inst
+    #def clone(self):
+    #    new_inst = FIAImage()
+    #    new_inst.loadFromBitmap(self.Clone(self.getBitmap()))
+    #    return new_inst
     
     def setRainBowPalette(self):
         """ Set a rainbow palette for the bitmap.
         """
-        return self.__lib.FIA_SetRainBowPalette(self.getBitmap())
+        return FIAImage.__lib.FIA_SetRainBowPalette(self.getBitmap())
 
     def getHistogram(self, min, max, bins):
         "Get the histogram of a greylevel image"
@@ -95,12 +95,12 @@ class FIAImage(FI.Image):
         bitmap = self.getBitmap()
             
         if self.getBPP() >= 24 and self.GetImageType(bitmap) == FIT_BITMAP:
-            self.__lib.FIA_RGBHistogram(bitmap, C.c_byte(min),
+            FIAImage.__lib.FIA_RGBHistogram(bitmap, C.c_byte(min),
                 C.c_byte(max), bins, C.byref(red_histo),  C.byref(green_histo),
                 C.byref(blue_histo))
             return ([int(x) for x in red_histo], [int(x) for x in green_histo], [int(x) for x in blue_histo])    
         else: 
-            self.__lib.FIA_Histogram(bitmap, C.c_double(min), C.c_double(max), bins, C.byref(red_histo))
+            FIAImage.__lib.FIA_Histogram(bitmap, C.c_double(min), C.c_double(max), bins, C.byref(red_histo))
             return ([int(x) for x in red_histo])
     
         return None
