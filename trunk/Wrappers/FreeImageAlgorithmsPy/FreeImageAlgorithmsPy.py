@@ -48,6 +48,12 @@ def LoadLibrary(libraryName):
 class c_double_out(C.c_void_p):
     pass
  
+class c_int_out(C.c_void_p):
+    pass
+    
+class c_long_out(C.c_void_p):
+    pass
+    
 FIA_FUNCTION_LIST = {
     
     # Name, Return Type, (Param1 type, Param1 type2) ....... etc
@@ -55,67 +61,10 @@ FIA_FUNCTION_LIST = {
     'setRainBowPalette' : ('FIA_SetRainBowPalette', C.c_int, (C.c_void_p,)), 
     'histEq' : ('FIA_HistEq', C.c_int, (C.c_void_p,)), 
     'getGreyLevelAverage' : ('FIA_GetGreyLevelAverage', C.c_double, (C.c_void_p,)), 
-    'monoImageFindWhiteArea' : ('FIA_MonoImageFindWhiteArea', C.c_int, (C.c_void_p, c_double_out)), 
-     
+    'monoImageFindWhiteArea' : ('FIA_MonoImageFindWhiteArea', C.c_int, (C.c_void_p, c_int_out)), 
+    'getHistogram' : ('FIA_Histogram', C.c_int, (C.c_void_p, C.c_double, C.c_double, C.c_int, c_long_out)), 
 	}
-	   
-	   
-class WrappedMethod(object):
-       
-    def __init__(self, lib, function_details, dib):
-        self.__lib = lib
-        self.__function_details = function_details
-        self.__dib = dib
-        
-        function_name = function_details[0]
-        function_return_type = function_details[1]
-        function_arg_types = function_details[2]
-        
-        self.__function = getattr(lib, function_name)
-        self.__function.restype = function_return_type
-        self.__function.argtypes = function_arg_types
-       
-    def __call__(self, *args):
-    
-        required_args = len(self.__function.argtypes) 
-    
-        # Check correct number of args
-       # if args != len(self.__function.argtypes) - 1:
-       #     msg = "%s takes %d arguments" % (self.__function_details[0], len(self.__function.argtypes) - 1)
-        #    raise TypeError, msg
-    
-        param_count = 1
-        params = [None] * required_args
-        params[0] = self.__dib
-        
-        for arg in self.__function.argtypes[1:]:
-            
-            # ctype can automatically wrap ints, strings and unicode so we dont wrap these args in the ctype type object
-            if arg == C.c_int or arg == C.c_char_p:
-                params[param_count] = arg
-        
-            if arg == C.c_double:
-                params[param_count] = C.c_double(arg)
-                
-            if arg == c_double_out:
-                params[param_count] = C.c_double()
-                params[param_count] = C.byref(params[param_count])            
-            
-            param_count = param_count + 1
-    
-        print params
-    
-        ret = self.__function(params[0], params[1])
-         
-        return (ret, params[1].value)
-         
-        # We must make sure the arguments passed are valid for the ctype function parameters
-        #if len(args) == 0:
-        #    return self.__function(self.__dib)
-        #else:
-        #    return self.__function(self.__dib, args)
-        
-       
+	       
 class FIAImage(FI.Image):
     
     """ 
@@ -147,28 +96,47 @@ class FIAImage(FI.Image):
         super(FIAImage, self).__init__(f, None)      
         self.initCalled = 0
     
-    def wrappedFunction(self, func):
+    def wrappedFunction(self, name):
     
-        func_props = FIA_FUNCTION_LIST.get(funct.__name__)
+        func_props = FIA_FUNCTION_LIST.get(name)
         
         if func_props == None:
             raise AttributeError, attr
-            
-        function_name = func_props[0]
-        function_return_type = func_props[1]
-        function_arg_types = func_props[2]
-        
-        function = getattr(lib, function_name)
-        function.restype = function_return_type
-        function.argtypes = function_arg_types
-        
+ 
+        function = getattr(FIAImage.__lib, func_props[0])    # Function name
+        function.restype = func_props[1]            # return type
+        function.argtypes = func_props[2]           # Argument types
+ 
         return function
+    
 
-    @wrappedFunction
+    def clone(self):
+        """ Clone the current bitmap
+            @return: new FIAImage instance
+        """ 
+        F = FIAImage()
+        F.loadFromBitmap(self.Clone(self.getBitmap()))
+        return F
+
     def setRainBowPalette(self):
-        """ Set a rainbow palette for the bitmap.
-        """
-        return self.setRainBowPalette(self.getBitmap()))
+        """ Set a rainbow palette for the bitmap."""
+        cFunction = self.wrappedFunction('setRainBowPalette')
+        return cFunction(self.getBitmap())
+       
+    def histEq(self):
+        """ Perform histogram equalisation and return a new FIAImage."""
+        F = FIAImage()  
+        cFunction = self.wrappedFunction('histEq')
+        bitmap = cFunction(self.getBitmap())
+        F.loadFromBitmap(bitmap)
+        return F
+       
+       
+    def monoImageFindWhiteArea(self):
+        cFunction = self.wrappedFunction('monoImageFindWhiteArea')
+        ret = C.c_int()
+        err = cFunction(self.getBitmap(), C.byref(ret))
+        return (err, ret.value)
        
     def getHistogram(self, min, max, bins):
         "Get the histogram of a greylevel image"
@@ -176,16 +144,17 @@ class FIAImage(FI.Image):
         red_histo = DW_array()
         green_histo = DW_array()
         blue_histo = DW_array()
-                
+              
+        cFunction = self.wrappedFunction('getHistogram')
         bitmap = self.getBitmap()
-            
+                  
         if self.getBPP() >= 24 and self.GetImageType(bitmap) == FIT_BITMAP:
-            FIAImage.__lib.FIA_RGBHistogram(bitmap, C.c_byte(min),
+            cFunction(bitmap, C.c_byte(min),
                 C.c_byte(max), bins, C.byref(red_histo),  C.byref(green_histo),
                 C.byref(blue_histo))
             return ([int(x) for x in red_histo], [int(x) for x in green_histo], [int(x) for x in blue_histo])    
         else: 
-            FIAImage.__lib.FIA_Histogram(bitmap, C.c_double(min), C.c_double(max), bins, C.byref(red_histo))
+            cFunction(bitmap, C.c_double(min), C.c_double(max), bins, C.byref(red_histo))
             return ([int(x) for x in red_histo])
     
         return None

@@ -4,7 +4,8 @@ import FreeImagePy
 import FreeImageAlgorithmsPy as FIA
 
 F = FIA.FIAImage()  
-F.load("C:\\lena_gray.bmp")
-ggg = 0
-print F.monoImageFindWhiteArea(ggg)
-F.save("C:\\lena_result.bmp")
+F.load("C:\\test.jpg")
+
+print F.getHistogram(0, 255, 255)
+
+F.save("C:\\test_result.bmp")
