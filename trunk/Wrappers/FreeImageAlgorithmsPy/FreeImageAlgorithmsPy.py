@@ -43,6 +43,78 @@ def LoadLibrary(libraryName):
             
     return lib
             
+ 
+# A ctype void_p but I define a new type so I can compare on the type and take the approiate action as this is a out parameter
+class c_double_out(C.c_void_p):
+    pass
+ 
+FIA_FUNCTION_LIST = {
+    
+    # Name, Return Type, (Param1 type, Param1 type2) ....... etc
+    # Defaulr param of BITMAP gets translated to self.bitmap
+    'setRainBowPalette' : ('FIA_SetRainBowPalette', C.c_int, (C.c_void_p,)), 
+    'histEq' : ('FIA_HistEq', C.c_int, (C.c_void_p,)), 
+    'getGreyLevelAverage' : ('FIA_GetGreyLevelAverage', C.c_double, (C.c_void_p,)), 
+    'monoImageFindWhiteArea' : ('FIA_MonoImageFindWhiteArea', C.c_int, (C.c_void_p, c_double_out)), 
+     
+	}
+	   
+	   
+class WrappedMethod(object):
+       
+    def __init__(self, lib, function_details, dib):
+        self.__lib = lib
+        self.__function_details = function_details
+        self.__dib = dib
+        
+        function_name = function_details[0]
+        function_return_type = function_details[1]
+        function_arg_types = function_details[2]
+        
+        self.__function = getattr(lib, function_name)
+        self.__function.restype = function_return_type
+        self.__function.argtypes = function_arg_types
+       
+    def __call__(self, *args):
+    
+        required_args = len(self.__function.argtypes) 
+    
+        # Check correct number of args
+       # if args != len(self.__function.argtypes) - 1:
+       #     msg = "%s takes %d arguments" % (self.__function_details[0], len(self.__function.argtypes) - 1)
+        #    raise TypeError, msg
+    
+        param_count = 1
+        params = [None] * required_args
+        params[0] = self.__dib
+        
+        for arg in self.__function.argtypes[1:]:
+            
+            # ctype can automatically wrap ints, strings and unicode so we dont wrap these args in the ctype type object
+            if arg == C.c_int or arg == C.c_char_p:
+                params[param_count] = arg
+        
+            if arg == C.c_double:
+                params[param_count] = C.c_double(arg)
+                
+            if arg == c_double_out:
+                params[param_count] = C.c_double()
+                params[param_count] = C.byref(params[param_count])            
+            
+            param_count = param_count + 1
+    
+        print params
+    
+        ret = self.__function(params[0], params[1])
+         
+        return (ret, params[1].value)
+         
+        # We must make sure the arguments passed are valid for the ctype function parameters
+        #if len(args) == 0:
+        #    return self.__function(self.__dib)
+        #else:
+        #    return self.__function(self.__dib, args)
+        
        
 class FIAImage(FI.Image):
     
@@ -75,16 +147,29 @@ class FIAImage(FI.Image):
         super(FIAImage, self).__init__(f, None)      
         self.initCalled = 0
     
-    #def clone(self):
-    #    new_inst = FIAImage()
-    #    new_inst.loadFromBitmap(self.Clone(self.getBitmap()))
-    #    return new_inst
+    def wrappedFunction(self, func):
     
+        func_props = FIA_FUNCTION_LIST.get(funct.__name__)
+        
+        if func_props == None:
+            raise AttributeError, attr
+            
+        function_name = func_props[0]
+        function_return_type = func_props[1]
+        function_arg_types = func_props[2]
+        
+        function = getattr(lib, function_name)
+        function.restype = function_return_type
+        function.argtypes = function_arg_types
+        
+        return function
+
+    @wrappedFunction
     def setRainBowPalette(self):
         """ Set a rainbow palette for the bitmap.
         """
-        return FIAImage.__lib.FIA_SetRainBowPalette(self.getBitmap())
-
+        return self.setRainBowPalette(self.getBitmap()))
+       
     def getHistogram(self, min, max, bins):
         "Get the histogram of a greylevel image"
         DW_array = DWORD * bins # type
