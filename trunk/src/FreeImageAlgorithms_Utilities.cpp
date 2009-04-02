@@ -1273,7 +1273,7 @@ FIA_SimplePasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
     for(int i = 0; i < lines; i++)
     {
         src_bits = FIA_GetScanLineFromTop (src, src_rect.top + i) + src_rect.left;
-		dst_bits = FIA_GetScanLineFromTop (dst, intersect_rect.top + i) + intersect_rect.left;
+		dst_bits = FIA_GetScanLineFromTop (dst, intersect_rect.top + i) + dst_start;
         memcpy (dst_bits, src_bits, src_line_bytes);
     }
 
