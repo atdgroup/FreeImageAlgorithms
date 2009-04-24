@@ -248,6 +248,26 @@ TestFIA_FloodFillTest(CuTest* tc)
 	FreeImage_Unload(dib3);
 }
 
+
+static void
+TestFIA_CheckerboardTest(CuTest* tc)
+{
+	FIBITMAP *dib = FreeImage_Allocate(500, 500, 8, 0, 0, 0);
+
+	CuAssertTrue(tc, dib != NULL);
+
+	FIA_SetGreyLevelPalette(dib);
+	FIA_DrawGreyScaleCheckerBoard (dib, 50);
+  
+	FIA_SaveFIBToFile(dib, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_CheckerboardTest.jpg", BIT24);
+
+	FreeImage_Unload(dib);
+}
+
+
+
+
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsDrawingSuite(void)
 {
@@ -255,6 +275,7 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Drawing");
 
+	/*
 	SUITE_ADD_TEST(suite, TestFIA_GSLineTest);
 	SUITE_ADD_TEST(suite, TestFIA_ColourLineTest);
 	SUITE_ADD_TEST(suite, TestFIA_Rect24bitTest);
@@ -265,6 +286,9 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 	SUITE_ADD_TEST(suite, TestFIA_FloodFillTest);
     SUITE_ADD_TEST(suite, TestFIA_ConvexHullTest);
     SUITE_ADD_TEST(suite, TestFIA_GreyscaleElipseTest);
+	*/
+
+	SUITE_ADD_TEST(suite, TestFIA_CheckerboardTest);
 
 	return suite;
 }
