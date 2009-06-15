@@ -53,7 +53,11 @@ namespace FreeImage
     
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_SimplePaste")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool SimplePaste(uint dst, uint src, int left, int top);
+        internal static extern bool SimplePaste(uint dst, uint src, int left, int bottom);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_SimplePasteFromTopLeft")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool SimplePasteFromTopLeft(uint dst, uint src, int left, int top);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_StretchImageToType")]
         internal static extern uint StretchImageToType(uint src, FreeImageType type, double max);

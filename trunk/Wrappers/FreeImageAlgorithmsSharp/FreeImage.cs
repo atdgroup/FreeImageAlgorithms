@@ -177,7 +177,8 @@ namespace FreeImage
 
         protected virtual void Dispose( bool disposing )
         {
-            if(!this.disposed)             {
+            if(!this.disposed) 
+            {
                 //if (disposing)
                 //{
                     // We are not in the destructor, OK to ref other objects
@@ -529,6 +530,11 @@ namespace FreeImage
         public bool SimplePaste(FreeImageBitmap src, Point location)
         {
             return FreeImageAlgorithmsNativeMethods.SimplePaste(this.dib, src.dib, location.X, location.Y);
+        }
+
+        public bool SimplePasteFromTopLeft(FreeImageBitmap src, Point location)
+        {
+            return FreeImageAlgorithmsNativeMethods.SimplePasteFromTopLeft(this.dib, src.dib, location.X, location.Y);
         }
 
         public void EqualizeHistogram()
