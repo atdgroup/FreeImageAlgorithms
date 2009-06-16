@@ -4,6 +4,13 @@ using System.Runtime.InteropServices;
 
 namespace FreeImage
 {
+    public enum FIA_BITDEPTH
+    {
+        BIT8,
+        BIT16,
+        BIT24
+    }
+
     internal sealed class FreeImageAlgorithmsNativeMethods
     {
         private FreeImageAlgorithmsNativeMethods() {}
@@ -22,7 +29,7 @@ namespace FreeImage
         internal static extern uint LoadFIBFromFile(string filepath);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_SaveFIBToFile")]
-        internal static extern int SaveFIBToFile(uint dib,  string filepath, int bitDepth);
+        internal static extern int SaveFIBToFile(uint dib, string filepath, int bitDepth);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_HistEq")]
         internal static extern uint FreeImage_HistEq(uint dib);
