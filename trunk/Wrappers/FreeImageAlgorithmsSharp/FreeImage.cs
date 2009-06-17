@@ -151,14 +151,14 @@ namespace FreeImage
         public void SaveToFile(string filePath)
         {
             if(this.IsGreyScale)
-                FreeImageAlgorithmsNativeMethods.SaveFIBToFile(this.dib, filePath, (int) FIA_BITDEPTH.BIT8);
+                FreeImageAlgorithmsNativeMethods.SaveFIBToFile(this.dib, filePath, FIA_BITDEPTH.BIT8);
             else
-                FreeImageAlgorithmsNativeMethods.SaveFIBToFile(this.dib, filePath, (int) FIA_BITDEPTH.BIT24);
+                FreeImageAlgorithmsNativeMethods.SaveFIBToFile(this.dib, filePath, FIA_BITDEPTH.BIT24);
         }
 
         public void SaveToFile(string filePath, FreeImage.FIA_BITDEPTH depth)
         {
-            FreeImageAlgorithmsNativeMethods.SaveFIBToFile(this.dib, filePath, (int) depth);
+            FreeImageAlgorithmsNativeMethods.SaveFIBToFile(this.dib, filePath, depth);
         }
 
         public void LoadFromBitmap(IntPtr hdc, Bitmap bitmap)

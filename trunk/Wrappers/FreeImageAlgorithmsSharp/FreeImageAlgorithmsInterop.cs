@@ -29,7 +29,7 @@ namespace FreeImage
         internal static extern uint LoadFIBFromFile(string filepath);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_SaveFIBToFile")]
-        internal static extern int SaveFIBToFile(uint dib, string filepath, int bitDepth);
+        internal static extern int SaveFIBToFile(uint dib, string filepath, FIA_BITDEPTH bitDepth);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_HistEq")]
         internal static extern uint FreeImage_HistEq(uint dib);
