@@ -3,6 +3,7 @@
 #include "FreeImageAlgorithms.h"
 #include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Utils.h"
+#include "FreeImageAlgorithms_Drawing.h"
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include "profile.h"
@@ -29,6 +30,24 @@ static void BorderTest(CuTest* tc)
 	FIA_Unload(dst);
 }
 
+
+static void BorderTest2(CuTest* tc)
+{
+	int err;
+
+	FIBITMAP *dst = FreeImage_Allocate(10, 3, 8, 0, 0, 0);
+	FIBITMAP *src = FreeImage_Allocate(8, 1, 8, 0, 0, 0);
+	FIA_DrawGreyScaleCheckerBoard(src, 1);
+	
+	err = FIA_SimplePaste(dst, src, 1, 1);
+
+	CuAssertTrue(tc, err == FIA_SUCCESS);
+
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/border2_test_result.bmp", BIT8);
+	
+	FreeImage_Unload(src);
+	FreeImage_Unload(dst);
+}
 
 /*
 static void
@@ -142,10 +161,12 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
-    //SUITE_ADD_TEST(suite, BorderTest);
+    SUITE_ADD_TEST(suite, BorderTest);
+	SUITE_ADD_TEST(suite, BorderTest2);
+
 	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
 	//SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
-	SUITE_ADD_TEST(suite, PasteTest);
+	//SUITE_ADD_TEST(suite, PasteTest);
 
 	return suite;
 }
