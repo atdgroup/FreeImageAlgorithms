@@ -1265,7 +1265,7 @@ FIA_SimplePasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
 	dst_start = bytespp * intersect_rect.left;
     src_line_bytes = bytespp * (intersect_rect.right - intersect_rect.left + 1);
 
-    BYTE *dst_bits = FreeImage_GetScanLine (dst, dst_height - intersect_rect.bottom - 1);
+    BYTE *dst_bits = NULL; //FreeImage_GetScanLine (dst, dst_height - intersect_rect.bottom - 1);
     BYTE *src_bits;
 
 	lines = intersect_rect.bottom - intersect_rect.top + 1;
@@ -1284,7 +1284,7 @@ int DLL_CALLCONV
 FIA_SimplePaste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
 {
 	return FIA_SimplePasteFromTopLeft (dst, src, left,
-		FreeImage_GetHeight(dst) - 1 - bottom - FreeImage_GetHeight(src));
+		FreeImage_GetHeight(dst) - bottom - FreeImage_GetHeight(src));
 }
 
 int DLL_CALLCONV

@@ -850,7 +850,7 @@ FIA_DrawGreyScaleCheckerBoard (FIBITMAP * src, int square_size)
 {
 	int row;   // Row number, from 0 to cols
     int col;   // Column number, from 0 to rowss
-	int x, y, x_size, y_size;   // Top-left corner of square
+	int x, y;   // Top-left corner of square
 	double value;
 
 	// Minimum grid size

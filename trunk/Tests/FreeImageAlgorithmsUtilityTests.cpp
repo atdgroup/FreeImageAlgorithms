@@ -22,7 +22,7 @@ static void BorderTest(CuTest* tc)
 	const char *file = TEST_DATA_DIR "drone-bee-greyscale.jpg";
 
 	FIBITMAP *src = FIA_LoadFIBFromFile(file);
-	FIABITMAP *dst = FIA_SetBorder(src, 10, 10, BorderType_Mirror, 255);
+	FIABITMAP *dst = FIA_SetBorder(src, 50, 50, BorderType_Mirror, 255);
 
 	FIA_SaveFIBToFile(dst->fib, TEST_DATA_OUTPUT_DIR "/Utility/border_test_result.bmp", BIT8);
 	
@@ -34,10 +34,17 @@ static void BorderTest(CuTest* tc)
 static void BorderTest2(CuTest* tc)
 {
 	int err;
+	FIARECT rect;
 
 	FIBITMAP *dst = FreeImage_Allocate(10, 3, 8, 0, 0, 0);
 	FIBITMAP *src = FreeImage_Allocate(8, 1, 8, 0, 0, 0);
-	FIA_DrawGreyScaleCheckerBoard(src, 1);
+
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = 8;
+	rect.bottom = 1;
+
+	FIA_DrawSolidGreyscaleRect(src, rect, 255);
 	
 	err = FIA_SimplePaste(dst, src, 1, 1);
 
