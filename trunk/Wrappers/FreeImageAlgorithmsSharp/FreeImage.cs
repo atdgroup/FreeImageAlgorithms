@@ -107,9 +107,15 @@ namespace FreeImage
                 imageType, width, height, bitsPerPixel,
                 red_mask, green_mask, blue_mask);
 
-            this.LoadFromDib(dib);
-
-            this.SetGreyLevelPalette();
+            if (dib == 0)
+            {
+                throw new FreeImageException("Failed to allocate image");
+            }
+            else
+            {
+                this.LoadFromDib(dib);
+                this.SetGreyLevelPalette();
+            }
         }
 
         public FreeImageBitmap(int width, int height, int bitsPerPixel)
