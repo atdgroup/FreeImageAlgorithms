@@ -364,12 +364,12 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddImages (FIBITMAP * dst, FIBI
     }
     else
     {
-        double *dst_ptr;
+        float *dst_ptr;
 
         for(register int y = 0; y < height; y++)
         {
 
-            dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+            dst_ptr = (float *) FreeImage_GetScanLine (dst, y);
             src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
 
             for(register int x = 0; x < width; x++)
@@ -424,12 +424,12 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractImages (FIBITMAP * dst,
     }
     else
     {
-        double *dst_ptr;
+        float *dst_ptr;
 
         for(register int y = 0; y < height; y++)
         {
 
-            dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+            dst_ptr = (float *) FreeImage_GetScanLine (dst, y);
             src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
 
             for(register int x = 0; x < width; x++)
@@ -580,12 +580,11 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddGreyLevelImageConstant (FIBI
     }
     else
     {
-        double *dst_ptr;
+        float *dst_ptr;
 
         for(register int y = 0; y < height; y++)
         {
-
-            dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+            dst_ptr = (float *) FreeImage_GetScanLine (dst, y);
 
             for(register int x = 0; x < width; x++)
                 dst_ptr[x] += casted_constant;
@@ -633,11 +632,11 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractGreyLevelImageConstant 
     }
     else
     {
-        double *dst_ptr;
+        float *dst_ptr;
 
         for(register int y = 0; y < height; y++)
         {
-            dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+            dst_ptr = (float *) FreeImage_GetScanLine (dst, y);
 
             for(register int x = 0; x < width; x++)
                 dst_ptr[x] -= casted_constant;
