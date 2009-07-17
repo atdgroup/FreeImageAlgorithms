@@ -459,7 +459,7 @@ FIA_StretchImageAcrossRange (FIBITMAP * src, double min, double max)
 }
 
 int DLL_CALLCONV
-FIA_InplaceLinearScaleToStandardTypee (FIBITMAP ** src, double min, double max, double *found_min,
+FIA_InplaceLinearScaleToStandardType (FIBITMAP ** src, double min, double max, double *found_min,
                                        double *found_max)
 {
     FIBITMAP *dst = FIA_LinearScaleToStandardType (*src, min, max, found_min, found_max);
