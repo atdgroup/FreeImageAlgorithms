@@ -1007,6 +1007,71 @@ GetPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, T * values)
 }
 
 int DLL_CALLCONV
+FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, FREE_IMAGE_TYPE type, void *values)
+{
+	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
+	int bpp = FreeImage_GetBPP(src);
+
+	if(src_type != type)
+		return FIA_ERROR;
+
+	switch (src_type)
+    {
+        case FIT_BITMAP:       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+        {
+            if (FreeImage_GetBPP (src) == 8)
+            {
+				return GetPixelValuesForLine (src, p1, p2, (BYTE*) values);
+            }
+
+            break;
+        }
+        
+        case FIT_UINT16:       // array of unsigned short: unsigned 16-bit
+        {
+            return GetPixelValuesForLine (src, p1, p2, (unsigned short*) values);
+        }
+        
+        case FIT_INT16:        // array of short: signed 16-bit
+        {
+            return GetPixelValuesForLine (src, p1, p2, (short*) values);
+        }
+        
+        case FIT_UINT32:       // array of unsigned long: unsigned 32-bit
+        {
+            return GetPixelValuesForLine (src, p1, p2, (unsigned int*) values);
+        }
+        
+        case FIT_INT32:        // array of long: signed 32-bit
+        {
+            return GetPixelValuesForLine (src, p1, p2, (int*) values);
+        }
+
+        case FIT_FLOAT:        // array of float: 32-bit
+        {
+            return GetPixelValuesForLine (src, p1, p2, (float*) values);
+        }
+
+        case FIT_DOUBLE:       // array of double: 64-bit
+        {
+            return GetPixelValuesForLine (src, p1, p2, (double*) values);
+        }
+
+        case FIT_COMPLEX:      // array of FICOMPLEX: 2 x 64-bit
+        {
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+
+    return FIA_ERROR; 
+}
+
+int DLL_CALLCONV
 FIA_GetCharPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, char *values)
 {
     return GetPixelValuesForLine (src, p1, p2, values);

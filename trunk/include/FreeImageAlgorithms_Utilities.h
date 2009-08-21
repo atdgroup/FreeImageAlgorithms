@@ -392,6 +392,19 @@ FIA_IsGreyScale(FIBITMAP *src);
  *  \param src FIBITMAP bitmap.
  *  \param p1  Start point of line.
  *  \param p2  End point of line.
+ *  \param type FREE_IMAGE_TYPE of the pixels required. Must match the image type. Assures user is using correct type.
+ *  \param values Returned values along line.
+ *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, FREE_IMAGE_TYPE type, void *values);
+
+/** \brief Gets the pixels values along a line on an image where the 
+ *         image consists of char data.
+ *
+ *  \param src FIBITMAP bitmap.
+ *  \param p1  Start point of line.
+ *  \param p2  End point of line.
  *  \param values Returned values along line.
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
