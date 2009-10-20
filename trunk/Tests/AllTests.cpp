@@ -41,7 +41,7 @@ void RunAllTests(void)
 	CuSuite* suite = CuSuiteNew();
 
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsColourSuite());
-	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsUtilitySuite());
+	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsUtilitySuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsStatisticSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsIOSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsMorphologySuite());
@@ -51,7 +51,7 @@ void RunAllTests(void)
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsDrawingSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsFFTSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
-    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);
