@@ -55,9 +55,25 @@ namespace FreeImage
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_ConvertInt16ToUInt16")]
         internal static extern uint ConvertInt16ToUInt16(uint dib);
 
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_GetMaxPosibleValueForFib")]
+        internal static extern void GetMaxPosibleValueForFib(uint dib, out double max);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_GetMinPosibleValueForFib")]
+        internal static extern void GetMinPosibleValueForFib(uint dib, out double min);
+
+        [DllImport("FreeImageAlgorithms_d.dll", EntryPoint="FIA_Histogram")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool Histogram(uint dib, double min, double max, int number_of_bins,
+            [In, Out] ulong[] values);
+
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_LinearScaleToStandardType")]
-        internal static extern uint LinearScaleToStandardType(uint dib, double min, double max, out double min_within_image, out double max_within_image);
-    
+        internal static extern uint LinearScaleToStandardType(uint dib, double min, double max,
+            out double min_within_image, out double max_within_image);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GetGreyScalePixelValuesForLine")]
+        internal static extern bool GetGreyScalePixelValuesForLine(uint dib, FIAPOINT pt1, FIAPOINT pt2,
+            uint type, out short[] values);
+
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_SimplePaste")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SimplePaste(uint dst, uint src, int left, int bottom);

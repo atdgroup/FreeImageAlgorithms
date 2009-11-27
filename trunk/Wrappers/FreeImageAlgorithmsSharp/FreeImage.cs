@@ -490,11 +490,15 @@ namespace FreeImage
             }
         }
 
-        public int MaximumPossibleIntensityValue
+        public double MaximumPossibleIntensityValue
         {
             get
             {
-                return (int) Math.Pow(2.0, this.BitsPerPixel);
+                double max = 0.0;
+
+                FreeImageAlgorithmsNativeMethods.GetMaxPosibleValueForFib(this.dib, out max);
+
+                return max;
             }
         }
 
@@ -507,6 +511,44 @@ namespace FreeImage
 
             return null;
         }
+
+        public bool GetGreyLevelHistogram(int number_of_bins, out ulong[] hist)
+        {
+            double max = this.MaximumPossibleIntensityValue;
+  
+            hist = new ulong[number_of_bins];
+
+            return FreeImageAlgorithmsNativeMethods.Histogram(this.dib, 0, max, number_of_bins, hist);
+        }
+
+        /*
+        public bool GetGreyLevelHistogram(int number_of_bins, out ulong[] hist, out double range_per_bin)
+        {            
+            double max = 0.0;
+
+            FreeImageAlgorithmsNativeMethods.GetMaxPosibleValueForFib(this.dib, out max);
+
+            FreeImageType type = FreeImageNativeMethods.GetImageType(this.dib);
+	
+	        bool isFloat = (type == FreeImageType.Float || type == FreeImageType.Double);
+
+            int number_of_bins = (int) Math.Ceiling(max) + 1;
+
+            range_per_bin = 1.0;
+	        if(isFloat || number_of_bins > 255)
+	        {
+		        number_of_bins = 256;
+		        range_per_bin = max / 256.0;   
+	        }
+	        
+            double max = this.MaximumPossibleIntensityValue;
+            range_per_bin = max / 256.0;
+
+            hist = new ulong[number_of_bins];
+
+            return FreeImageAlgorithmsNativeMethods.Histogram(this.dib, 0, max, number_of_bins, hist);
+        }
+        */
 
         public bool AdjustGamma(double gamma)
         {
