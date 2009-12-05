@@ -88,6 +88,7 @@ TestFIA_IO(CuTest* tc)
 	FreeImage_Unload(dib2);
 }
 
+/*
 static void
 TestFIA_SaveBPPWithPalette(CuTest* tc)
 {
