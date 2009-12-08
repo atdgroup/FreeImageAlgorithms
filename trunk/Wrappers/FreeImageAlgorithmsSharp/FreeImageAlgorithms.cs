@@ -91,18 +91,21 @@ namespace FreeImageAPI
             this.ReplaceDib(dib);
         }
 
-        public bool IsThumbnail
+        public FreeImageAlgorithmsBitmap(int width, int height, FREE_IMAGE_TYPE type, int colorDepth)
         {
-            get
+            FIBITMAP dib = FreeImage.AllocateT(type, width, height, colorDepth,
+                FreeImage.FI_RGBA_RED_MASK,
+                FreeImage.FI_RGBA_GREEN_MASK,
+                FreeImage.FI_RGBA_BLUE_MASK);
+
+            if (dib.IsNull)
             {
-                return this.isThumbnail;
+                throw new Exception("Unable to create bitmap.");
             }
-            set
-            {
-                this.isThumbnail = value;
-            }
+
+            this.ReplaceDib(dib);
         }
-    
+
         private static void FreeImageErrorOccurred(FREE_IMAGE_FORMAT format, string msg)
         {
             throw new FreeImageException(msg);
