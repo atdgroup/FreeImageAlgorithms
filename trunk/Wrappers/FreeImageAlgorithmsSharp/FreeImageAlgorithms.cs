@@ -275,6 +275,15 @@ namespace FreeImageAPI
             return FreeImage.Histogram(this.Dib, 0, max, number_of_bins, hist);
         }
 
+        public int GetGreyScalePixelValuesAsDoublesForLine(Point pt1, Point pt2, out double[] values)
+        {
+            FIAPOINT fi_pt1 = new FIAPOINT(pt1.X, pt1.Y);
+            FIAPOINT fi_pt2 = new FIAPOINT(pt2.X, pt2.Y);
+
+            return FreeImage.GetGreyScalePixelValuesAsDoublesForLine(this.Dib, fi_pt1, fi_pt2, out values);
+        }
+
+
         /*
         public bool GetGreyLevelHistogram(int number_of_bins, out ulong[] hist, out double range_per_bin)
         {            

@@ -1008,14 +1008,134 @@ GetPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, T * values)
     return len;
 }
 
+
+template < class Tsrc > class PixelValuesAlongLine
+{
+  public:
+    int GetValuesAsDoubles (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double* values);
+};
+
+PixelValuesAlongLine < unsigned char > UCharPixelValuesAlongLine;
+PixelValuesAlongLine < unsigned short > UShortPixelValuesAlongLine;
+PixelValuesAlongLine < short > ShortPixelValuesAlongLine;
+PixelValuesAlongLine < unsigned long > ULongPixelValuesAlongLine;
+PixelValuesAlongLine < long > LongPixelValuesAlongLine;
+PixelValuesAlongLine < float > FloatPixelValuesAlongLine;
+PixelValuesAlongLine < double > DoublePixelValuesAlongLine;
+
+/* Gets the values of the pixels along a line calculated using the Midpoint Line algorithm */
+template < class Tsrc > int PixelValuesAlongLine < Tsrc >::GetValuesAsDoubles (FIBITMAP * src,
+                                        FIAPOINT p1, FIAPOINT p2, double* values)
+{
+    double value;
+    int swapped = 0, dx, dy, abs_dy, incrN, incrE, incrNE, d, x, y, slope, tmp_y, len = 0;
+
+    // If necessary, switch the points so we're 
+    // always drawing from left to right. 
+    if (p2.x < p1.x)
+    {
+        swapped = 1;
+        SWAP (p1, p2);
+    }
+
+    dx = p2.x - p1.x;
+    dy = p2.y - p1.y;
+    abs_dy = abs(dy);
+
+    if (dy < 0)
+    {
+        slope = -1;
+        dy = -dy;
+    }
+    else
+    {
+        slope = 1;
+    }
+
+    x = p1.x;
+    y = p1.y;
+
+    if (abs_dy <= dx)
+    {
+        d = 2 * dy - dx;
+        incrE = 2 * dy;         // E
+        incrNE = 2 * (dy - dx); // NE
+
+        Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+        value = bits[x];
+
+        *values++ = value;
+
+        while (x <= p2.x)
+        {
+            if (d <= 0)
+            {
+                d += incrE;     // Going to E
+                x++;
+            }
+            else
+            {
+                d += incrNE;    // Going to NE
+                x++;
+                y += slope;
+            }
+
+            Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            value = bits[x];
+
+            *values++ = value;
+            len++;
+        }
+    }
+    else
+    {
+
+        d = dy - 2 * dx;
+        incrN = 2 * -dx;        // N
+        incrNE = 2 * (dy - dx); // NE
+
+        tmp_y = 0;
+
+        Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+        value = bits[x];
+
+        *values++ = value;
+
+        for(tmp_y = 0; tmp_y < abs_dy; tmp_y++)
+        {
+            if (d > 0)
+            {
+
+                d += incrN;     // Going to N
+                y += slope;
+            }
+            else
+            {
+                d += incrNE;    // Going to NE
+                y += slope;
+                x++;
+            }
+
+            Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            value = (double) bits[x];
+
+            *values++ = value;
+            len++;
+        }
+    }
+
+    return len;
+}
+
 int DLL_CALLCONV
-FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, FREE_IMAGE_TYPE type, void *values)
+FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, void *values)
 {
 	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
 	int bpp = FreeImage_GetBPP(src);
-
-	if(src_type != type)
-		return FIA_ERROR;
 
 	switch (src_type)
     {
@@ -1057,6 +1177,68 @@ FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, FR
         case FIT_DOUBLE:       // array of double: 64-bit
         {
             return GetPixelValuesForLine (src, p1, p2, (double*) values);
+        }
+
+        case FIT_COMPLEX:      // array of FICOMPLEX: 2 x 64-bit
+        {
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+
+    return FIA_ERROR; 
+}
+
+int DLL_CALLCONV
+FIA_GetGreyScalePixelValuesAsDoublesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double *values)
+{
+	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
+	int bpp = FreeImage_GetBPP(src);
+
+	switch (src_type)
+    {
+        case FIT_BITMAP:       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+        {
+            if (FreeImage_GetBPP (src) == 8)
+            {
+				return UCharPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
+            }
+
+            break;
+        }
+        
+        case FIT_UINT16:       // array of unsigned short: unsigned 16-bit
+        {
+            return UShortPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
+        }
+        
+        case FIT_INT16:        // array of short: signed 16-bit
+        {
+            return ShortPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
+        }
+        
+        case FIT_UINT32:       // array of unsigned long: unsigned 32-bit
+        {
+            return ULongPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
+        }
+        
+        case FIT_INT32:        // array of long: signed 32-bit
+        {
+            return LongPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
+        }
+
+        case FIT_FLOAT:        // array of float: 32-bit
+        {
+            return FloatPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
+        }
+
+        case FIT_DOUBLE:       // array of double: 64-bit
+        {
+            return DoublePixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
         }
 
         case FIT_COMPLEX:      // array of FICOMPLEX: 2 x 64-bit

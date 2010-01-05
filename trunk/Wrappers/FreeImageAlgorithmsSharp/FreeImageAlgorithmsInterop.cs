@@ -66,8 +66,12 @@ namespace FreeImageAPI
             out double min_within_image, out double max_within_image);
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GetGreyScalePixelValuesForLine")]
-        internal static extern bool GetGreyScalePixelValuesForLine(FIBITMAP dib, FIAPOINT pt1, FIAPOINT pt2,
-            uint type, out short[] values);
+        internal static extern int GetGreyScalePixelValuesForLine(FIBITMAP dib, FIAPOINT pt1, FIAPOINT pt2,
+            out short[] values);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GetGreyScalePixelValuesAsDoublesForLine")]
+        internal static extern int GetGreyScalePixelValuesAsDoublesForLine(FIBITMAP dib,
+            FIAPOINT pt1, FIAPOINT pt2, out double[] values);    
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint="FIA_SimplePaste")]
         [return: MarshalAs(UnmanagedType.Bool)]
