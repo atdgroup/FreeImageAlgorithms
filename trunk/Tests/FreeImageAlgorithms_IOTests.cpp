@@ -155,7 +155,7 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 
 	SUITE_ADD_TEST(suite, TestFIA_IO);
 //	SUITE_ADD_TEST(suite, TestFIA_IOLoadColourArrayData);
-	SUITE_ADD_TEST(suite, TestFIA_SaveBPPWithPalette);
+//	SUITE_ADD_TEST(suite, TestFIA_SaveBPPWithPalette);
 	SUITE_ADD_TEST(suite, TestFIA_IOSaveTest);
 
 	return suite;

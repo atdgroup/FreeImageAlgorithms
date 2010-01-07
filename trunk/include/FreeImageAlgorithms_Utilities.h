@@ -509,6 +509,9 @@ DLL_API int DLL_CALLCONV
 FIA_GetRGBPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, BYTE *red_values, BYTE *green_values, BYTE *blue_values);
 
 DLL_API FIBITMAP *DLL_CALLCONV
+FIA_DistanceMap (int width, int height, int normalise);
+
+DLL_API FIBITMAP *DLL_CALLCONV
 FIA_DistanceMapForRectangle (FIARECT rect, int normalise);
 
 DLL_API FIBITMAP* DLL_CALLCONV
@@ -652,8 +655,12 @@ FIA_ConvertInt16ToUInt16(FIBITMAP *src);
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_RescaleToHalf(FIBITMAP *src);
 
-FIBITMAP *DLL_CALLCONV
+DLL_API int DLL_CALLCONV
 FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2);
+
+DLL_API int DLL_CALLCONV
+FIA_GradientBlendPasteFromTopLeft (FIBITMAP * dst, FIBITMAP* src, int left, int top);
+
 #ifdef __cplusplus
 }
 #endif

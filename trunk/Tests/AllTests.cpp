@@ -74,8 +74,7 @@ int __cdecl main(void)
 	
 	RunAllTests();
 
-	while(1)
-		continue;
+	while(1);
 
 	return 0;
 }
