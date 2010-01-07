@@ -95,5 +95,11 @@ namespace FreeImageAPI
 
         [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_CorrelateImagesAlongBottomEdge")]
         internal static extern bool CorrelateImagesAlongBottomEdge(FIBITMAP src1, FIBITMAP src2, uint thickness, out FIAPOINT pt, out double max);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GetGradientBlendAlphaImage")]
+        internal static extern FIBITMAP GetGradientBlendAlphaImage(FIARECT rect1, FIARECT rect2, FIBITMAP src2);
+    
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GradientBlendPasteFromTopLeft")]
+        internal static extern bool GradientBlendPasteFromTopLeft(FIBITMAP dst, FIBITMAP src, int left, int top);
     }
 }
