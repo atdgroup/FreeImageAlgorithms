@@ -48,16 +48,13 @@ namespace FreeImageAPI
     {
         // We need this to keep a ref so the are not garbage collected.
         // As they are passed to unmanaged code.
-        private static OutputMessageFunction errorCallback;
-        private bool isThumbnail;
+        private static OutputMessageFunction errorCallback =
+            new OutputMessageFunction(FreeImageAlgorithmsBitmap.FreeImageErrorOccurred);
 
-        /*
         static FreeImageAlgorithmsBitmap()
         {
-            FreeImageBitmap.errorCallback = FreeImageBitmap.FreeImageErrorOccurred;   
-            FreeImage.SetOutputMessage(FreeImageBitmap.errorCallback);
+            FreeImage.SetOutputMessage(errorCallback);
         }
-        */
 
         public FreeImageAlgorithmsBitmap() : base () {}
 
@@ -379,19 +376,19 @@ namespace FreeImageAPI
         }
         */
 
-        public FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(FIARECT rect1, FIARECT rect2, FreeImageAlgorithmsBitmap fib)
+        public static FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(FIARECT rect1, FIARECT rect2, FreeImageAlgorithmsBitmap fib, out FIARECT intersect_rect)
         {
-            FIBITMAP dib = FreeImage.GetGradientBlendAlphaImage(rect1, rect2, fib.Dib);
+            FIBITMAP dib = FreeImage.GetGradientBlendAlphaImage(fib.Dib, rect1, rect2, out intersect_rect);
 
             return new FreeImageAlgorithmsBitmap(dib);
         }
 
-        public FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(Rectangle rect1, Rectangle rect2, FreeImageAlgorithmsBitmap fib)
+        public static FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(Rectangle rect1, Rectangle rect2, FreeImageAlgorithmsBitmap fib, out FIARECT intersect_rect)
         {
             FIARECT fiaRect1 = new FIARECT(rect1.Left, rect1.Top, rect1.Right, rect1.Bottom);
             FIARECT fiaRect2 = new FIARECT(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
 
-            FIBITMAP dib = FreeImage.GetGradientBlendAlphaImage(fiaRect1, fiaRect2, fib.Dib);
+            FIBITMAP dib = FreeImage.GetGradientBlendAlphaImage(fib.Dib, fiaRect1, fiaRect2, out intersect_rect);
 
             return new FreeImageAlgorithmsBitmap(dib);
         }

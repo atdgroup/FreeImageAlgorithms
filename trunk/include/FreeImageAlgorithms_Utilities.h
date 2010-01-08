@@ -517,6 +517,9 @@ FIA_DistanceMapForRectangle (FIARECT rect, int normalise);
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_Copy (FIBITMAP * src, int left, int top, int right, int bottom);
 
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_CopyLeftTopWidthHeight ( FIBITMAP * src, int left, int top, int width, int height);
+
 DLL_API BYTE* DLL_CALLCONV
 FIA_GetScanLineFromTop (FIBITMAP *src, int line);
 
@@ -708,6 +711,12 @@ FIA_GradientBlendPasteFromTopLeft (FIBITMAP * dst, FIBITMAP* src, int left, int 
 */
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_GetGradientBlendAlphaImage (FIBITMAP* src2, FIARECT rect1, FIARECT rect2, FIARECT *intersect_rect);
+
+DLL_API int DLL_CALLCONV
+FIA_CompositeRegion(FIBITMAP * fg, FIBITMAP * bg, FIARECT rect);
+
+DLL_API FIBITMAP *DLL_CALLCONV
+FIA_Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values);
 
 #ifdef __cplusplus
 }

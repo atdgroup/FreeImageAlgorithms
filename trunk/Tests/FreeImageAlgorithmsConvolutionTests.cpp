@@ -1057,6 +1057,19 @@ TestFIA_CorrelateEdgeTest(CuTest* tc)
 
 
 static void
+TestFIA_IntersectingRect(CuTest* tc)
+{
+    FIARECT rect1 = MakeFIARect(505, 0, 1445, 583);
+    FIARECT rect2 = MakeFIARect(0, 0, 1360, 1054);
+
+	FIARECT intersection_rect;
+
+	FIA_IntersectingRect(rect1, rect2, &intersection_rect);
+   
+	//CuAssertTrue(tc, dib != NULL);
+}
+
+static void
 TestFIA_GradientBlend(CuTest* tc)
 {
     FIBITMAP *fib1 =  LoadTissueFile(TEST_DATA_DIR "BloodVessels/d9ob20_00009.png");
@@ -1143,6 +1156,34 @@ TestFIA_GetGradientBlendAlphaImageTest(CuTest* tc)
 }
 
 static void
+TestFIA_GetGradientBlendAlphaImageTest2(CuTest* tc)
+{
+    FIBITMAP *fib1 =  LoadTissueFile(TEST_DATA_DIR "histology1.png");
+    FIBITMAP *fib2 =  LoadTissueFile(TEST_DATA_DIR "jigsaw.png");
+	FIBITMAP *fib3 = FreeImage_Rescale(fib2, 1360, 1024, FILTER_BOX);
+
+    PROFILE_START("TestFIA_GetGradientBlendAlphaImageTest2");
+
+	FIARECT rect1 = MakeFIARect(505, 0, 1445, 583);
+	FIARECT rect2 = MakeFIARect(0, 0, 1360, 1024);
+
+	FIARECT intersect_rect;
+
+    FIBITMAP *alpha = FIA_GetGradientBlendAlphaImage (fib3, rect1, rect2, &intersect_rect);
+
+    PROFILE_STOP("TestFIA_GetGradientBlendAlphaImageTest2");
+
+	FIA_CompositeRegion(alpha, fib1, intersect_rect);
+
+    FIA_SaveFIBToFile(fib1, TEST_DATA_OUTPUT_DIR  "/Convolution/gradient_blended_alpha_value_histology.png", BIT32);
+
+    FreeImage_Unload(fib1);
+    FreeImage_Unload(fib2);
+	FreeImage_Unload(fib3);
+	FreeImage_Unload(alpha);
+}
+
+static void
 TestFIA_GradientBlendPasteTest(CuTest* tc)
 {
     FIBITMAP *fib1 =  LoadTissueFile(TEST_DATA_DIR "BloodVessels/d9ob20_00009.png");
@@ -1162,6 +1203,46 @@ TestFIA_GradientBlendPasteTest(CuTest* tc)
     FreeImage_Unload(fib1);
     FreeImage_Unload(fib2);
     FreeImage_Unload(fib3);
+}
+
+static void
+TestFIA_GradientBlendPasteTest2(CuTest* tc)
+{
+    FIBITMAP *fib1 =  LoadTissueFile(TEST_DATA_DIR "BloodVessels/d9ob20_00009.png");
+    FIBITMAP *fib2 =  LoadTissueFile(TEST_DATA_DIR "jigsaw.png");
+
+    PROFILE_START("TestFIA_GradientBlendPasteTest2");
+
+    FIA_GradientBlendPasteFromTopLeft (fib1, fib2, 10, 10);
+
+    PROFILE_STOP("TestFIA_GradientBlendPasteTest2");
+
+    FIA_SaveFIBToFile(fib1, TEST_DATA_OUTPUT_DIR  "/Convolution/gradient_blended_paste2.png", BIT32);
+
+    FreeImage_Unload(fib1);
+    FreeImage_Unload(fib2);
+}
+
+
+static void
+TestFIA_GradientBlendPasteTest3(CuTest* tc)
+{
+    FIBITMAP *fib1 = FreeImage_Allocate(2000,2000, 24, 0, 0, 0);
+    FIBITMAP *fib2 =  LoadTissueFile(TEST_DATA_DIR "jigsaw.png");
+
+    PROFILE_START("TestFIA_GradientBlendPasteTest3");
+
+    FIA_GradientBlendPasteFromTopLeft (fib1, fib2, -100, 10);
+	FIA_GradientBlendPasteFromTopLeft (fib1, fib2, 100, 500);
+	FIA_GradientBlendPasteFromTopLeft (fib1, fib2, 500, 1000);
+	//FIA_GradientBlendPasteFromTopLeft (fib1, fib2, 500, 500);
+
+    PROFILE_STOP("TestFIA_GradientBlendPasteTest3");
+
+    FIA_SaveFIBToFile(fib1, TEST_DATA_OUTPUT_DIR  "/Convolution/gradient_blended_paste3.png", BIT32);
+
+    FreeImage_Unload(fib1);
+    FreeImage_Unload(fib2);
 }
 
 static void
@@ -1200,12 +1281,17 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateBloodTissueImages);
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateBloodTissueImagesTwoImages);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateBloodTissueImagesWithNoKnowledge);
+	
+	//SUITE_ADD_TEST(suite, TestFIA_IntersectingRect);
 
     // Done
-    //SUITE_ADD_TEST(suite, TestFIA_GradientBlend);
+    SUITE_ADD_TEST(suite, TestFIA_GradientBlend);
 	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest);
+	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest2);
+	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest3);
 	SUITE_ADD_TEST(suite, TestFIA_GradientBlendFloatImagePasteTest);
-	SUITE_ADD_TEST(suite, TestFIA_GetGradientBlendAlphaImageTest);
+	SUITE_ADD_TEST(suite, TestFIA_GetGradientBlendAlphaImageTest);	
+	SUITE_ADD_TEST(suite, TestFIA_GetGradientBlendAlphaImageTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateEdgeTest);
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection);
