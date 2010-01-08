@@ -2456,7 +2456,27 @@ FIA_GetGradientBlendAlphaImage (FIBITMAP* src2, FIARECT rect1, FIARECT rect2, FI
         goto CLEANUP;
     }
 
-    return alpha;
+	// Paste the alspha value region into the original src image (convertedted to 32 bit colour of course.
+	FIBITMAP *src2_32bit = FreeImage_ConvertTo32Bits(src2);
+
+	FIA_PasteFromTopLeft(src2_32bit, alpha, src2_intersection_rect.left, src2_intersection_rect.top);
+
+	if(src2_region != NULL)
+        FreeImage_Unload(src2_region);
+
+    if(map != NULL)
+        FreeImage_Unload(map);
+
+    if(map_region != NULL)
+        FreeImage_Unload(map_region);
+
+    if(alpha != NULL)
+        FreeImage_Unload(alpha);
+
+    if(blended != NULL)
+        FreeImage_Unload(blended);
+
+    return src2_32bit;
 
 CLEANUP:
 
@@ -2603,6 +2623,27 @@ FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2
     }
 
     FIA_PasteFromTopLeft(src1, blended,  src1_intersection_rect.left, src1_intersection_rect.top);
+
+	if(src1_region != NULL)
+        FreeImage_Unload(src1_region);
+
+    if(src2_region != NULL)
+        FreeImage_Unload(src2_region);
+
+    if(map != NULL)
+        FreeImage_Unload(map);
+
+    if(map_region != NULL)
+        FreeImage_Unload(map_region);
+
+    if(alpha != NULL)
+        FreeImage_Unload(alpha);
+
+    if(blended != NULL)
+        FreeImage_Unload(blended);
+
+    if(src1_24 != NULL)
+        FreeImage_Unload(src1_24);
 
     return FIA_SUCCESS;
 
