@@ -209,20 +209,19 @@ template < class Tsrc > FIBITMAP * LINEAR_SCALE < Tsrc >::convert (FIBITMAP * sr
         {
             val = src_bits[x];
 
-            if (val < tmp_min)
+            if (val <= min_found)
             {
 
                 dst_bits[x] = 0;
                 continue;
             }
-            else if (val >= tmp_max)
+            else if (val >= max_found)
             {
                 dst_bits[x] = 255;
             }
             else
             {
                 dst_bits[x] = (BYTE) (scale * ((double)val - min_found));
-                dst_bits[x] = min(255, max(0, dst_bits[x]));
             }
         }
     }
