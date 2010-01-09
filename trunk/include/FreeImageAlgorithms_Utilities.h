@@ -515,13 +515,11 @@ DLL_API FIBITMAP *DLL_CALLCONV
 FIA_DistanceMapForRectangle (FIARECT rect, int normalise);
 
 DLL_API FIBITMAP* DLL_CALLCONV
-FIA_Copy (FIBITMAP * src, int left, int top, int right, int bottom);
-
-DLL_API FIBITMAP* DLL_CALLCONV
 FIA_CopyLeftTopWidthHeight ( FIBITMAP * src, int left, int top, int width, int height);
 
-DLL_API BYTE* DLL_CALLCONV
-FIA_GetScanLineFromTop (FIBITMAP *src, int line);
+
+DLL_API int DLL_CALLCONV
+FIA_IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3);
 
 DLL_API int DLL_CALLCONV
 FIA_Paste(FIBITMAP *dst, FIBITMAP *src, int left, int bottom);
@@ -535,8 +533,20 @@ FIA_SimplePaste (FIBITMAP *dst, FIBITMAP * src, int left, int bottom);
 DLL_API int DLL_CALLCONV
 FIA_SimplePasteFromTopLeft (FIBITMAP *dst, FIBITMAP * src, int left, int top);
 
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_Copy (FIBITMAP * src, int left, int top, int right, int bottom);
+
+DLL_API void DLL_CALLCONV
+FIA_RectChangeWidthHeight (FIARECT *rect, int width, int height);
+
 DLL_API int DLL_CALLCONV
-FIA_IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3);
+FIA_RectWidth (FIARECT *rect);
+
+DLL_API int DLL_CALLCONV
+FIA_RectHeight (FIARECT *rect);
+DLL_API BYTE* DLL_CALLCONV
+FIA_GetScanLineFromTop (FIBITMAP *src, int line);
+
 
 /** \brief Performs a bitwise compare between two images.
  *		   Returns 1 for images that are the same.
@@ -657,6 +667,9 @@ FIA_ConvertInt16ToUInt16(FIBITMAP *src);
 */
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_RescaleToHalf(FIBITMAP *src);
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_GradientBlendedIntersectionImage (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2,
+									  FIARECT *intersect_image_rect);
 
 /** \brief Gradient blends one image into another
  *
