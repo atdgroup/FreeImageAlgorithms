@@ -129,6 +129,14 @@ namespace FreeImageAPI
             Dispose(false);	
         }
 
+        public Rectangle BoundingRectangle
+        {
+            get
+            {
+                return new Rectangle(0, 0, this.Width, this.Height);
+            }
+        }
+
         /*
         protected virtual void Dispose( bool disposing )
         {
@@ -376,6 +384,28 @@ namespace FreeImageAPI
         }
         */
 
+        public bool Clear()
+        {
+            FIARECT fiaRect = new FIARECT(0, 0, this.Width - 1, this.Height - 1);
+
+            return FreeImage.DrawRectangle(this.Dib, fiaRect, 0.0f);
+        }
+
+        public bool DrawRectangle(Rectangle rect, double val)
+        {
+            FIARECT fiaRect = new FIARECT(rect.Left, rect.Top, rect.Right, rect.Bottom);
+
+            return FreeImage.DrawRectangle(this.Dib, fiaRect, val);
+        }
+
+        public bool DrawRectangle(Point location, Size size, double val)
+        {
+            FIARECT fiaRect = new FIARECT(location.X, location.Y,
+                location.X + size.Width - 1, location.Y + size.Height - 1);
+
+            return FreeImage.DrawRectangle(this.Dib, fiaRect, val);
+        }
+
         public static FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(FIARECT rect1, FIARECT rect2, FreeImageAlgorithmsBitmap fib, out FIARECT intersect_rect)
         {
             FIBITMAP dib = FreeImage.GetGradientBlendAlphaImage(fib.Dib, rect1, rect2, out intersect_rect);
@@ -394,35 +424,35 @@ namespace FreeImageAPI
         }
 
         public static FreeImageAlgorithmsBitmap GetGradientBlendedIntersectionImage(FreeImageAlgorithmsBitmap fib1, 
-            FIARECT rect1, FreeImageAlgorithmsBitmap fib2, FIARECT rect2, out FIARECT intersect_rect)
+            FIARECT rect1, FreeImageAlgorithmsBitmap fib2, FIARECT rect2, FreeImageAlgorithmsBitmap mask, out FIARECT intersect_rect)
         {
-            FIBITMAP dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, rect1, fib2.Dib, rect2, out intersect_rect);
+            FIBITMAP dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, rect1, fib2.Dib, rect2, mask.Dib, out intersect_rect);
 
             return new FreeImageAlgorithmsBitmap(dib);
         }
 
         public static FreeImageAlgorithmsBitmap GetGradientBlendedIntersectionImage(FreeImageAlgorithmsBitmap fib1,
-            Rectangle rect1, FreeImageAlgorithmsBitmap fib2, Rectangle rect2, out Rectangle intersect_rect)
+            Rectangle rect1, FreeImageAlgorithmsBitmap fib2, Rectangle rect2, FreeImageAlgorithmsBitmap mask, out Rectangle intersect_rect)
         {
             FIARECT fiaRect1 = new FIARECT(rect1.Left, rect1.Top, rect1.Right, rect1.Bottom);
             FIARECT fiaRect2 = new FIARECT(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
             FIARECT rect;
 
-            FIBITMAP dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, fiaRect1, fib2.Dib, fiaRect2, out rect);
+            FIBITMAP dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, fiaRect1, fib2.Dib, fiaRect2, mask.Dib, out rect);
 
             intersect_rect = new Rectangle(rect.left, rect.top, rect.right - rect.left + 1, rect.bottom - rect.top + 1);    
 
             return new FreeImageAlgorithmsBitmap(dib);
         }
 
-        public bool GradientBlendPasteFromTopLeft(FreeImageAlgorithmsBitmap src, Point pt)
+        public bool GradientBlendPasteFromTopLeft(FreeImageAlgorithmsBitmap src, Point pt, FreeImageAlgorithmsBitmap mask)
         {
-            return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, pt.X, pt.Y);
+            return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, pt.X, pt.Y, mask.Dib);
         }
 
-        public bool GradientBlendPasteFromTopLeft(FreeImageAlgorithmsBitmap src, int left, int top)
+        public bool GradientBlendPasteFromTopLeft(FreeImageAlgorithmsBitmap src, int left, int top, FreeImageAlgorithmsBitmap mask)
         {
-            return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, left, top);
+            return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, left, top, mask.Dib);
         }
 
         public FIAPOINT Correlate(FIARECT rect1, FreeImageBitmap src2, FIARECT rect2, out double max)
