@@ -101,5 +101,8 @@ namespace FreeImageAPI
     
         [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GradientBlendPasteFromTopLeft")]
         internal static extern bool GradientBlendPasteFromTopLeft(FIBITMAP dst, FIBITMAP src, int left, int top);
+
+        [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_GradientBlendedIntersectionImage")]
+        internal static extern FIBITMAP GradientBlendedIntersectionImage(FIBITMAP src1, FIARECT rect1, FIBITMAP src2, FIARECT rect2, out FIARECT intersect_rect);
     }
 }

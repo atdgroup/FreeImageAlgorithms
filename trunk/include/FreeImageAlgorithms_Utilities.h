@@ -667,8 +667,10 @@ FIA_ConvertInt16ToUInt16(FIBITMAP *src);
 */
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_RescaleToHalf(FIBITMAP *src);
+
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_GradientBlendedIntersectionImage (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2,
+									  FIBITMAP *mask,
 									  FIARECT *intersect_image_rect);
 
 /** \brief Gradient blends one image into another
@@ -686,7 +688,7 @@ FIA_GradientBlendedIntersectionImage (FIBITMAP * src1, FIARECT rect1, FIBITMAP* 
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API int DLL_CALLCONV
-FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2);
+FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2, FIBITMAP *mask);
 
 /** \brief Gradient blends one image into another
  *
@@ -703,7 +705,7 @@ FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API int DLL_CALLCONV
-FIA_GradientBlendPasteFromTopLeft (FIBITMAP * dst, FIBITMAP* src, int left, int top);
+FIA_GradientBlendPasteFromTopLeft (FIBITMAP * dst, FIBITMAP* src, int left, int top, FIBITMAP *mask);
 
 /** \brief Gradient blends one image into another
  *
@@ -726,10 +728,10 @@ DLL_API FIBITMAP* DLL_CALLCONV
 FIA_GetGradientBlendAlphaImage (FIBITMAP* src2, FIARECT rect1, FIARECT rect2, FIARECT *intersect_rect);
 
 DLL_API int DLL_CALLCONV
-FIA_CompositeRegion(FIBITMAP * fg, FIBITMAP * bg, FIARECT rect);
+FIA_CompositeRegion(FIBITMAP * fg, FIBITMAP * bg, FIARECT rect, FIBITMAP *mask);
 
 DLL_API FIBITMAP *DLL_CALLCONV
-FIA_Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values);
+FIA_Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
 
 #ifdef __cplusplus
 }
