@@ -358,6 +358,12 @@ FIA_FindMinMax (FIBITMAP * src, double *min, double *max)
             {
                 UCharImage.find (src, min, max);
             }
+            else if (FreeImage_GetBPP (src) == 24 || FreeImage_GetBPP (src) == 32)
+            {
+				// colour images, just set 0 and 255
+				*min = 0.0;
+				*max = 255.0;
+			}
             break;
         }
 
