@@ -29,6 +29,86 @@ namespace FreeImageAPI
             this.right = right;
             this.bottom = bottom;
         }
+
+        public FIARECT(Point location, Size size)
+        {
+            this.left = location.X;
+            this.top = location.Y;
+            this.right = this.left + size.Width - 1;
+            this.bottom = this.top + size.Height - 1;
+        }
+
+        public FIARECT(Rectangle rect)
+        {
+            this.left = rect.Left;
+            this.top = rect.Top;
+            this.right = rect.Right - 1;    
+            this.bottom = rect.Bottom - 1;
+        }
+
+        public int Left
+        {
+            get
+            {
+                return this.left;
+            }
+        }
+
+        public int Top
+        {
+            get
+            {
+                return this.top;
+            }
+        }
+
+        public int Right
+        {
+            get
+            {
+                return this.right;
+            }
+        }
+
+        public int Bottom
+        {
+            get
+            {
+                return this.bottom;
+            }
+        }
+
+        public Point Location
+        {
+            get
+            {
+                return new Point(this.Left, this.Top);
+            }
+        }
+
+        public int Width
+        {
+            get
+            {
+                return this.right - this.left + 1;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return this.bottom - this.top + 1;
+            }
+        }
+
+        public Size Size
+        {
+            get
+            {
+                return new Size(this.Width, this.Height);
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -129,11 +209,11 @@ namespace FreeImageAPI
             Dispose(false);	
         }
 
-        public Rectangle BoundingRectangle
+        public FIARECT BoundingRectangle
         {
             get
             {
-                return new Rectangle(0, 0, this.Width, this.Height);
+                return new FIARECT(0, 0, this.Width - 1, this.Height - 1);
             }
         }
 
@@ -388,22 +468,26 @@ namespace FreeImageAPI
         {
             FIARECT fiaRect = new FIARECT(0, 0, this.Width - 1, this.Height - 1);
 
-            return FreeImage.DrawRectangle(this.Dib, fiaRect, 0.0f);
+            return FreeImage.DrawSolidRectangle(this.Dib, fiaRect, 0.0f);
         }
 
-        public bool DrawRectangle(Rectangle rect, double val)
+        public bool DrawSolidRectangle(FIARECT rect, double val)
+        {
+            return FreeImage.DrawSolidRectangle(this.Dib, rect, val);
+        }
+
+        public bool DrawSolidRectangle(Rectangle rect, double val)
         {
             FIARECT fiaRect = new FIARECT(rect.Left, rect.Top, rect.Right, rect.Bottom);
 
-            return FreeImage.DrawRectangle(this.Dib, fiaRect, val);
+            return FreeImage.DrawSolidRectangle(this.Dib, fiaRect, val);
         }
 
-        public bool DrawRectangle(Point location, Size size, double val)
+        public bool DrawSolidRectangle(Point location, Size size, double val)
         {
-            FIARECT fiaRect = new FIARECT(location.X, location.Y,
-                location.X + size.Width - 1, location.Y + size.Height - 1);
+            FIARECT fiaRect = new FIARECT(location, size);
 
-            return FreeImage.DrawRectangle(this.Dib, fiaRect, val);
+            return FreeImage.DrawSolidRectangle(this.Dib, fiaRect, val);
         }
 
         public static FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(FIARECT rect1, FIARECT rect2, FreeImageAlgorithmsBitmap fib, out FIARECT intersect_rect)
@@ -426,33 +510,57 @@ namespace FreeImageAPI
         public static FreeImageAlgorithmsBitmap GetGradientBlendedIntersectionImage(FreeImageAlgorithmsBitmap fib1, 
             FIARECT rect1, FreeImageAlgorithmsBitmap fib2, FIARECT rect2, FreeImageAlgorithmsBitmap mask, out FIARECT intersect_rect)
         {
-            FIBITMAP dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, rect1, fib2.Dib, rect2, mask.Dib, out intersect_rect);
+            FIBITMAP dib = FIBITMAP.Zero;
 
+            if (mask == null)
+            {
+                dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, rect1, fib2.Dib, rect2, FIBITMAP.Zero, out intersect_rect);
+            }
+            else
+            {
+                dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, rect1, fib2.Dib, rect2, mask.Dib, out intersect_rect);
+            }
+ 
             return new FreeImageAlgorithmsBitmap(dib);
         }
 
         public static FreeImageAlgorithmsBitmap GetGradientBlendedIntersectionImage(FreeImageAlgorithmsBitmap fib1,
-            Rectangle rect1, FreeImageAlgorithmsBitmap fib2, Rectangle rect2, FreeImageAlgorithmsBitmap mask, out Rectangle intersect_rect)
+            Rectangle rect1, FreeImageAlgorithmsBitmap fib2, Rectangle rect2, out Rectangle intersect_rect)
         {
-            FIARECT fiaRect1 = new FIARECT(rect1.Left, rect1.Top, rect1.Right, rect1.Bottom);
-            FIARECT fiaRect2 = new FIARECT(rect2.Left, rect2.Top, rect2.Right, rect2.Bottom);
+            FIARECT fiaRect1 = new FIARECT(rect1);
+            FIARECT fiaRect2 = new FIARECT(rect2);
             FIARECT rect;
 
-            FIBITMAP dib = FreeImage.GradientBlendedIntersectionImage(fib1.Dib, fiaRect1, fib2.Dib, fiaRect2, mask.Dib, out rect);
+            FreeImageAlgorithmsBitmap dib = GetGradientBlendedIntersectionImage(fib1, 
+                    fiaRect1, fib2, fiaRect2, null, out rect);
 
-            intersect_rect = new Rectangle(rect.left, rect.top, rect.right - rect.left + 1, rect.bottom - rect.top + 1);    
+            intersect_rect = new Rectangle(rect.Location, rect.Size);
 
-            return new FreeImageAlgorithmsBitmap(dib);
+            return dib;
         }
 
         public bool GradientBlendPasteFromTopLeft(FreeImageAlgorithmsBitmap src, Point pt, FreeImageAlgorithmsBitmap mask)
         {
-            return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, pt.X, pt.Y, mask.Dib);
+            if (mask == null)
+            {
+                return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, pt.X, pt.Y, FIBITMAP.Zero);
+            }
+            else
+            {
+                return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, pt.X, pt.Y, mask.Dib);
+            }
         }
 
         public bool GradientBlendPasteFromTopLeft(FreeImageAlgorithmsBitmap src, int left, int top, FreeImageAlgorithmsBitmap mask)
         {
-            return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, left, top, mask.Dib);
+            if (mask == null)
+            {
+                return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, left, top, FIBITMAP.Zero);
+            }
+            else
+            {
+                return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, left, top, mask.Dib);
+            }
         }
 
         public FIAPOINT Correlate(FIARECT rect1, FreeImageBitmap src2, FIARECT rect2, out double max)

@@ -106,6 +106,6 @@ namespace FreeImageAPI
         internal static extern FIBITMAP GradientBlendedIntersectionImage(FIBITMAP src1, FIARECT rect1, FIBITMAP src2, FIARECT rect2, FIBITMAP mask, out FIARECT intersect_rect);
    
         [DllImport("FreeImageAlgorithms.dll", EntryPoint = "FIA_DrawSolidGreyscaleRect")]
-        internal static extern bool DrawRectangle(FIBITMAP src, FIARECT rect, double value);
+        internal static extern bool DrawSolidRectangle(FIBITMAP src, FIARECT rect, double value);
     }
 }

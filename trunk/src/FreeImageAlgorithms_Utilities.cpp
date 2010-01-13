@@ -2478,6 +2478,11 @@ FIA_GetGradientAlphaValuesForIntersection(FIARECT rect1, FIARECT rect2, FIARECT 
     if(map != NULL)
         FreeImage_Unload(map);
 
+	// Debug
+	//FIBITMAP *std_map_region = FreeImage_ConvertToStandardType(map_region);
+	//FIA_SaveFIBToFile(std_map_region, "C:\\map.bmp", BIT24);
+	//FreeImage_Unload(std_map_region);
+
     return map_region;
 	
 CLEANUP:
