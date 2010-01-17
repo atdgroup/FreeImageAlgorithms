@@ -166,6 +166,8 @@ namespace FreeImageAPI
             }
 
             this.ReplaceDib(dib);
+
+            this.SetGreyLevelPalette();
         }
 
         public FreeImageAlgorithmsBitmap(int width, int height, FREE_IMAGE_TYPE type, int colorDepth)
@@ -291,6 +293,8 @@ namespace FreeImageAPI
                 out minFound, out maxFound);
 
             ReplaceDib(tmp_dib);
+
+            this.SetGreyLevelPalette();
         }
 
         public void ConvertTo8Bits()
