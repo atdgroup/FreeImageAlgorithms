@@ -159,6 +159,35 @@ FIA_DrawHorizontalColourText (FIBITMAP *src, int left, int top, const char *text
 DLL_API int DLL_CALLCONV
 FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, const char *text, unsigned char value);
 
+DLL_API FIA_Matrix * DLL_CALLCONV
+FIA_MatrixNew();
+
+DLL_API FIA_Matrix * DLL_CALLCONV
+FIA_MatrixNewWithValues(double v0, double v1, double v2, 
+                                        double v3, double v4, double v5);
+
+DLL_API int DLL_CALLCONV
+FIA_MatrixDestroy(FIA_Matrix *matrix);
+
+DLL_API int DLL_CALLCONV
+FIA_MatrixSetValues(FIA_Matrix *matrix, double v0, double v1, double v2, 
+                                        double v3, double v4, double v5);
+                
+DLL_API int DLL_CALLCONV
+FIA_MatrixScale(FIA_Matrix *matrix, double x, double y, FIA_MatrixOrder order);
+      
+DLL_API int DLL_CALLCONV
+FIA_MatrixRotate(FIA_Matrix *matrix, double a, FIA_MatrixOrder order);
+
+DLL_API int DLL_CALLCONV
+FIA_MatrixTranslate(FIA_Matrix *matrix, double x, double y, FIA_MatrixOrder order);
+
+DLL_API int DLL_CALLCONV
+FIA_MatrixInvert(FIA_Matrix *matrix);
+
+DLL_API FIBITMAP * DLL_CALLCONV
+FIA_AffineTransorm(FIBITMAP *src, FIA_Matrix *matrix, RGBQUAD colour);
+                  
 #ifdef __cplusplus
 }
 #endif

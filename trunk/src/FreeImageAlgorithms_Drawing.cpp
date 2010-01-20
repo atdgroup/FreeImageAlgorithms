@@ -32,6 +32,7 @@
 #include "agg_rasterizer_outline.h"
 #include "agg_renderer_primitives.h"
 #include "agg_scanline_p.h"
+#include "agg_scanline_u.h"
 #include "agg_renderer_scanline.h"
 #include "agg_pixfmt_rgb.h"
 #include "agg_pixfmt_rgba.h"
@@ -42,6 +43,240 @@
 #include "agg_glyph_raster_bin.h"
 #include "agg_renderer_raster_text.h"
 #include "agg_embedded_raster_fonts.h"
+#include "agg_trans_affine.h"
+#include "agg_span_interpolator_linear.h"
+#include "agg_span_allocator.h"
+#include "agg_conv_transform.h"
+#include "agg_span_image_filter_rgba.h"
+
+typedef struct _FIA_Matrix 
+{
+  agg::trans_affine trans_affine;
+
+} FIA_Matrix;
+
+FIA_Matrix * DLL_CALLCONV
+FIA_MatrixNew()
+{
+    FIA_Matrix *matrix = (FIA_Matrix*) malloc(sizeof(FIA_Matrix));
+
+    matrix->trans_affine.reset();
+    
+    return matrix;
+}
+
+FIA_Matrix * DLL_CALLCONV
+FIA_MatrixNewWithValues(double v0, double v1, double v2, 
+                                        double v3, double v4, double v5)
+{
+    FIA_Matrix *matrix = (FIA_Matrix*) malloc(sizeof(FIA_Matrix));
+
+    matrix->trans_affine.reset();
+ 
+    FIA_MatrixSetValues(matrix, v0, v1, v2, v3, v4, v5);
+    
+    return matrix;
+}
+
+int DLL_CALLCONV
+FIA_MatrixDestroy(FIA_Matrix *matrix)
+{
+    free(matrix);
+      
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_MatrixSetValues(FIA_Matrix *matrix, double v0, double v1, double v2, 
+                                        double v3, double v4, double v5)
+{
+    double values[6];
+    
+    values[0] = v0;
+    values[1] = v1;
+    values[2] = v2;
+    values[3] = v3;
+    values[4] = v4;
+    values[5] = v5;   
+    
+    matrix->trans_affine.load_from(values);
+    
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_MatrixScale(FIA_Matrix *matrix, double x, double y, FIA_MatrixOrder order)
+{
+  if(order == FIA_MatrixOrderAppend) {
+  
+    matrix->trans_affine.scale(x, y);
+  }
+  else {
+  
+      agg::trans_affine t;
+      t.scale(x, y);
+      
+      matrix->trans_affine.premultiply(t);
+  }
+
+  return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_MatrixRotate(FIA_Matrix *matrix, double a, FIA_MatrixOrder order)
+{
+    if(order == FIA_MatrixOrderAppend) {
+  
+      matrix->trans_affine.rotate(a * agg::pi / 180.0);
+    }
+    else {
+  
+      agg::trans_affine t;
+      t.rotate(a * agg::pi / 180.0);
+      
+      matrix->trans_affine.premultiply(t);
+    }
+  
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_MatrixTranslate(FIA_Matrix *matrix, double x, double y, FIA_MatrixOrder order)
+{
+   if(order == FIA_MatrixOrderAppend) {
+   
+      matrix->trans_affine.translate(x, y);
+    }
+    else {
+    
+      agg::trans_affine t;
+      t.translate(x, y);
+      
+      matrix->trans_affine.premultiply(t);
+    }
+    
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_MatrixInvert(FIA_Matrix *matrix)
+{
+    matrix->trans_affine.invert();
+
+    return FIA_SUCCESS;
+}
+
+static FIBITMAP*
+DrawTransformedImage (FIBITMAP *src, agg::trans_affine image_mtx, RGBQUAD colour)
+{
+    typedef agg::pixfmt_bgra32                       src_pixfmt_type;
+    typedef agg::pixfmt_bgra32                       dst_pixfmt_type;
+    typedef agg::renderer_base < dst_pixfmt_type >   renbase_type;
+    	
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    FIBITMAP *dst = FreeImage_ConvertTo32Bits(src);
+
+    //Due to the nature of the algorithm you 
+    //have to use the inverse transformations. The algorithm takes the 
+    //coordinates of every destination pixel, applies the transformations and 
+    //obtains the coordinates of the pixel to pick it up from the source image. 
+    image_mtx.invert();
+
+    typedef agg::span_interpolator_linear<> interpolator_type;
+    interpolator_type interpolator(image_mtx);
+    agg::span_allocator<agg::rgba8> sa;
+    
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
+
+    unsigned char *src_bits = FreeImage_GetBits (src);
+    
+    unsigned char *dst_bits = FreeImage_GetBits (dst);
+
+    // Create the src buffer
+    agg::rendering_buffer rbuf_src (src_bits, width, height, FreeImage_GetPitch (src));
+    
+    // Create the dst buffer
+    agg::rendering_buffer rbuf_dst (dst_bits, width, height, FreeImage_GetPitch (dst));
+       
+    dst_pixfmt_type pixf_dst(rbuf_dst);
+    renbase_type rbase(pixf_dst);
+    
+    src_pixfmt_type pixf_src(rbuf_src);
+
+    // "hardcoded" bilinear filter
+    typedef agg::span_image_filter_rgba_bilinear_clip<src_pixfmt_type, interpolator_type> span_gen_type;
+    span_gen_type sg(pixf_src, agg::rgba8(colour.rgbRed,colour.rgbGreen,colour.rgbBlue), interpolator);
+        
+    // The Rasterizer definition  
+    agg::rasterizer_scanline_aa<> ras;
+    agg::scanline_p8 scanline;
+
+    agg::path_storage ps;
+
+    //Clip to image boundary
+    ps.move_to(0.0, 0.0);
+    ps.line_to(width, 0.0);
+    ps.line_to(width, height);
+    ps.line_to(0.0, height);
+    ps.line_to(0.0, 0.0);
+    
+    ras.add_path(ps);
+        
+    agg::render_scanlines_aa(ras, scanline, rbase, sa, sg);
+
+    return dst;
+}
+
+
+FIBITMAP* DLL_CALLCONV
+FIA_AffineTransorm(FIBITMAP *src, FIA_Matrix *matrix, RGBQUAD colour)
+{
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
+    int bpp = FreeImage_GetBPP(src);
+
+    unsigned char *buf = FreeImage_GetBits (src);
+
+   
+
+    // Create the rendering buffer
+  //  agg::rendering_buffer rbuf (buf, width, height, FreeImage_GetPitch (src));
+ 
+
+/*
+    if (type == FIT_BITMAP && bpp == 32)
+    {
+        typedef agg::pixfmt_bgra32                       pixfmt_type;
+    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+     
+        pixfmt_type pixf(rbuf);
+        renbase_type rbase(pixf);
+
+        return DrawEllipse (rbase, src, rect, agg::rgba8 (colour.rgbRed, colour.rgbGreen, colour.rgbBlue), 1, 0, antialiased);
+    }
+    else
+  */
+    
+    if (type == FIT_BITMAP && bpp == 32)
+    {    
+        FIBITMAP* dst = DrawTransformedImage (src, matrix->trans_affine, colour);
+        
+        return dst;
+    }
+
+    if (type == FIT_BITMAP && bpp == 8)
+    {    
+        FIBITMAP* dst = DrawTransformedImage (src, matrix->trans_affine, colour);
+        
+        return dst;
+    }
+    
+    return NULL;
+}
 
 template<class Rasterizer>
 static void

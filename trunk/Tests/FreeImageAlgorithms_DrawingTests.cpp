@@ -456,29 +456,105 @@ static int FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIARECT dst_rect)
 }
 */
 
-/*
+
 static void
-TestFIA_AffineTransformTest(CuTest* tc)
+TestFIA_AffineTransorm32bitScaleTest(CuTest* tc)
 {
-        const char *file = TEST_DATA_DIR "fly.bmp";
+  const char *file = TEST_DATA_DIR "fly.bmp";
 
-        FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+  FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
-        CuAssertTrue(tc, dib1 != NULL);
+  CuAssertTrue(tc, dib1 != NULL);
 
-        FIBITMAP *dib3 = FIA_FloodFill(dib2, 20, 1, 255);
+  FIBITMAP *dib2 = FreeImage_ConvertTo32Bits(dib1);
+  
+  CuAssertTrue(tc, dib2 != NULL);
+  
+  FIA_Matrix *matrix = FIA_MatrixNew();
 
-        FIA_SetGreyLevelPalette(dib3);
+  FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
+  
+  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, matrix, FIA_RGBQUAD(255,0,255));
+  
+  FIA_MatrixDestroy(matrix);
+  
+  CuAssertTrue(tc, transformed_dib != NULL);
 
-        CuAssertTrue(tc, dib3 != NULL);
+  FIA_SetGreyLevelPalette(transformed_dib);
 
-        FIA_SaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_FloodFillTest.jpg", BIT24);
+  FIA_SaveFIBToFile(transformed_dib, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_AffineTransorm32bitScaleTest.bmp", BIT24);
 
-        FreeImage_Unload(dib1);
-        FreeImage_Unload(dib2);
-        FreeImage_Unload(dib3);
+  FreeImage_Unload(dib1);
+  FreeImage_Unload(dib2);
+  FreeImage_Unload(transformed_dib);
 }
-*/
+
+static void
+TestFIA_AffineTransorm32bitTest(CuTest* tc)
+{
+  const char *file = TEST_DATA_DIR "fly.bmp";
+
+  FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+  CuAssertTrue(tc, dib1 != NULL);
+
+  FIBITMAP *dib2 = FreeImage_ConvertTo32Bits(dib1);
+  
+  CuAssertTrue(tc, dib2 != NULL);
+  
+  FIA_Matrix *matrix = FIA_MatrixNew();
+
+  FIA_MatrixRotate(matrix, -45.0, FIA_MatrixOrderAppend);
+
+  FIA_MatrixTranslate(matrix, 40, 40, FIA_MatrixOrderAppend);
+  
+  FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
+  
+  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, matrix, FIA_RGBQUAD(255,0,255));
+  
+  FIA_MatrixDestroy(matrix);
+  
+  CuAssertTrue(tc, transformed_dib != NULL);
+
+  FIA_SetGreyLevelPalette(transformed_dib);
+
+  FIA_SaveFIBToFile(transformed_dib, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_AffineTransorm32bitTest.bmp", BIT24);
+
+  FreeImage_Unload(dib1);
+  FreeImage_Unload(dib2);
+  FreeImage_Unload(transformed_dib);
+}
+
+static void
+TestFIA_AffineTransorm8bitTest(CuTest* tc)
+{
+  const char *file = TEST_DATA_DIR "fly.bmp";
+
+  FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+  CuAssertTrue(tc, dib1 != NULL);
+
+  FIA_Matrix *matrix = FIA_MatrixNew();
+
+  FIA_MatrixRotate(matrix, -45.0, FIA_MatrixOrderAppend);
+
+  FIA_MatrixTranslate(matrix, 40, 40, FIA_MatrixOrderAppend);
+  
+  FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
+  
+  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib1, matrix, FIA_RGBQUAD(255,0,0));
+  
+  FIA_MatrixDestroy(matrix);
+  
+  CuAssertTrue(tc, transformed_dib != NULL);
+
+  FIA_SetGreyLevelPalette(transformed_dib);
+
+  FIA_SaveFIBToFile(transformed_dib, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_AffineTransorm8bitTest.bmp", BIT8);
+
+  FreeImage_Unload(dib1);
+  FreeImage_Unload(transformed_dib);
+}
 
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsDrawingSuite(void)
@@ -504,8 +580,9 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
     SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
     SUITE_ADD_TEST(suite, TestFIA_FloodFillTest);
-
-    // SUITE_ADD_TEST(suite, TestFIA_AffineTransformTest);
+    SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitTest);
+    SUITE_ADD_TEST(suite, TestFIA_AffineTransorm8bitTest);
+    SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitScaleTest);
 
 	return suite;
 }
