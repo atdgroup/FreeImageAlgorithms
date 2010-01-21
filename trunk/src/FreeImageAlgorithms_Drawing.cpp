@@ -166,17 +166,18 @@ FIA_MatrixInvert(FIA_Matrix *matrix)
     return FIA_SUCCESS;
 }
 
-static FIBITMAP*
-DrawTransformedImage (FIBITMAP *src, agg::trans_affine image_mtx, RGBQUAD colour)
+static int
+DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx, RGBQUAD colour)
 {
     typedef agg::pixfmt_bgra32                       src_pixfmt_type;
     typedef agg::pixfmt_bgra32                       dst_pixfmt_type;
     typedef agg::renderer_base < dst_pixfmt_type >   renbase_type;
     	
-    int width = FreeImage_GetWidth (src);
-    int height = FreeImage_GetHeight (src);
-
-    FIBITMAP *dst = FreeImage_ConvertTo32Bits(src);
+    int src_width = FreeImage_GetWidth (src);
+    int src_height = FreeImage_GetHeight (src);
+    
+    int dst_width = FreeImage_GetWidth (dst);
+    int dst_height = FreeImage_GetHeight (dst);
 
     //Due to the nature of the algorithm you 
     //have to use the inverse transformations. The algorithm takes the 
@@ -195,10 +196,10 @@ DrawTransformedImage (FIBITMAP *src, agg::trans_affine image_mtx, RGBQUAD colour
     unsigned char *dst_bits = FreeImage_GetBits (dst);
 
     // Create the src buffer
-    agg::rendering_buffer rbuf_src (src_bits, width, height, FreeImage_GetPitch (src));
+    agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, FreeImage_GetPitch (src));
     
     // Create the dst buffer
-    agg::rendering_buffer rbuf_dst (dst_bits, width, height, FreeImage_GetPitch (dst));
+    agg::rendering_buffer rbuf_dst (dst_bits, dst_width, dst_height, FreeImage_GetPitch (dst));
        
     dst_pixfmt_type pixf_dst(rbuf_dst);
     renbase_type rbase(pixf_dst);
@@ -217,22 +218,59 @@ DrawTransformedImage (FIBITMAP *src, agg::trans_affine image_mtx, RGBQUAD colour
 
     //Clip to image boundary
     ps.move_to(0.0, 0.0);
-    ps.line_to(width, 0.0);
-    ps.line_to(width, height);
-    ps.line_to(0.0, height);
+    ps.line_to(dst_width, 0.0);
+    ps.line_to(dst_width, dst_height);
+    ps.line_to(0.0, dst_height);
     ps.line_to(0.0, 0.0);
     
     ras.add_path(ps);
         
     agg::render_scanlines_aa(ras, scanline, rbase, sa, sg);
 
-    return dst;
+    return FIA_SUCCESS;
 }
 
 
 FIBITMAP* DLL_CALLCONV
-FIA_AffineTransorm(FIBITMAP *src, FIA_Matrix *matrix, RGBQUAD colour)
+FIA_AffineTransorm(FIBITMAP *src, int image_dst_width, int image_dst_height,
+  FIA_Matrix *matrix, RGBQUAD colour)
 {
+    FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src);
+   
+    FIBITMAP *dst = FreeImage_Allocate(image_dst_width, image_dst_height, 32, 0, 0, 0);
+
+    if(FreeImage_GetImageType(src) != FIT_BITMAP || FreeImage_GetBPP(src) != 32) {
+        src32 = FreeImage_ConvertTo32Bits(src);
+    }
+    else {
+        src32 = FreeImage_Clone(src);
+    }
+
+    DrawTransformedImage (src32, dst, matrix->trans_affine, colour);
+        
+    FreeImage_Unload(src32);
+        
+    return dst;
+}
+
+
+int DLL_CALLCONV
+FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect, FIARECT srcRect, RGBQUAD colour)
+{
+    if (FreeImage_GetImageType (dst) != FIT_BITMAP)
+    {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Destination image is not of type FIT_BITMAP");
+        return FIA_ERROR;
+    }
+    
+    if (FreeImage_GetBPP (dst) != 32)
+    {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Destination image is not 32 bpp");
+        return FIA_ERROR;
+    }
+
     FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src);
    
     if(FreeImage_GetImageType(src) != FIT_BITMAP || FreeImage_GetBPP(src) != 32) {
@@ -242,7 +280,7 @@ FIA_AffineTransorm(FIBITMAP *src, FIA_Matrix *matrix, RGBQUAD colour)
         src32 = FreeImage_Clone(src);
     }
 
-    FIBITMAP* dst = DrawTransformedImage (src32, matrix->trans_affine, colour);
+    DrawTransformedImage (src32, dst, matrix->trans_affine, colour);
         
     FreeImage_Unload(src32);
         

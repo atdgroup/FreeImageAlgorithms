@@ -474,7 +474,8 @@ TestFIA_AffineTransorm32bitScaleTest(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, matrix, FIA_RGBQUAD(255,0,255));
+  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, 1000, 1000,
+                                matrix, FIA_RGBQUAD(255,0,255));
   
   FIA_MatrixDestroy(matrix);
   
@@ -510,7 +511,8 @@ TestFIA_AffineTransorm32bitTest(CuTest* tc)
   
   FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
   
-  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, matrix, FIA_RGBQUAD(255,0,255));
+  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
+      matrix, FIA_RGBQUAD(255,0,255));
   
   FIA_MatrixDestroy(matrix);
   
@@ -542,7 +544,8 @@ TestFIA_AffineTransorm8bitTest(CuTest* tc)
   
   FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
   
-  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib1, matrix, FIA_RGBQUAD(255,0,0));
+  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib1, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
+                                  matrix, FIA_RGBQUAD(255,0,0));
   
   FIA_MatrixDestroy(matrix);
   
@@ -563,6 +566,7 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Drawing");
 
+/*
 	SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);
 	SUITE_ADD_TEST(suite, TestFIA_Colour32bitLineTest);
 	SUITE_ADD_TEST(suite, TestFIA_GSLineTest);
@@ -582,6 +586,8 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     SUITE_ADD_TEST(suite, TestFIA_FloodFillTest);
     SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitTest);
     SUITE_ADD_TEST(suite, TestFIA_AffineTransorm8bitTest);
+    */
+    
     SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitScaleTest);
 
 	return suite;

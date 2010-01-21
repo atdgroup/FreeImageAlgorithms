@@ -14,6 +14,64 @@ namespace FreeImageAPI
         }
     }
 
+    public class FreeImageAlgorithmsMatrix
+    {
+        private FIA_Matrix matrix;
+
+        public FreeImageAlgorithmsMatrix()
+        {
+            this.matrix = FreeImage.MatrixNew();
+        }
+
+        ~FreeImageAlgorithmsMatrix() 
+        {
+            FreeImage.MatrixDestroy(this.matrix);
+        }
+
+        public FIA_Matrix Data
+        {
+            get
+            {
+                return this.matrix;
+            }
+        }
+
+        public bool Scale(double x, double y, FIA_MatrixOrder order)
+        {
+            return FreeImage.MatrixScale(this.matrix, x, y, order);
+        }
+
+        public bool Scale(double x, double y)
+        {
+            return this.Scale(x, y, FIA_MatrixOrder.MatrixOrderPrepend);
+        }
+
+        public bool Translate(double x, double y, FIA_MatrixOrder order)
+        {
+            return FreeImage.MatrixTranslate(this.matrix, x, y, order);
+        }
+
+        public bool Translate(double x, double y)
+        {
+            return this.Translate(x, y, FIA_MatrixOrder.MatrixOrderPrepend);
+        }
+
+        public bool Rotate(double a, FIA_MatrixOrder order)
+        {
+            return FreeImage.MatrixRotate(this.matrix, a, order);
+        }
+
+        public bool Rotate(double a)
+        {
+            return this.Rotate(a, FIA_MatrixOrder.MatrixOrderPrepend);
+        }
+
+        public bool Invert()
+        {
+            return FreeImage.MatrixInvert(this.matrix);
+        }
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct FIARECT
     {
@@ -23,7 +81,7 @@ namespace FreeImageAPI
         public int bottom;
 
         public FIARECT(int left, int top, int right, int bottom)
-        {
+        {           
             this.left = left;
             this.top = top;
             this.right = right;
@@ -40,6 +98,8 @@ namespace FreeImageAPI
 
         public FIARECT(Rectangle rect)
         {
+            // For win32 rectangles is the sum of X and Width property values is Right.
+            // For FIA_RECT it is one less hence the -1
             this.left = rect.Left;
             this.top = rect.Top;
             this.right = rect.Right - 1;    
@@ -108,6 +168,11 @@ namespace FreeImageAPI
             {
                 return new Size(this.Width, this.Height);
             }
+        }
+
+        public Rectangle ToRectangle()
+        {
+            return new Rectangle(this.Left, this.Top, this.Width - 1, this.Height - 1);
         }
     }
 
@@ -475,6 +540,18 @@ namespace FreeImageAPI
             return FreeImage.DrawSolidRectangle(this.Dib, fiaRect, 0.0f);
         }
 
+        public bool DrawColourRect(FIARECT rect, RGBQUAD colour, int lineWidth)
+        {
+            return FreeImage.DrawColourRect(this.Dib, rect, colour, lineWidth);
+        }
+
+        public bool DrawColourRect(Rectangle rect, RGBQUAD colour, int lineWidth)
+        {
+            FIARECT fiaRect = new FIARECT(rect);
+
+            return FreeImage.DrawColourRect(this.Dib, fiaRect, colour, lineWidth);
+        }
+
         public bool DrawSolidRectangle(FIARECT rect, double val)
         {
             return FreeImage.DrawSolidRectangle(this.Dib, rect, val);
@@ -565,6 +642,13 @@ namespace FreeImageAPI
             {
                 return FreeImage.GradientBlendPasteFromTopLeft(this.Dib, src.Dib, left, top, mask.Dib);
             }
+        }
+
+        public void AffineTransorm(FreeImageAlgorithmsMatrix matrix, RGBQUAD colour)
+        {
+            FIBITMAP tmp_dib = FreeImage.AffineTransorm(this.Dib, matrix.Data, colour);
+
+            this.ReplaceDib(tmp_dib);
         }
 
         public FIAPOINT Correlate(FIARECT rect1, FreeImageBitmap src2, FIARECT rect2, out double max)
