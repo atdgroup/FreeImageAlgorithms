@@ -233,49 +233,20 @@ DrawTransformedImage (FIBITMAP *src, agg::trans_affine image_mtx, RGBQUAD colour
 FIBITMAP* DLL_CALLCONV
 FIA_AffineTransorm(FIBITMAP *src, FIA_Matrix *matrix, RGBQUAD colour)
 {
-    int width = FreeImage_GetWidth (src);
-    int height = FreeImage_GetHeight (src);
-
-    FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
-    int bpp = FreeImage_GetBPP(src);
-
-    unsigned char *buf = FreeImage_GetBits (src);
-
+    FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src);
    
-
-    // Create the rendering buffer
-  //  agg::rendering_buffer rbuf (buf, width, height, FreeImage_GetPitch (src));
- 
-
-/*
-    if (type == FIT_BITMAP && bpp == 32)
-    {
-        typedef agg::pixfmt_bgra32                       pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
-     
-        pixfmt_type pixf(rbuf);
-        renbase_type rbase(pixf);
-
-        return DrawEllipse (rbase, src, rect, agg::rgba8 (colour.rgbRed, colour.rgbGreen, colour.rgbBlue), 1, 0, antialiased);
+    if(FreeImage_GetImageType(src) != FIT_BITMAP || FreeImage_GetBPP(src) != 32) {
+        src32 = FreeImage_ConvertTo32Bits(src);
     }
-    else
-  */
-    
-    if (type == FIT_BITMAP && bpp == 32)
-    {    
-        FIBITMAP* dst = DrawTransformedImage (src, matrix->trans_affine, colour);
+    else {
+        src32 = FreeImage_Clone(src);
+    }
+
+    FIBITMAP* dst = DrawTransformedImage (src32, matrix->trans_affine, colour);
         
-        return dst;
-    }
-
-    if (type == FIT_BITMAP && bpp == 8)
-    {    
-        FIBITMAP* dst = DrawTransformedImage (src, matrix->trans_affine, colour);
+    FreeImage_Unload(src32);
         
-        return dst;
-    }
-    
-    return NULL;
+    return dst;
 }
 
 template<class Rasterizer>
@@ -703,7 +674,7 @@ orthogonal_draw_line (FIBITMAP * src, int x1, int y1, int x2, int y2, ValueType 
 	    {
             	while (x1 <= x2)
             	{
-                	*bits = value;  
+                	*(ValueType*)bits = value;  
                     // jump to next pixel
 		            bits += bytespp;
                     x1++;
@@ -712,7 +683,7 @@ orthogonal_draw_line (FIBITMAP * src, int x1, int y1, int x2, int y2, ValueType 
 	    else {
 
 		    for(register int x = x1; x <= x2; x++)
-            	{
+            {
 		        bits[FI_RGBA_RED] = colour.rgbRed;
 		        bits[FI_RGBA_GREEN] = colour.rgbGreen;
 		        bits[FI_RGBA_BLUE] = colour.rgbBlue;
@@ -746,7 +717,7 @@ orthogonal_draw_line (FIBITMAP * src, int x1, int y1, int x2, int y2, ValueType 
 	    {
 		    while (y1 <= y2)
 		    {
-		        *bits = value;
+		        *(ValueType*)bits = value;
 
 		        bits += pitch;
 

@@ -1136,9 +1136,8 @@ TestFIA_GetGradientBlendAlphaImageTest(CuTest* tc)
 static void
 TestFIA_GetGradientBlendAlphaImageTest2(CuTest* tc)
 {
-    FIBITMAP *fib1 =  LoadTissueFile(TEST_DATA_DIR "histology1.png");
-    FIBITMAP *fib2 =  LoadTissueFile(TEST_DATA_DIR "jigsaw.png");
-	FIBITMAP *fib3 = FreeImage_Rescale(fib2, 1360, 1024, FILTER_BOX);
+    FIBITMAP *fib1 =  LoadTissueFile(TEST_DATA_DIR "jigsaw.png");
+	FIBITMAP *fib2 = FreeImage_Rescale(fib1, 1360, 1024, FILTER_BOX);
 
     PROFILE_START("TestFIA_GetGradientBlendAlphaImageTest2");
 
@@ -1147,15 +1146,14 @@ TestFIA_GetGradientBlendAlphaImageTest2(CuTest* tc)
 
 	FIARECT intersect_rect;
 
-    FIBITMAP *alpha = FIA_GetGradientBlendAlphaImage (fib3, rect1, rect2, &intersect_rect);
+    FIBITMAP *alpha = FIA_GetGradientBlendAlphaImage (fib2, rect1, rect2, &intersect_rect);
 
     PROFILE_STOP("TestFIA_GetGradientBlendAlphaImageTest2");
 
-    FIA_SaveFIBToFile(alpha, TEST_DATA_OUTPUT_DIR  "/Convolution/gradient_blended_alpha_value_histology.png", BIT32);
+    FIA_SaveFIBToFile(alpha, TEST_DATA_OUTPUT_DIR  "/Convolution/gradient_blended_alpha_resized_jigsaw.png", BIT32);
 
     FreeImage_Unload(fib1);
     FreeImage_Unload(fib2);
-	FreeImage_Unload(fib3);
 	FreeImage_Unload(alpha);
 }
 

@@ -1786,6 +1786,28 @@ FIA_GetPixelValue (FIBITMAP * src, int x, int y, double *val)
 }
 
 int DLL_CALLCONV
+FIA_InPlaceConvertTo32Bit (FIBITMAP ** src)
+{
+    FIBITMAP *dst = FreeImage_ConvertTo32Bits (*src);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_InPlaceConvertTo242Bit (FIBITMAP ** src)
+{
+    FIBITMAP *dst = FreeImage_ConvertTo24Bits (*src);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
 FIA_InPlaceConvertToStandardType (FIBITMAP ** src, int scale)
 {
     FIBITMAP *dst = FreeImage_ConvertToStandardType (*src, scale);
@@ -2226,9 +2248,9 @@ template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
 			for(register int x = 0; x < fg_width; x++)
 			{
 				if(mask_ptr[x] > 0)
-					dst_ptr[x] = (alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]);
+					dst_ptr[x] = (Tsrc) ((alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]));
 				else
-					dst_ptr[x] = fg_ptr[x];
+					dst_ptr[x] = (Tsrc) fg_ptr[x];
 			}
 		}
 	}
@@ -2242,7 +2264,7 @@ template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
 
 			for(register int x = 0; x < fg_width; x++)
 			{
-				dst_ptr[x] = (alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]);
+				dst_ptr[x] = (Tsrc) ((alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]));
 			}
 		}
 	}
@@ -2738,13 +2760,6 @@ FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2
         FreeImage_Unload(blended);
 
     return FIA_SUCCESS;
-
-CLEANUP:
-
-    if(blended != NULL)
-        FreeImage_Unload(blended);
-
-    return FIA_ERROR;
 }
 
 int DLL_CALLCONV
