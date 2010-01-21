@@ -271,7 +271,16 @@ FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect,
         return FIA_ERROR;
     }
 
-    FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src);
+    FIBITMAP* src_region = FIA_Copy(src, srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
+
+    if(src_region == NULL) {
+
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Failed to extract region of given src rectangle");
+
+        return FIA_ERROR;
+    }
+    
+    FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src_region);
    
     if(FreeImage_GetImageType(src) != FIT_BITMAP || FreeImage_GetBPP(src) != 32) {
         src32 = FreeImage_ConvertTo32Bits(src);
@@ -283,8 +292,9 @@ FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect,
     DrawTransformedImage (src32, dst, matrix->trans_affine, colour);
         
     FreeImage_Unload(src32);
+    FreeImage_Unload(src_region);
         
-    return dst;
+    return FIA_SUCCESS;
 }
 
 template<class Rasterizer>

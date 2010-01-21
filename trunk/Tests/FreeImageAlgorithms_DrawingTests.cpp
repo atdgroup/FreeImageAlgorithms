@@ -559,6 +559,44 @@ TestFIA_AffineTransorm8bitTest(CuTest* tc)
   FreeImage_Unload(transformed_dib);
 }
 
+
+static void
+TestFIA_DrawImageTest1(CuTest* tc)
+{
+  const char *file = TEST_DATA_DIR "fly.bmp";
+
+  FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+  CuAssertTrue(tc, dib1 != NULL);
+
+  FIBITMAP *dib2 = FreeImage_ConvertTo32Bits(dib1);
+  
+  CuAssertTrue(tc, dib2 != NULL);
+  
+  FIBITMAP *dst = FreeImage_Allocate(790,582, 32, 0, 0, 0);
+   
+  CuAssertTrue(tc, dst != NULL);
+   
+  FIA_Matrix *matrix = FIA_MatrixNew();
+
+  //FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
+  
+  int err = FIA_DrawImage(dst, dib2, matrix, 
+          MakeFIARect(0,0,350,270), MakeFIARect(0,0,350,270), FIA_RGBQUAD(255,0,255));
+  
+  CuAssertTrue(tc, err != FIA_ERROR);
+  
+  FIA_MatrixDestroy(matrix);
+  
+  CuAssertTrue(tc, dst != NULL);
+
+  FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_DrawImageTest1.bmp", BIT24);
+
+  FreeImage_Unload(dib1);
+  FreeImage_Unload(dib2);
+  FreeImage_Unload(dst);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsDrawingSuite(void)
 {
@@ -586,9 +624,10 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     SUITE_ADD_TEST(suite, TestFIA_FloodFillTest);
     SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitTest);
     SUITE_ADD_TEST(suite, TestFIA_AffineTransorm8bitTest);
+    SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitScaleTest);
     */
     
-    SUITE_ADD_TEST(suite, TestFIA_AffineTransorm32bitScaleTest);
+    SUITE_ADD_TEST(suite, TestFIA_DrawImageTest1);
 
 	return suite;
 }
