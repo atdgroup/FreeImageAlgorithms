@@ -474,7 +474,7 @@ TestFIA_AffineTransorm32bitScaleTest(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, 1000, 1000,
+  FIBITMAP *transformed_dib = FIA_AffineTransform(dib2, 1000, 1000,
                                 matrix, FIA_RGBQUAD(255,0,255));
   
   FIA_MatrixDestroy(matrix);
@@ -511,7 +511,7 @@ TestFIA_AffineTransorm32bitTest(CuTest* tc)
   
   FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
   
-  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib2, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
+  FIBITMAP *transformed_dib = FIA_AffineTransform(dib2, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
       matrix, FIA_RGBQUAD(255,0,255));
   
   FIA_MatrixDestroy(matrix);
@@ -544,7 +544,7 @@ TestFIA_AffineTransorm8bitTest(CuTest* tc)
   
   FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
   
-  FIBITMAP *transformed_dib = FIA_AffineTransorm(dib1, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
+  FIBITMAP *transformed_dib = FIA_AffineTransform(dib1, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
                                   matrix, FIA_RGBQUAD(255,0,0));
   
   FIA_MatrixDestroy(matrix);

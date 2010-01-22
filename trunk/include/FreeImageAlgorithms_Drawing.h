@@ -186,7 +186,7 @@ DLL_API int DLL_CALLCONV
 FIA_MatrixInvert(FIA_Matrix *matrix);
 
 DLL_API FIBITMAP * DLL_CALLCONV
-FIA_AffineTransorm(FIBITMAP *src, int image_dst_width, int image_dst_height, 
+FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height, 
   FIA_Matrix *matrix, RGBQUAD colour);
            
 DLL_API int DLL_CALLCONV

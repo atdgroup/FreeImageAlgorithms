@@ -233,7 +233,7 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
 
 
 FIBITMAP* DLL_CALLCONV
-FIA_AffineTransorm(FIBITMAP *src, int image_dst_width, int image_dst_height,
+FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
   FIA_Matrix *matrix, RGBQUAD colour)
 {
     FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src);
