@@ -475,7 +475,7 @@ TestFIA_AffineTransorm32bitScaleTest(CuTest* tc)
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
   FIBITMAP *transformed_dib = FIA_AffineTransform(dib2, 1000, 1000,
-                                matrix, FIA_RGBQUAD(255,0,255));
+                                matrix, FIA_RGBQUAD(255,0,255), 0);
   
   FIA_MatrixDestroy(matrix);
   
@@ -512,7 +512,7 @@ TestFIA_AffineTransorm32bitTest(CuTest* tc)
   FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
   
   FIBITMAP *transformed_dib = FIA_AffineTransform(dib2, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
-      matrix, FIA_RGBQUAD(255,0,255));
+      matrix, FIA_RGBQUAD(255,0,255), 0);
   
   FIA_MatrixDestroy(matrix);
   
@@ -545,7 +545,7 @@ TestFIA_AffineTransorm8bitTest(CuTest* tc)
   FIA_MatrixScale(matrix, 1.2, 1.2, FIA_MatrixOrderPrepend);
   
   FIBITMAP *transformed_dib = FIA_AffineTransform(dib1, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1),
-                                  matrix, FIA_RGBQUAD(255,0,0));
+                                  matrix, FIA_RGBQUAD(255,0,0), 0);
   
   FIA_MatrixDestroy(matrix);
   
@@ -577,7 +577,7 @@ TestFIA_DrawImageTest1(CuTest* tc)
    
   CuAssertTrue(tc, dst != NULL);
    
-  int err = FIA_DrawImageFromSrcToDst(dst, dib2, NULL, 0,0,350,271, 0,0,350,270, FIA_RGBQUAD(255,0,255));
+  int err = FIA_DrawImageFromSrcToDst(dst, dib2, NULL, 0,0,350,271, 0,0,350,270, FIA_RGBQUAD(255,0,255), 0);
   
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -607,7 +607,7 @@ TestFIA_DrawImageTest2(CuTest* tc)
    
   CuAssertTrue(tc, dst != NULL);
    
-  int err = FIA_DrawImageFromSrcToDst(dst, dib2, NULL, 0,0,350,271, 0,0,350/2,271/2, FIA_RGBQUAD(255,0,255));
+  int err = FIA_DrawImageFromSrcToDst(dst, dib2, NULL, 0,0,350,271, 0,0,350/2,271/2, FIA_RGBQUAD(255,0,255), 0);
   
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -637,7 +637,8 @@ TestFIA_DrawImageTest3(CuTest* tc)
    
   CuAssertTrue(tc, dst != NULL);
    
-  int err = FIA_DrawImageFromSrcToDst(dst, dib2, NULL, 0,0,350,271, 350/2,271/2,350/2,271/2, FIA_RGBQUAD(255,0,255));
+  int err = FIA_DrawImageFromSrcToDst(dst, dib2, NULL, 0,0,350,271, 350/2,271/2,350/2,271/2,
+	  FIA_RGBQUAD(255,0,255), 0);
   
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -671,12 +672,9 @@ TestFIA_DrawImageTest4(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-  //int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
-  //        MakeFIARect(0,0,350,270), MakeFIARect(350/2,271/2,350/2,270/2), FIA_RGBQUAD(0,255,255));
-  
-   int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 0,0,350,270, 350/2,271/2,350/2,270/2, FIA_RGBQUAD(128,128,128));
+  int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 0,0,350,270, 350/2,271/2,350/2,270/2,
+	   FIA_RGBQUAD(128,128,128), 0);
  
-
   CuAssertTrue(tc, err != FIA_ERROR);
   
   FIA_MatrixDestroy(matrix);
@@ -711,7 +709,8 @@ TestFIA_DrawImageTest5(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-   int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 0,0,350*2,271*2, 0,0,350,271, FIA_RGBQUAD(128,128,128));
+   int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 0,0,350*2,271*2, 0,0,350,271,
+	   FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -749,7 +748,7 @@ TestFIA_DrawImageTest6(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							50,50,350*2,271*2,
-							0,0,350,271, FIA_RGBQUAD(128,128,128));
+							0,0,350,271, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -787,7 +786,7 @@ TestFIA_DrawImageTest7(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							0,0,350/2,271/2,
-							0,0,350,271, FIA_RGBQUAD(128,128,128));
+							0,0,350,271, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -825,7 +824,7 @@ TestFIA_DrawImageTest8(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							0,0,350,271/2,
-							0,0,350/2,271/2, FIA_RGBQUAD(128,128,128));
+							0,0,350/2,271/2, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -864,7 +863,7 @@ TestFIA_DrawImageTest9(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							0,0,350,271/2,
-							100,100,350/2,271/2, FIA_RGBQUAD(128,128,128));
+							100,100,350/2,271/2, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -904,7 +903,7 @@ TestFIA_DrawImageTest10(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							0,0,350,271/2,
-							0,0,350/2,271/2, FIA_RGBQUAD(128,128,128));
+							0,0,350/2,271/2, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -944,7 +943,7 @@ TestFIA_DrawImageTest11(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							0,0,350,271/2,
-							150,40,350/2,271/2, FIA_RGBQUAD(128,128,128));
+							150,40,350/2,271/2, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -985,7 +984,7 @@ TestFIA_DrawImageTest12(CuTest* tc)
   
    int err = FIA_DrawImageFromSrcToDst(dst, dib2, matrix, 
 							0,0,350,271/2,
-							150,40,350/2,271/2, FIA_RGBQUAD(128,128,128));
+							150,40,350/2,271/2, FIA_RGBQUAD(128,128,128), 0);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -1021,7 +1020,7 @@ TestFIA_DrawImageDstRectTest1(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-   int err = FIA_DrawImageToDst(dst, dib2, matrix, 0,0,350*2,271*2, FIA_RGBQUAD(128,128,128));
+   int err = FIA_DrawImageToDst(dst, dib2, matrix, 0,0,350*2,271*2, FIA_RGBQUAD(128,128,128), 1);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -1057,7 +1056,7 @@ TestFIA_DrawImageDstRectTest2(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-   int err = FIA_DrawImageToDst(dst, dib2, matrix, 50,50,350*2,271*2, FIA_RGBQUAD(128,128,128));
+   int err = FIA_DrawImageToDst(dst, dib2, matrix, 50,50,350*2,271*2, FIA_RGBQUAD(128,128,128), 1);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -1093,7 +1092,7 @@ TestFIA_DrawImageDstRectTest3(CuTest* tc)
 
   FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
   
-   int err = FIA_DrawImageToDst(dst, dib2, matrix, 0,0,350/2,271/2, FIA_RGBQUAD(128,128,128));
+   int err = FIA_DrawImageToDst(dst, dib2, matrix, 0,0,350/2,271/2, FIA_RGBQUAD(128,128,128), 1);
 
   CuAssertTrue(tc, err != FIA_ERROR);
   
@@ -1102,6 +1101,52 @@ TestFIA_DrawImageDstRectTest3(CuTest* tc)
   CuAssertTrue(tc, dst != NULL);
 
   FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_DrawImageDstRectTest3.bmp", BIT24);
+
+  FreeImage_Unload(dib1);
+  FreeImage_Unload(dib2);
+  FreeImage_Unload(dst);
+}
+
+static void
+TestFIA_DrawImageDstRectTest4(CuTest* tc)
+{
+  const char *file = TEST_DATA_DIR "fly.bmp";
+
+  FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+  CuAssertTrue(tc, dib1 != NULL);
+
+  FIBITMAP *dib2 = FreeImage_ConvertTo32Bits(dib1);
+  
+  CuAssertTrue(tc, dib2 != NULL);
+  
+  FIBITMAP *dst = FreeImage_Allocate(790,582, 32, 0, 0, 0);
+   
+  FIA_DrawColourSolidRect(dst, MakeFIARect(0,0, FreeImage_GetWidth(dst) - 1,
+												FreeImage_GetHeight(dst) - 1), FIA_RGBQUAD(255,255,0));
+
+  CuAssertTrue(tc, dst != NULL);
+   
+  FIA_Matrix *matrix = FIA_MatrixNew();
+
+  FIA_MatrixScale(matrix, 2.0, 2.0, FIA_MatrixOrderPrepend);
+  
+  int err = FIA_DrawImageToDst(dst, dib2, matrix, 0,0,350/2,271/2, FIA_RGBQUAD(128,128,128), 1);
+
+  CuAssertTrue(tc, err != FIA_ERROR);
+
+  FIA_MatrixTranslate(matrix, 100, 100, FIA_MatrixOrderPrepend);
+  FIA_MatrixRotate(matrix, 45.0, FIA_MatrixOrderPrepend);
+
+  err = FIA_DrawImageToDst(dst, dib2, matrix, 0,0,350/2,271/2, FIA_RGBQUAD(128,128,128), 1);
+
+  CuAssertTrue(tc, err != FIA_ERROR);
+  
+  FIA_MatrixDestroy(matrix);
+  
+  CuAssertTrue(tc, dst != NULL);
+
+  FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_DrawImageDstRectTest4.bmp", BIT24);
 
   FreeImage_Unload(dib1);
   FreeImage_Unload(dib2);
@@ -1153,6 +1198,7 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 	SUITE_ADD_TEST(suite, TestFIA_DrawImageDstRectTest1);
 	SUITE_ADD_TEST(suite, TestFIA_DrawImageDstRectTest2);
 	SUITE_ADD_TEST(suite, TestFIA_DrawImageDstRectTest3);
+	SUITE_ADD_TEST(suite, TestFIA_DrawImageDstRectTest4);
 
 	return suite;
 }

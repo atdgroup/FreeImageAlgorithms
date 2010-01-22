@@ -571,6 +571,14 @@ namespace FreeImageAPI
             return FreeImage.DrawSolidRectangle(this.Dib, fiaRect, val);
         }
 
+        public bool DrawSolidRectangle(Point location, uint width, uint height, double val)
+        {
+            Size size = new Size((int) width, (int) height);
+            FIARECT fiaRect = new FIARECT(location, size);
+
+            return FreeImage.DrawSolidRectangle(this.Dib, fiaRect, val);
+        }
+
         public static FreeImageAlgorithmsBitmap GetGradientBlendAlphaImage(FIARECT rect1, FIARECT rect2, FreeImageAlgorithmsBitmap fib, out FIARECT intersect_rect)
         {
             FIBITMAP dib = FreeImage.GetGradientBlendAlphaImage(fib.Dib, rect1, rect2, out intersect_rect);
@@ -644,11 +652,49 @@ namespace FreeImageAPI
             }
         }
 
-        public void AffineTransorm(FreeImageAlgorithmsMatrix matrix, RGBQUAD colour)
+        public FreeImageAlgorithmsBitmap AffineTransform(int image_dst_width, int image_dst_height, 
+                                                         FreeImageAlgorithmsMatrix matrix, RGBQUAD colour)
         {
-            FIBITMAP tmp_dib = FreeImage.AffineTransorm(this.Dib, matrix.Data, colour);
+            FIBITMAP tmp_dib = FreeImage.AffineTransform(this.Dib, image_dst_width, image_dst_height, matrix.Data, colour);
+
+            return new FreeImageAlgorithmsBitmap(tmp_dib);
+        }
+
+        public void AffineTransform(FreeImageAlgorithmsMatrix matrix, RGBQUAD colour)
+        {
+            FIBITMAP tmp_dib = FreeImage.AffineTransform(this.Dib, (int) this.Width, (int) this.Height, matrix.Data, colour);
 
             this.ReplaceDib(tmp_dib);
+        }
+
+        public void DrawImage(FreeImageAlgorithmsBitmap dst, FreeImageAlgorithmsMatrix matrix, 
+            int dstLeft, int dstTop, int dstWidth, int dstHeight,
+            int srcLeft, int srcTop, int srcWidth, int srcHeight,
+            RGBQUAD colour)
+        {
+            FreeImage.DrawImageFromSrcToDst(dst.Dib, this.Dib, matrix.Data,
+                dstLeft, dstTop, dstWidth, dstHeight,
+                srcLeft, srcTop, srcWidth, srcHeight,
+                colour);
+        }
+
+        public void DrawImage(FreeImageAlgorithmsBitmap dst, FreeImageAlgorithmsMatrix matrix,
+            int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour)
+        {
+            FreeImage.DrawImageToDst(dst.Dib, this.Dib, matrix.Data,
+                dstLeft, dstTop, dstWidth, dstHeight, colour);
+        }
+
+        public void DrawImage(FreeImageAlgorithmsBitmap dst, FreeImageAlgorithmsMatrix matrix, Rectangle dstRect, RGBQUAD colour)
+        {
+            FreeImage.DrawImageToDst(dst.Dib, this.Dib, matrix.Data,
+                dstRect.Left, dstRect.Top, dstRect.Width, dstRect.Height, colour);
+        }
+
+        public void DrawImage(FreeImageAlgorithmsBitmap dst, Rectangle dstRect, RGBQUAD colour)
+        {
+            FreeImage.DrawImageToDst(dst.Dib, this.Dib, FIA_Matrix.Zero,
+                dstRect.Left, dstRect.Top, dstRect.Width, dstRect.Height, colour);
         }
 
         public FIAPOINT Correlate(FIARECT rect1, FreeImageBitmap src2, FIARECT rect2, out double max)

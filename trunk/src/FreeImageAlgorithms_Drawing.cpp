@@ -168,7 +168,7 @@ FIA_MatrixInvert(FIA_Matrix *matrix)
 }
 
 static int
-DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx, RGBQUAD colour)
+DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx, RGBQUAD colour, bool retain_background)
 {
     typedef agg::pixfmt_bgra32                       src_pixfmt_type;
     typedef agg::pixfmt_bgra32                       dst_pixfmt_type;
@@ -209,7 +209,8 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
 
     // "hardcoded" bilinear filter
     typedef agg::span_image_filter_rgba_bilinear_clip<src_pixfmt_type, interpolator_type> span_gen_type;
-    span_gen_type sg(pixf_src, agg::rgba8(colour.rgbRed,colour.rgbGreen,colour.rgbBlue), interpolator);
+    span_gen_type sg(pixf_src, agg::rgba8(colour.rgbRed,colour.rgbGreen,colour.rgbBlue,
+		(retain_background ? 0 : 255)), interpolator);
         
     // The Rasterizer definition  
     agg::rasterizer_scanline_aa<> ras;
@@ -234,7 +235,7 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
 
 FIBITMAP* DLL_CALLCONV
 FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
-  FIA_Matrix *matrix, RGBQUAD colour)
+  FIA_Matrix *matrix, RGBQUAD colour, int retain_background)
 {
     FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src);
    
@@ -247,7 +248,7 @@ FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
         src32 = FreeImage_Clone(src);
     }
 
-    DrawTransformedImage (src32, dst, matrix->trans_affine, colour);
+    DrawTransformedImage (src32, dst, matrix->trans_affine, colour, retain_background);
         
     FreeImage_Unload(src32);
         
@@ -258,7 +259,7 @@ FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
 int DLL_CALLCONV
 FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
 			  int dstLeft, int dstTop, int dstWidth, int dstHeight,
-			  int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour)
+			  int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour, int retain_background)
 {
     if (FreeImage_GetImageType (dst) != FIT_BITMAP)
     {
@@ -305,7 +306,7 @@ FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
 		dstMatrix->trans_affine *= matrix->trans_affine;
 	}
 
-    DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour);
+    DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour, retain_background);
         
 	FIA_MatrixDestroy(dstMatrix);
 
@@ -317,7 +318,7 @@ FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
 
 int DLL_CALLCONV
 FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
-			  int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour)
+			  int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background)
 {
     if (FreeImage_GetImageType (dst) != FIT_BITMAP)
     {
@@ -355,7 +356,7 @@ FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
 		dstMatrix->trans_affine *= matrix->trans_affine;
 	}
 
-    DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour);
+    DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour, retain_background);
         
 	FIA_MatrixDestroy(dstMatrix);
 

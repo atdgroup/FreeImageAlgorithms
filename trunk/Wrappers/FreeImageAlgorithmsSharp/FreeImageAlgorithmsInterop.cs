@@ -17,6 +17,11 @@ namespace FreeImageAPI
 	{
         private IntPtr data;
 
+        /// <summary>
+        /// A read-only field that represents a handle that has been initialized to zero.
+        /// </summary>
+        public static readonly FIA_Matrix Zero;
+
         /// <returns>
 		/// <b>true</b> if the two <see cref="FIA_Matrix"/> structures are equal; otherwise, <b>false</b>.
 		/// </returns>
@@ -86,7 +91,7 @@ namespace FreeImageAPI
 
     public partial class FreeImage
     {
-        private const string FreeImageAlgorithmsLibrary = "FreeImageAlgorithms_d.dll";
+        private const string FreeImageAlgorithmsLibrary = "FreeImageAlgorithms.dll";
 
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_IsGreyScale")]	
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -202,7 +207,16 @@ namespace FreeImageAPI
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_MatrixInvert")]
         internal static extern bool MatrixInvert(FIA_Matrix matrix);
 
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_AffineTransorm")]
-        internal static extern FIBITMAP AffineTransorm(FIBITMAP src, FIA_Matrix matrix, RGBQUAD colour);
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_AffineTransform")]
+        internal static extern FIBITMAP AffineTransform(FIBITMAP src, int image_dst_width, int image_dst_height, FIA_Matrix matrix, RGBQUAD colour);
+   
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawImageFromSrcToDst")]
+        internal static extern bool DrawImageFromSrcToDst(FIBITMAP dst, FIBITMAP src, FIA_Matrix matrix,
+            int dstLeft, int dstTop, int dstWidth, int dstHeight,
+            int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour);
+   
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawImageToDst")]
+        internal static extern bool DrawImageToDst(FIBITMAP dst, FIBITMAP src, FIA_Matrix matrix,
+            int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour);            
     }
 }
