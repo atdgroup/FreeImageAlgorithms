@@ -190,9 +190,14 @@ FIA_AffineTransorm(FIBITMAP *src, int image_dst_width, int image_dst_height,
   FIA_Matrix *matrix, RGBQUAD colour);
            
 DLL_API int DLL_CALLCONV
-FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect,
-  FIARECT srcRect, RGBQUAD colour);
-                  
+FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
+			  int dstLeft, int dstTop, int dstWidth, int dstHeight,
+			  int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour);
+               
+DLL_API int DLL_CALLCONV
+FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
+			  int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour);
+
 #ifdef __cplusplus
 }
 #endif

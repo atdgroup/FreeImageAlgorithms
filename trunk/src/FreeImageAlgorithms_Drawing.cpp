@@ -18,6 +18,7 @@
  */
 
 #include "FreeImageAlgorithms.h"
+#include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Utils.h"
 #include "FreeImageAlgorithms_Drawing.h"
 #include "FreeImageAlgorithms_Palettes.h"
@@ -196,10 +197,10 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
     unsigned char *dst_bits = FreeImage_GetBits (dst);
 
     // Create the src buffer
-    agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, FreeImage_GetPitch (src));
+    agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, -FreeImage_GetPitch (src));
     
     // Create the dst buffer
-    agg::rendering_buffer rbuf_dst (dst_bits, dst_width, dst_height, FreeImage_GetPitch (dst));
+    agg::rendering_buffer rbuf_dst (dst_bits, dst_width, dst_height, -FreeImage_GetPitch (dst));
        
     dst_pixfmt_type pixf_dst(rbuf_dst);
     renbase_type rbase(pixf_dst);
@@ -255,7 +256,9 @@ FIA_AffineTransorm(FIBITMAP *src, int image_dst_width, int image_dst_height,
 
 
 int DLL_CALLCONV
-FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect, FIARECT srcRect, RGBQUAD colour)
+FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
+			  int dstLeft, int dstTop, int dstWidth, int dstHeight,
+			  int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour)
 {
     if (FreeImage_GetImageType (dst) != FIT_BITMAP)
     {
@@ -271,7 +274,8 @@ FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect,
         return FIA_ERROR;
     }
 
-    FIBITMAP* src_region = FIA_Copy(src, srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
+    FIBITMAP* src_region = FIA_Copy(src, srcLeft, srcTop,
+			srcLeft + srcWidth - 1, srcTop + srcHeight - 1);
 
     if(src_region == NULL) {
 
@@ -280,7 +284,57 @@ FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect,
         return FIA_ERROR;
     }
     
-    FIBITMAP *src32 = FreeImage_ConvertTo32Bits(src_region);
+    FIBITMAP *src32 = NULL;
+   
+    if(FreeImage_GetImageType(src_region) != FIT_BITMAP || FreeImage_GetBPP(src_region) != 32) {
+        src32 = FreeImage_ConvertTo32Bits(src_region);
+    }
+    else {
+        src32 = FreeImage_Clone(src_region);
+    }
+
+	FIA_Matrix* dstMatrix = FIA_MatrixNew();
+	
+	double scalex = (double) dstWidth / srcWidth;
+	double scaley = (double) dstHeight / srcHeight;
+
+	FIA_MatrixTranslate(dstMatrix, dstLeft, dstTop, FIA_MatrixOrderPrepend);
+	FIA_MatrixScale(dstMatrix, scalex, scaley, FIA_MatrixOrderPrepend);
+
+	if(matrix != NULL) {
+		dstMatrix->trans_affine *= matrix->trans_affine;
+	}
+
+    DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour);
+        
+	FIA_MatrixDestroy(dstMatrix);
+
+    FreeImage_Unload(src32);
+    FreeImage_Unload(src_region);
+        
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
+			  int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour)
+{
+    if (FreeImage_GetImageType (dst) != FIT_BITMAP)
+    {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Destination image is not of type FIT_BITMAP");
+        return FIA_ERROR;
+    }
+    
+    if (FreeImage_GetBPP (dst) != 32)
+    {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Destination image is not 32 bpp");
+        return FIA_ERROR;
+    }
+
+    
+    FIBITMAP *src32 = NULL;
    
     if(FreeImage_GetImageType(src) != FIT_BITMAP || FreeImage_GetBPP(src) != 32) {
         src32 = FreeImage_ConvertTo32Bits(src);
@@ -289,10 +343,23 @@ FIA_DrawImage(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix, FIARECT dstRect,
         src32 = FreeImage_Clone(src);
     }
 
-    DrawTransformedImage (src32, dst, matrix->trans_affine, colour);
+	FIA_Matrix* dstMatrix = FIA_MatrixNew();
+	
+	double scalex = (double) dstWidth / FreeImage_GetWidth(src);
+	double scaley = (double) dstHeight / FreeImage_GetHeight(src);
+
+	FIA_MatrixTranslate(dstMatrix, dstLeft, dstTop, FIA_MatrixOrderPrepend);
+	FIA_MatrixScale(dstMatrix, scalex, scaley, FIA_MatrixOrderPrepend);
+
+	if(matrix != NULL) {
+		dstMatrix->trans_affine *= matrix->trans_affine;
+	}
+
+    DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour);
         
+	FIA_MatrixDestroy(dstMatrix);
+
     FreeImage_Unload(src32);
-    FreeImage_Unload(src_region);
         
     return FIA_SUCCESS;
 }
