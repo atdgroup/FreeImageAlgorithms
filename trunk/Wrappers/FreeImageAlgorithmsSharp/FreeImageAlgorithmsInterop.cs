@@ -185,6 +185,9 @@ namespace FreeImageAPI
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawSolidGreyscaleRect")]
         internal static extern bool DrawSolidRectangle(FIBITMAP src, FIARECT rect, double value);
 
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawColourSolidRect")]
+        internal static extern bool DrawColourSolidRect(FIBITMAP src, FIARECT rect, RGBQUAD colour);
+
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawColourRect")]
         internal static extern bool DrawColourRect(FIBITMAP src, FIARECT rect,
             RGBQUAD colour, int line_width);
@@ -208,15 +211,16 @@ namespace FreeImageAPI
         internal static extern bool MatrixInvert(FIA_Matrix matrix);
 
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_AffineTransform")]
-        internal static extern FIBITMAP AffineTransform(FIBITMAP src, int image_dst_width, int image_dst_height, FIA_Matrix matrix, RGBQUAD colour);
+        internal static extern FIBITMAP AffineTransform(FIBITMAP src, int image_dst_width, int image_dst_height,
+            FIA_Matrix matrix, RGBQUAD colour, int retain_background);
    
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawImageFromSrcToDst")]
         internal static extern bool DrawImageFromSrcToDst(FIBITMAP dst, FIBITMAP src, FIA_Matrix matrix,
             int dstLeft, int dstTop, int dstWidth, int dstHeight,
-            int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour);
+            int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour, int retain_background);
    
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawImageToDst")]
         internal static extern bool DrawImageToDst(FIBITMAP dst, FIBITMAP src, FIA_Matrix matrix,
-            int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour);            
+            int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background);            
     }
 }
