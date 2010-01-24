@@ -168,7 +168,7 @@ FIA_MatrixInvert(FIA_Matrix *matrix)
 }
 
 static int
-DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx, RGBQUAD colour, bool retain_background)
+DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx, RGBQUAD colour, int retain_background)
 {
     typedef agg::pixfmt_bgra32                       src_pixfmt_type;
     typedef agg::pixfmt_bgra32                       dst_pixfmt_type;
@@ -196,11 +196,13 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
     
     unsigned char *dst_bits = FreeImage_GetBits (dst);
 
+	int src_pitch = FreeImage_GetPitch (src);
+	int dst_pitch = FreeImage_GetPitch (dst);
     // Create the src buffer
-    agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, -FreeImage_GetPitch (src));
+    agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, -src_pitch);
     
     // Create the dst buffer
-    agg::rendering_buffer rbuf_dst (dst_bits, dst_width, dst_height, -FreeImage_GetPitch (dst));
+    agg::rendering_buffer rbuf_dst (dst_bits, dst_width, dst_height, -dst_pitch);
        
     dst_pixfmt_type pixf_dst(rbuf_dst);
     renbase_type rbase(pixf_dst);
