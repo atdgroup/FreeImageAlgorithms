@@ -311,7 +311,7 @@ TestFIA_GradientBlendPasteTest5(CuTest* tc)
     FreeImage_Unload(fib2);
 }
 
-*/
+
 
 static void
 TestFIA_GradientBlendPasteTest6(CuTest* tc)
@@ -338,7 +338,8 @@ TestFIA_GradientBlendPasteTest6(CuTest* tc)
     FreeImage_Unload(background);
     FreeImage_Unload(fib2);
 }
-
+  */
+  
 /*
 
 static void
@@ -368,6 +369,54 @@ TestFIA_GradientBlendFloatImagePasteTest(CuTest* tc)
 }
 */
 
+static void
+TestFIA_GradientBlendPasteTest(CuTest* tc)
+{
+    FIBITMAP *background =  FIA_LoadFIBFromFile(TEST_DATA_DIR "histology_gradient_dest.png");
+    FIBITMAP *src =  FIA_LoadFIBFromFile(TEST_DATA_DIR "jigsaw-src.png");
+
+    FIA_InPlaceConvertTo24Bit(&background);
+    FIA_InPlaceConvertTo24Bit(&src);
+
+    FIBITMAP* blended = FIA_GradientBlendMosaicPaste (background, src, 780, 620);
+    
+    FIA_PasteFromTopLeft(background, blended, 780, 620);
+    
+    //FIA_GradientBlendPasteFromTopLeft (background, src, 780, 620);
+    
+    FIA_SaveFIBToFile(blended, TEST_DATA_OUTPUT_DIR  "/GradientBlending/gradient_blended.png", BIT24);
+    FIA_SaveFIBToFile(background, TEST_DATA_OUTPUT_DIR  "/GradientBlending/gradient_blended_background.png", BIT24);
+
+
+    FreeImage_Unload(background);
+    FreeImage_Unload(src);
+    FreeImage_Unload(blended);
+}
+
+static void
+TestFIA_GradientBlendPasteTest2(CuTest* tc)
+{
+    FIBITMAP *background =  FIA_LoadFIBFromFile(TEST_DATA_DIR "histology_gradient_dest2.png");
+    FIBITMAP *src =  FIA_LoadFIBFromFile(TEST_DATA_DIR "jigsaw2.png");
+
+    FIA_InPlaceConvertTo24Bit(&background);
+    FIA_InPlaceConvertTo24Bit(&src);
+
+    FIBITMAP* blended = FIA_GradientBlendMosaicPaste (background, src, 780, 525);
+    
+    FIA_PasteFromTopLeft(background, blended, 780, 525);
+    
+    //FIA_GradientBlendPasteFromTopLeft (background, src, 780, 620);
+    
+    FIA_SaveFIBToFile(blended, TEST_DATA_OUTPUT_DIR  "/GradientBlending/gradient_blended2.png", BIT24);
+    FIA_SaveFIBToFile(background, TEST_DATA_OUTPUT_DIR  "/GradientBlending/gradient_blended_background2.png", BIT24);
+
+
+    FreeImage_Unload(background);
+    FreeImage_Unload(src);
+    FreeImage_Unload(blended);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsGradientBlendSuite(void)
 {
@@ -393,7 +442,8 @@ CuGetFreeImageAlgorithmsGradientBlendSuite(void)
 	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest5);
     */
     
-    SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest6);
+    SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest);
+    SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest2);
 
 	return suite;
 }

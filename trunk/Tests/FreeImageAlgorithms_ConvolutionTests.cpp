@@ -1384,7 +1384,6 @@ TestFIA_GradientBlendPasteTest5(CuTest* tc)
     FreeImage_Unload(fib2);
 }
 
-*/
 
 static void
 TestFIA_GradientBlendPasteTest6(CuTest* tc)
@@ -1414,6 +1413,7 @@ TestFIA_GradientBlendPasteTest6(CuTest* tc)
     FreeImage_Unload(background);
     FreeImage_Unload(fib2);
 }
+ */
 
 /*
 
@@ -1459,7 +1459,7 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 
     // Done
 
-	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest6);
+//	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest6);
 
 /*
     SUITE_ADD_TEST(suite, TestFIA_GradientBlend);

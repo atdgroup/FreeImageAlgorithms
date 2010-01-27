@@ -6,7 +6,7 @@ SET(FIA_TEST_SRCS AllTests.cpp
 	     	  FreeImageAlgorithms_LogicTests.cpp
 	     	  FreeImageAlgorithms_ColourTests.cpp
 	     	  FreeImageAlgorithms_ConvolutionTests.cpp
-		  FreeImageAlgorithms_GradientBlend.cpp
+              FreeImageAlgorithms_GradientBlend.cpp
 	     	  FreeImageAlgorithms_FFTTests.cpp
 	    	  FreeImageAlgorithms_LinearScale.cpp
 	     	  FreeImageAlgorithms_MorphologyTests.cpp

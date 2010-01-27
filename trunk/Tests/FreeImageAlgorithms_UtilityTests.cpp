@@ -145,6 +145,29 @@ TestFIA_DistanceTransformTest(CuTest* tc)
 	FreeImage_Unload(dib3);
 }
 
+static void
+TestFIA_DistanceTransformTest2(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "mask.bmp";
+
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+	CuAssertTrue(tc, dib1 != NULL);
+
+	FIBITMAP *dib2 = FreeImage_ConvertTo8Bits(dib1);
+
+	CuAssertTrue(tc, dib2 != NULL);
+
+	FIBITMAP *dib3 = FIA_DistanceTransform(dib2);
+
+	CuAssertTrue(tc, dib3 != NULL);
+
+	FIA_SaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "/Utility/distance-transform2.jpg", BIT24);
+
+	FreeImage_Unload(dib1);
+	FreeImage_Unload(dib2);
+	FreeImage_Unload(dib3);
+}
 
 static void PasteTest(CuTest* tc)
 {
@@ -168,11 +191,12 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
-    SUITE_ADD_TEST(suite, BorderTest);
-	SUITE_ADD_TEST(suite, BorderTest2);
+    //SUITE_ADD_TEST(suite, BorderTest);
+	//SUITE_ADD_TEST(suite, BorderTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
-	//SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
+	SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
+	SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest2);
 	//SUITE_ADD_TEST(suite, PasteTest);
 
 	return suite;

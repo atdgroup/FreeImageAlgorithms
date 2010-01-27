@@ -213,7 +213,7 @@ FIA_DistanceMap (int width, int height, int normalise)
                 bits[x] = min(current_min, (float) (height - y));
 
             if(normalise > 0) {
-                bits[x] = bits[x] / max(center_x, center_y);
+                bits[x] = bits[x] / min(center_x, center_y);
             }
 #else
             if (y <= center_y)
