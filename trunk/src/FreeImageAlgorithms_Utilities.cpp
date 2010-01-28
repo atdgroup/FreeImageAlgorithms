@@ -29,6 +29,7 @@
 #include <limits.h>
 #include <float.h>
 
+// Class that templates functions so that they work on all image types.
 template < class Tsrc > class TemplateImageFunctionClass
 {
   public:
@@ -41,19 +42,20 @@ template < class Tsrc > class TemplateImageFunctionClass
 	FIBITMAP * IntegerRescaleToHalf (FIBITMAP * src);
     FIBITMAP *ColourRescaleToHalf (FIBITMAP * src);
     FIBITMAP *FloatRescaleToHalf (FIBITMAP * src);
-
+    
 	// Composite function for all image types
 	FIBITMAP *Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
 	int Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask);
 };
 
-TemplateImageFunctionClass < unsigned char > UCharImage;
-TemplateImageFunctionClass < unsigned short > UShortImage;
-TemplateImageFunctionClass < short > ShortImage;
-TemplateImageFunctionClass < unsigned long > ULongImage;
-TemplateImageFunctionClass < long > LongImage;
-TemplateImageFunctionClass < float > FloatImage;
-TemplateImageFunctionClass < double > DoubleImage;
+static TemplateImageFunctionClass < unsigned char > UCharImage;
+static TemplateImageFunctionClass < unsigned short > UShortImage;
+static TemplateImageFunctionClass < short > ShortImage;
+static TemplateImageFunctionClass < unsigned long > ULongImage;
+static TemplateImageFunctionClass < long > LongImage;
+static TemplateImageFunctionClass < float > FloatImage;
+static TemplateImageFunctionClass < double > DoubleImage;
+
 #ifdef _MSC_VER
 
 #include <xmmintrin.h>

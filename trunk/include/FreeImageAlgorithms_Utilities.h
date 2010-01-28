@@ -508,12 +508,6 @@ FIA_GetDoublePixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double
 DLL_API int DLL_CALLCONV
 FIA_GetRGBPixelValuesForLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, BYTE *red_values, BYTE *green_values, BYTE *blue_values);
 
-DLL_API FIBITMAP *DLL_CALLCONV
-FIA_DistanceMap (int width, int height, int normalise);
-
-DLL_API FIBITMAP *DLL_CALLCONV
-FIA_DistanceMapForRectangle (FIARECT rect, int normalise);
-
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_CopyLeftTopWidthHeight ( FIBITMAP * src, int left, int top, int width, int height);
 
@@ -746,7 +740,7 @@ FIA_Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, 
 DLL_API int DLL_CALLCONV
 FIA_Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask);
 
-DLL_API FIBITMAP* DLL_CALLCONV
+DLL_API int DLL_CALLCONV
 FIA_GradientBlendMosaicPaste (FIBITMAP* dst, FIBITMAP* src, int x, int y);
 
 

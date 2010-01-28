@@ -164,24 +164,9 @@ namespace FreeImageAPI
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_Is16BitReally12BitImage")]
         internal static extern bool Is16BitReally12BitImage(FIBITMAP src);
 
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_CorrelateImageRegions")]
-        internal static extern bool CorrelateImageRegions(FIBITMAP src1, FIARECT rect1, FIBITMAP src2, FIARECT rect2, out FIAPOINT pt, out double max);
-    
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_CorrelateImagesAlongRightEdge")]
-        internal static extern bool CorrelateImagesAlongRightEdge(FIBITMAP src1, FIBITMAP src2, uint thickness, out FIAPOINT pt, out double max);
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_GradientBlendMosaicPaste")]
+        internal static extern bool GradientBlendPasteFromTopLeft(FIBITMAP dst, FIBITMAP src, int left, int top);
 
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_CorrelateImagesAlongBottomEdge")]
-        internal static extern bool CorrelateImagesAlongBottomEdge(FIBITMAP src1, FIBITMAP src2, uint thickness, out FIAPOINT pt, out double max);
-
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_GetGradientBlendAlphaImage")]
-        internal static extern FIBITMAP GetGradientBlendAlphaImage(FIBITMAP src2, FIARECT rect1, FIARECT rect2, out FIARECT intersect_rect);
-    
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_GradientBlendPasteFromTopLeft")]
-        internal static extern bool GradientBlendPasteFromTopLeft(FIBITMAP dst, FIBITMAP src, int left, int top, FIBITMAP mask);
-
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_GradientBlendedIntersectionImage")]
-        internal static extern FIBITMAP GradientBlendedIntersectionImage(FIBITMAP src1, FIARECT rect1, FIBITMAP src2, FIARECT rect2, FIBITMAP mask, out FIARECT intersect_rect);
-   
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawSolidGreyscaleRect")]
         internal static extern bool DrawSolidRectangle(FIBITMAP src, FIARECT rect, double value);
 

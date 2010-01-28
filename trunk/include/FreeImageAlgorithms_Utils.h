@@ -22,8 +22,6 @@
 
 #include "FreeImageAlgorithms.h"
 
-
-
 void CheckMemory(void *ptr);
 
 /// Max function
@@ -215,5 +213,5 @@ Tsrc quick_select_median(Tsrc arr[], int n)
 			high = hh - 1;
 	}
 }
-
+  
 #endif
