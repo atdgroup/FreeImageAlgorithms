@@ -1,22 +1,3 @@
-/*
- * Copyright 2007 Glenn Pierce
- *
- * This file is part of FIA.
- *
- * FIA is free software: you can redistribute it and/or modify
- * it under the terms of the Lesser GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * FIA is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * Lesser GNU General Public License for more details.
- * 
- * You should have received a copy of the Lesser GNU General Public License
- * along with FIA.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef __FREEIMAGE_ALGORITHMS_UTILITIES__
 #define __FREEIMAGE_ALGORITHMS_UTILITIES__
 
@@ -707,9 +688,6 @@ FIA_GradientBlend (FIBITMAP * src1, FIARECT rect1, FIBITMAP* src2, FIARECT rect2
  *  \param src Image to blend.
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
-
-DLL_API int DLL_CALLCONV
-FIA_GradientBlendPasteFromTopLeft (FIBITMAP *background, FIBITMAP* src, int left, int top);
 
 /** \brief Gradient blends one image into another
  *

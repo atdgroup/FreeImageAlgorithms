@@ -214,4 +214,5 @@ Tsrc quick_select_median(Tsrc arr[], int n)
 	}
 }
   
+int IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3);
 #endif

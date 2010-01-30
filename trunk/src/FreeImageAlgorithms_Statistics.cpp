@@ -320,8 +320,7 @@ FIA_StatisticReport (FIBITMAP * src, StatisticReport * report)
     {
         case FIT_BITMAP:
         {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
-			int bpp = FreeImage_GetBPP (src);
-            if (bpp == 8)
+            if (FreeImage_GetBPP (src) == 8)
             {
                 return statisticUCharImage.CalculateStatisticReport (src, report);
             }
