@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace FreeImageAPI
 {
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate FIBITMAP CorrelationPrefilter(FIBITMAP fib);
+    
     public enum FIA_BITDEPTH
     {
         BIT8,
@@ -206,6 +209,24 @@ namespace FreeImageAPI
    
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_DrawImageToDst")]
         internal static extern bool DrawImageToDst(FIBITMAP dst, FIBITMAP src, FIA_Matrix matrix,
-            int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background);            
+            int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background);    
+        
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_KernelCorrelateImages")]
+        internal static extern bool KernelCorrelateImages(FIBITMAP src1, FIBITMAP src2, CorrelationPrefilter prefilter,
+            out FIAPOINT pt2, out double max);
+
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_KernelCorrelateImageRegions")]
+        internal static extern bool KernelCorrelateImageRegions(
+            FIBITMAP src1, FIARECT rect1,
+            FIBITMAP src2, FIARECT rect2, 
+            CorrelationPrefilter prefilter,
+            out FIAPOINT pt2, out double max);
+
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_KernelCorrelateImageRegions")]
+        internal static extern bool KernelCorrelateImageRegions(
+            FIBITMAP src1, FIARECT rect1,
+            FIBITMAP src2, FIARECT rect2,
+            IntPtr prefilter,
+            out FIAPOINT pt2, out double max);
     }
 }

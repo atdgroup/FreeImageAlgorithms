@@ -680,5 +680,53 @@ namespace FreeImageAPI
             FreeImage.DrawImageToDst(dst.Dib, this.Dib, FIA_Matrix.Zero,
                 dstPoint.X, dstPoint.Y, dstSize.Width, dstSize.Height, colour, 1);
         }
+
+        public void KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, FIARECT rect1, FIARECT rect2,
+            CorrelationPrefilter prefilter, out FIAPOINT pt, out double max)
+        {
+            FreeImage.KernelCorrelateImageRegions(this.Dib, rect1, src2.Dib, rect2,prefilter, out pt, out max);
+        }
+
+        public void KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, FIARECT rect1, FIARECT rect2, 
+            out FIAPOINT pt, out double max)
+        {
+            FreeImage.KernelCorrelateImageRegions(this.Dib, rect1, src2.Dib, rect2, null, out pt, out max);
+        }
+
+        public void KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, Rectangle rect1, Rectangle rect2,
+            out Point pt, out double max)
+        {
+            FIARECT fiaRect1 = new FIARECT(rect1);
+            FIARECT fiaRect2 = new FIARECT(rect2);
+            FIAPOINT fiaPoint = new FIAPOINT();
+
+            FreeImage.KernelCorrelateImageRegions(this.Dib, fiaRect1, src2.Dib, fiaRect2, IntPtr.Zero, out fiaPoint, out max);
+
+            pt = new Point(fiaPoint.x, fiaPoint.y);
+        }
+
+        public void KernelCorrelateImages(FreeImageAlgorithmsBitmap src,
+            CorrelationPrefilter prefilter, out FIAPOINT pt, out double max)
+        {
+            CorrelationPrefilter del = new CorrelationPrefilter( MyPrefilter );
+
+            FreeImage.KernelCorrelateImages(this.Dib, src.Dib, del, out pt, out max);
+        }
+
+        public void KernelCorrelateImages(FreeImageAlgorithmsBitmap src,
+            CorrelationPrefilter prefilter, out Point pt, out double max)
+        {
+            CorrelationPrefilter del = new CorrelationPrefilter(MyPrefilter);
+            FIAPOINT fiaPoint;
+
+            FreeImage.KernelCorrelateImages(this.Dib, src.Dib, del, out fiaPoint, out max);
+            
+            pt = new Point(fiaPoint.x, fiaPoint.y);
+        }
+
+        private static FIBITMAP MyPrefilter(FIBITMAP fib)
+        {
+            return FIBITMAP.Zero;
+        }
     }
 }

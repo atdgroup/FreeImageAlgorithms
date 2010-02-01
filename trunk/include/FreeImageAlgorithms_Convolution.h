@@ -40,7 +40,7 @@ typedef struct
 } FilterKernel;
 
 typedef enum {CORRELATION_KERNEL, CORRELATION_FFT} CorrelationType;
-typedef FIBITMAP* (__cdecl *CORRELATION_PREFILTER) (FIBITMAP*);
+typedef FIBITMAP* (__stdcall *CORRELATION_PREFILTER) (FIBITMAP*);
 
 /** \brief Create a kernel.
  *
@@ -92,9 +92,6 @@ DLL_API FIBITMAP* __cdecl
 FIA_EdgeDetect(FIBITMAP *src);
 
 DLL_API int DLL_CALLCONV
-FIA_CorrelationDifferenceMeasure(FIBITMAP * src1, FIBITMAP * src2, FIAPOINT pt, double *max);
-
-DLL_API int DLL_CALLCONV
 FIA_CorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2, CorrelationType type,
         CORRELATION_PREFILTER filter, FIAPOINT * pt);
 
@@ -102,13 +99,6 @@ DLL_API int DLL_CALLCONV
 FIA_CorrelateImageRegions(FIBITMAP * src1, FIARECT region1, FIBITMAP * src2, FIARECT region2,
         CorrelationType type, CORRELATION_PREFILTER filter, FIAPOINT *pt);
 
-DLL_API int DLL_CALLCONV
-FIA_CorrelateImagesAroundOverlap(FIBITMAP * src1, FIARECT region1, FIBITMAP * src2, FIARECT region2,
-        int strip_width, CorrelationType type, CORRELATION_PREFILTER filter, FIAPOINT *pt);
-
-DLL_API int DLL_CALLCONV
-FIA_CorrelateImageEdgesWithImage(FIBITMAP * src1, FIARECT region1, FIBITMAP * src2,
-        int edge_size, CorrelationType type, CORRELATION_PREFILTER filter, FIAPOINT *pt);
 #ifdef __cplusplus
 }
 #endif
