@@ -228,5 +228,8 @@ namespace FreeImageAPI
             FIBITMAP src2, FIARECT rect2,
             IntPtr prefilter,
             out FIAPOINT pt2, out double max);
+
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_EdgeDetect")]
+        internal static extern FIBITMAP EdgeDetect(FIBITMAP src);
     }
 }
