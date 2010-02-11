@@ -437,6 +437,10 @@ namespace FreeImageAPI
             return FreeImage.GetGreyScalePixelValuesAsDoublesForLine(this.Dib, fi_pt1, fi_pt2, out values);
         }
 
+        public bool StatisticReport(out StatisticReport report)
+        {
+            return FreeImage.StatisticReport(this.Dib, out report);
+        }
 
         /*
         public bool GetGreyLevelHistogram(int number_of_bins, out ulong[] hist, out double range_per_bin)

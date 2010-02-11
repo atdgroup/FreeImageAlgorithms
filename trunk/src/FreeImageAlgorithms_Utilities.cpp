@@ -397,10 +397,12 @@ FIA_FindMinMax (FIBITMAP * src, double *min, double *max)
 template < class Tsrc > void TemplateImageFunctionClass < Tsrc >::find_max_xy (FIBITMAP * src,
                                                                         double *max, FIAPOINT * pt)
 {
-    if (!src)
-    {
+	pt->x = 0;
+	pt->y = 0;
+	*max = 0.0;
+
+    if (src == NULL)
         return;
-    }
 
     int width = FreeImage_GetWidth (src);
     int height = FreeImage_GetHeight (src);
@@ -435,6 +437,10 @@ template < class Tsrc > void TemplateImageFunctionClass < Tsrc >::find_max_xy (F
 void DLL_CALLCONV
 FIA_FindMaxXY (FIBITMAP * src, double *max, FIAPOINT * pt)
 {
+	pt->x = 0;
+	pt->y = 0;
+	*max = 0.0;
+
     if (!src)
         return;
 

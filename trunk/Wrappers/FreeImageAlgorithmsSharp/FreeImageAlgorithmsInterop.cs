@@ -16,6 +16,18 @@ namespace FreeImageAPI
     }
 
     [Serializable, StructLayout(LayoutKind.Sequential)]
+	public struct StatisticReport
+	{
+        public double  minValue;					// miminum pixel value found 
+        public double maxValue;					// maximum pixel value found 
+        public double mean;						// mean value				
+        public double stdDeviation;				// standard deviation		
+        public float percentage_overloaded;		// amount of overloaded pixels
+        public float percentage_underloaded;	    // amount of underloaded pixels
+        public int area;	
+    }
+
+    [Serializable, StructLayout(LayoutKind.Sequential)]
 	public struct FIA_Matrix : IEquatable<FIA_Matrix>
 	{
         private IntPtr data;
@@ -136,7 +148,10 @@ namespace FreeImageAPI
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint="FIA_GetMinPosibleValueForFib")]
         internal static extern void GetMinPosibleValueForFib(FIBITMAP dib, out double min);
 
-        [DllImport("FreeImageAlgorithms_d.dll", EntryPoint="FIA_Histogram")]
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint="FIA_StatisticReport")]
+        internal static extern bool StatisticReport(FIBITMAP dib, out StatisticReport report);
+
+        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint="FIA_Histogram")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool Histogram(FIBITMAP dib, double min, double max, int number_of_bins,
             [In, Out] ulong[] values);

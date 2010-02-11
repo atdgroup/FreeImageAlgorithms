@@ -277,6 +277,8 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
     FilterKernel kernel;
     FIABITMAP *tmp = NULL;
 
+	*max = 0.0;
+
     pt->x = 0;
     pt->y = 0;
 
@@ -287,7 +289,8 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
     {
         FreeImage_OutputMessageProc(FIF_UNKNOWN,
                 "Conversion to standard image falied");
-        return FIA_ERROR;
+        
+		goto CLEANUP;
     }
 
     unsigned int src1_width = FreeImage_GetWidth(src1);
@@ -299,7 +302,8 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
     {
         FreeImage_OutputMessageProc(FIF_UNKNOWN,
                 "_src2 image must be smaller or equal than src1");
-        return FIA_ERROR;
+        
+		goto CLEANUP;
     }
 
     FREE_IMAGE_TYPE src1_type = FreeImage_GetImageType(src1);
@@ -309,14 +313,16 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
     {
         FreeImage_OutputMessageProc(FIF_UNKNOWN,
                 "Images must be of the same type");
-        return FIA_ERROR;
+        
+		goto CLEANUP;
     }
 
     if (src1_type == FIT_COMPLEX)
     {
         FreeImage_OutputMessageProc(FIF_UNKNOWN,
                 "Error can not perform correlation on a complex image");
-        return NULL;
+        
+		goto CLEANUP;
     }
 
     int bpp1 = FreeImage_GetBPP(src1);
@@ -326,7 +332,8 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
     {
         FreeImage_OutputMessageProc(FIF_UNKNOWN,
                 "Images must have the same bpp");
-        return FIA_ERROR;
+        
+		goto CLEANUP;
     }
 
     // Convert colour images to greyscale
@@ -344,19 +351,20 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
 
     if (filter != NULL)
     {
-
         if ((filtered_src1 = filter(src1)) == NULL)
         {
             FreeImage_OutputMessageProc(FIF_UNKNOWN,
                     "Filter function returned NULL");
-            return FIA_ERROR;
+            
+			goto CLEANUP;
         }
 
         if ((filtered_src2 = filter(src2)) == FIA_ERROR)
         {
             FreeImage_OutputMessageProc(FIF_UNKNOWN,
                     "Filter function returned NULL");
-            return FIA_ERROR;
+            
+			goto CLEANUP;
         }
     }
     else
@@ -374,7 +382,7 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
         FreeImage_OutputMessageProc(FIF_UNKNOWN,
                 "Filter function has changed the size of the source input");
 
-        return FIA_ERROR;
+        goto CLEANUP;
     }
 
     kernel.x_radius = 0;
@@ -383,12 +391,19 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
 
     if (FIA_NewKernelFromImage(filtered_src2, &kernel) == FIA_ERROR)
     {
-        return FIA_ERROR;
+        goto CLEANUP;
     }
 
     tmp = FIA_SetZeroBorder(filtered_src1, kernel.x_radius, kernel.y_radius);
 
     FIBITMAP *dib = FIA_Correlate(tmp, kernel);
+
+	if(dib == NULL)
+	{
+        FreeImage_OutputMessageProc(FIF_UNKNOWN, "FIA_Correlate returned NULL");
+
+        goto CLEANUP;
+    }
 
     double found_max = 0.0;
 
@@ -404,13 +419,41 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2,
 
     pt->y = height - pt->y - 1;
 
-    FreeImage_Unload(filtered_src1);
-    FreeImage_Unload(filtered_src2);
-    FreeImage_Unload(dib);
-    FIA_Unload(tmp);
-    free((void *) kernel.values);
+	if(filtered_src1 != NULL)
+		FreeImage_Unload(filtered_src1);
+
+	if(filtered_src2 != NULL)
+		FreeImage_Unload(filtered_src2);
+
+	if(dib != NULL)
+		FreeImage_Unload(dib);
+
+	if(tmp != NULL)
+		FIA_Unload(tmp);
+
+	if(kernel.values != NULL)
+		free((void *) kernel.values);
 
     return FIA_SUCCESS;
+
+CLEANUP:
+
+    if(filtered_src1 != NULL)
+		FreeImage_Unload(filtered_src1);
+
+	if(filtered_src2 != NULL)
+		FreeImage_Unload(filtered_src2);
+
+	if(dib != NULL)
+		FreeImage_Unload(dib);
+
+	if(tmp != NULL)
+		FIA_Unload(tmp);
+
+	if(kernel.values != NULL)
+		free((void *) kernel.values);
+
+    return FIA_ERROR;
 }
 
 int DLL_CALLCONV
@@ -422,6 +465,8 @@ FIA_KernelCorrelateImageRegions(FIBITMAP * src1, FIARECT rect1,
             rect1.bottom);
     FIBITMAP *src2_rgn = FIA_Copy(src2, rect2.left, rect2.top, rect2.right,
             rect2.bottom);
+
+	*max = 0.0;
 
     pt->x = 0;
     pt->y = 0;
