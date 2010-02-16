@@ -250,6 +250,8 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 
     if(FIA_IntersectingRect(dstRect, srcRect, &intersect_rect) == 0) {
         		
+        PROFILE_STOP("FIA_GradientBlendMosaicPaste");
+        
 		FreeImage_OutputMessageProc (FIF_UNKNOWN, "Image dst (Left, Top, Right, Bottom) (%d, %d, %d, %d)"
 												  " and image src (%d, %d, %d, %d) do not intersec." ,
 									 dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
@@ -263,8 +265,6 @@ template < typename Tsrc > int TemplateImageFunctionClass <
     int intersect_width = intersect_rect.right - intersect_rect.left + 1;
     int intersect_height = intersect_rect.bottom - intersect_rect.top + 1;
 	
-	PROFILE_START("FIA_GradientBlendMosaicPaste - Masks");
-		
     // Copy the part of dst out that corresponds to the placement of the src image. 
 	dstRegion = FIA_CopyLeftTopWidthHeight (dst, intersect_rect.left, intersect_rect.top, intersect_width, intersect_height);
 	
@@ -274,6 +274,8 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	// Check that the width & height is what was specified
 	if(FreeImage_GetWidth(srcRegion) != intersect_width || FreeImage_GetHeight(srcRegion) != intersect_height) {
 	
+		PROFILE_STOP("FIA_GradientBlendMosaicPaste");
+		
 	    FreeImage_OutputMessageProc (FIF_UNKNOWN, "Image src (%d, %d) is not the requested size (%d, %d)." ,
 		                             FreeImage_GetWidth(srcRegion), FreeImage_GetHeight(srcRegion),
 		                             intersect_width, intersect_height);
@@ -283,6 +285,8 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	
 	if(FIA_CheckSizesAreSame(dstRegion, srcRegion) == 0) {
 
+		PROFILE_STOP("FIA_GradientBlendMosaicPaste");
+		
 		FreeImage_OutputMessageProc (FIF_UNKNOWN, "Image dst (%d, %d) and image src (%d, %d) are not the same size." ,
 		                             FreeImage_GetWidth(dstRegion), FreeImage_GetHeight(dstRegion),
 		                             FreeImage_GetWidth(srcRegion), FreeImage_GetHeight(srcRegion));
@@ -305,8 +309,6 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	invertedMaskedSrc = FreeImage_Clone(srcRegion);
     FIA_MaskImage(invertedMaskedSrc, dstRegionMaskInverted);
         
-	PROFILE_STOP("FIA_GradientBlendMosaicPaste - Masks");
-	
 	PROFILE_START("FIA_GradientBlendMosaicPaste - DistanceMap");
 		
 	FIBITMAP *distMapEdges = FIA_DistanceMap (intersect_width, intersect_height);
@@ -403,6 +405,8 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	}
 
     if(FIA_CheckSizesAreSame(invertedMaskedSrc, dstRegionMaskInverted) == 0) {
+
+		PROFILE_STOP("FIA_GradientBlendMosaicPaste");
 
 		FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground src (%d, %d) and mask image (%d, %d) are not the same size." ,
 		                             FreeImage_GetWidth(invertedMaskedSrc), FreeImage_GetHeight(invertedMaskedSrc),
