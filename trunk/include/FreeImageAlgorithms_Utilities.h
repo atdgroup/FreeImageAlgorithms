@@ -33,6 +33,9 @@ MakeFIAPoint(int x, int y);
 DLL_API FIARECT DLL_CALLCONV
 MakeFIARect(int left, int top, int right, int bottom);
 
+DLL_API int DLL_CALLCONV
+FIARectIsEmpty (FIARECT rect);
+
 /** \brief Make a FIARECT structure from an image.
  *
  *  \param data Array of char data.
@@ -523,6 +526,8 @@ FIA_RectHeight (FIARECT *rect);
 DLL_API BYTE* DLL_CALLCONV
 FIA_GetScanLineFromTop (FIBITMAP *src, int line);
 
+DLL_API FIARECT DLL_CALLCONV
+FIA_MakeFiaRectRelativeToImageBottomLeft (FIBITMAP *src, FIARECT rt);
 
 /** \brief Performs a bitwise compare between two images.
  *		   Returns 1 for images that are the same.

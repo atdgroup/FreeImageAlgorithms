@@ -227,13 +227,14 @@ namespace FreeImageAPI
             int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background);    
         
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_KernelCorrelateImages")]
-        internal static extern bool KernelCorrelateImages(FIBITMAP src1, FIBITMAP src2, CorrelationPrefilter prefilter,
+        internal static extern bool KernelCorrelateImages(FIBITMAP src1, FIBITMAP src2, FIARECT search_area, FIBITMAP mask, CorrelationPrefilter prefilter,
             out FIAPOINT pt2, out double max);
 
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_KernelCorrelateImageRegions")]
         internal static extern bool KernelCorrelateImageRegions(
             FIBITMAP src1, FIARECT rect1,
             FIBITMAP src2, FIARECT rect2, 
+            FIARECT search_area, FIBITMAP mask,
             CorrelationPrefilter prefilter,
             out FIAPOINT pt2, out double max);
 
@@ -241,6 +242,7 @@ namespace FreeImageAPI
         internal static extern bool KernelCorrelateImageRegions(
             FIBITMAP src1, FIARECT rect1,
             FIBITMAP src2, FIARECT rect2,
+            FIARECT search_area, FIBITMAP mask,
             IntPtr prefilter,
             out FIAPOINT pt2, out double max);
 
