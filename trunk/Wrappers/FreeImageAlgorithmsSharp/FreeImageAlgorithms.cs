@@ -708,6 +708,23 @@ namespace FreeImageAPI
             return FreeImage.KernelCorrelateImageRegions(this.Dib, rect1, src2.Dib, rect2, search_area, mask, prefilter, out pt, out max);
         }
 
+        public bool KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, Rectangle rect1, Rectangle rect2,
+            Rectangle search_area, FIBITMAP mask,
+            CorrelationPrefilter prefilter, out Point pt, out double max)
+        {
+            FIARECT fiaRect1 = new FIARECT(rect1);
+            FIARECT fiaRect2 = new FIARECT(rect2);
+            FIARECT searchRect = new FIARECT(search_area);
+            FIAPOINT fiaPoint = new FIAPOINT();
+
+            bool ret = FreeImage.KernelCorrelateImageRegions(this.Dib, fiaRect1, src2.Dib, fiaRect2, searchRect, mask, prefilter, out fiaPoint, out max);
+
+            pt = new Point(fiaPoint.x, fiaPoint.y);
+
+            return ret;
+        }
+
+
         public bool KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, FIARECT rect1, FIARECT rect2,
             FIARECT search_area, CorrelationPrefilter prefilter, out FIAPOINT pt, out double max)
         {
@@ -730,24 +747,8 @@ namespace FreeImageAPI
         public bool KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, FIARECT rect1, FIARECT rect2,
             out FIAPOINT pt, out double max)
         {
-            return FreeImage.KernelCorrelateImageRegions(this.Dib, rect1, src2.Dib, rect2, FIARECT.Empty, FIBITMAP.Zero, IntPtr.Zero, out pt, out max);
-        }
-
-        public bool KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, Rectangle rect1, Rectangle rect2,
-            Rectangle search_area, FIBITMAP mask,
-            CorrelationPrefilter prefilter, out Point pt, out double max)
-        {
-            FIARECT fiaRect1 = new FIARECT(rect1);
-            FIARECT fiaRect2 = new FIARECT(rect2);
-            FIARECT searchRect = new FIARECT(search_area);
-            FIAPOINT fiaPoint = new FIAPOINT();
-
-            bool ret = FreeImage.KernelCorrelateImageRegions(this.Dib, fiaRect1, src2.Dib, fiaRect2, searchRect, mask, prefilter, out fiaPoint, out max);
-
-            pt = new Point(fiaPoint.x, fiaPoint.y);
-
-            return ret;
-        }
+            return FreeImage.KernelCorrelateImageRegions(this.Dib, rect1, src2.Dib, rect2, FIARECT.Empty, FIBITMAP.Zero, null, out pt, out max);
+        } 
 
         public bool KernelCorrelateImageRegions(FreeImageAlgorithmsBitmap src2, Rectangle rect1, Rectangle rect2,
             FIARECT searchRect, FIBITMAP mask,

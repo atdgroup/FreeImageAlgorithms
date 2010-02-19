@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace FreeImageAPI
 {
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
     public delegate FIBITMAP CorrelationPrefilter(FIBITMAP fib);
     
     public enum FIA_BITDEPTH
@@ -238,13 +238,6 @@ namespace FreeImageAPI
             CorrelationPrefilter prefilter,
             out FIAPOINT pt2, out double max);
 
-        [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_KernelCorrelateImageRegions")]
-        internal static extern bool KernelCorrelateImageRegions(
-            FIBITMAP src1, FIARECT rect1,
-            FIBITMAP src2, FIARECT rect2,
-            FIARECT search_area, FIBITMAP mask,
-            IntPtr prefilter,
-            out FIAPOINT pt2, out double max);
 
         [DllImport(FreeImageAlgorithmsLibrary, EntryPoint = "FIA_EdgeDetect")]
         internal static extern FIBITMAP EdgeDetect(FIBITMAP src);
