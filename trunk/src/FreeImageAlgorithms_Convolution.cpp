@@ -423,6 +423,12 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2, FIARECT search_are
 
     pt->y = height - pt->y - 1;
 
+	if(src1 != NULL)
+		FreeImage_Unload(src1);
+
+	if(src2 != NULL)
+		FreeImage_Unload(src2);
+
 	if(filtered_src1 != NULL)
 		FreeImage_Unload(filtered_src1);
 
@@ -441,6 +447,12 @@ FIA_KernelCorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2, FIARECT search_are
     return FIA_SUCCESS;
 
 CLEANUP:
+
+	if(src1 != NULL)
+		FreeImage_Unload(src1);
+
+	if(src2 != NULL)
+		FreeImage_Unload(src2);
 
     if(filtered_src1 != NULL)
 		FreeImage_Unload(filtered_src1);
