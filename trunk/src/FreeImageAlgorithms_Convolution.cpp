@@ -485,6 +485,8 @@ FIA_KernelCorrelateImageRegions(FIBITMAP * src1, FIARECT rect1,
 	// we need to make it relative to the src1 region
 	search_rect.left -= rect1.left;
 	search_rect.top -= rect1.top;
+	search_rect.right -= rect1.left;
+	search_rect.bottom -= rect1.top;
 
     int err = FIA_KernelCorrelateImages(src1_rgn, src2_rgn, search_rect, mask, filter, pt, max);
 

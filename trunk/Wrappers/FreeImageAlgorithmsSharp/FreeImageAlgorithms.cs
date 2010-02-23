@@ -332,13 +332,13 @@ namespace FreeImageAPI
             }
         }
 
-        public void ConvertToStandardType()
+        public void ConvertToStandardType(bool scale)
         {
-            FIBITMAP tmp_dib = FreeImage.ConvertToStandardType(this.Dib, true);
+            FIBITMAP tmp_dib = FreeImage.ConvertToStandardType(this.Dib, scale);
 
             this.ReplaceDib(tmp_dib);
         }
- 
+
          public void ConvertToType(FREE_IMAGE_TYPE type)
          {
              FIBITMAP tmp_dib = FreeImage.ConvertToType(this.Dib, type, true);
