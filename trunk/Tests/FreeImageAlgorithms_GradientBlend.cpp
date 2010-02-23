@@ -21,7 +21,8 @@ TestFIA_GradientBlendPasteTest1(CuTest* tc)
     FIA_InPlaceConvertTo24Bit(&background);
     FIA_InPlaceConvertTo24Bit(&src);
 
-    FIA_GradientBlendMosaicPaste (background, src, 780, 620);
+	for(int i=0; i< 10000; i++)
+		FIA_GradientBlendMosaicPaste (background, src, 780, 620);
     
     FIA_SaveFIBToFile(background, TEST_DATA_OUTPUT_DIR  "/GradientBlending/gradient_blended1.png", BIT24);
 
@@ -140,12 +141,15 @@ CuGetFreeImageAlgorithmsGradientBlendSuite(void)
 	MkDir(TEST_DATA_OUTPUT_DIR "/GradientBlending");
     
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest1);
+
+	/*
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest2);
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest3);
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest4);
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest5);
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest6);
     SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest7);
-    
+    */
+
 	return suite;
 }

@@ -57,8 +57,8 @@ void RunAllTests(void)
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsDrawingSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsFFTSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
-    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
-    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsGradientBlendSuite());
+    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
+    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsGradientBlendSuite());
 
 	CuSuiteRun(suite);
 	CuSuiteSummary(suite, output);
