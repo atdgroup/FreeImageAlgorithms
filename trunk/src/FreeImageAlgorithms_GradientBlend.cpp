@@ -309,7 +309,11 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	
 	blended_section = FIA_CloneImageType(srcRegion, intersect_width, intersect_height);	
 	
-	dstRegionMask = FIA_Threshold(dstRegion, 1.0, 255.0, 1.0);
+	double max_pssoble_value;
+
+	FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(dst), &max_pssoble_value);
+
+	dstRegionMask = FIA_Threshold(dstRegion, 1.0, max_pssoble_value, 1.0);
 	FIA_InPlaceConvertToStandardType(&dstRegionMask, 0);	
 	FIA_InPlaceConvertTo8Bit(&dstRegionMask);
 		
