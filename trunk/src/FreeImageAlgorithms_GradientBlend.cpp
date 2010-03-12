@@ -1,3 +1,23 @@
+/*
+ * Copyright 2007-2010 Glenn Pierce, Paul Barber,
+ * Oxford University (Gray Institute for Radiation Oncology and Biology) 
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "FreeImageAlgorithms.h"
 #include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Logic.h"
@@ -244,6 +264,7 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	BYTE *pCentre=NULL, *pLeft=NULL, *pTop=NULL, *pTopLeft=NULL, *pTopRight=NULL;
 	float *pCentreFM=NULL, *pLeftFM=NULL, *pTopFM=NULL, *pTopLeftFM=NULL, *pTopRightFM=NULL;
 	BYTE *pCentreF;
+	FIARECT dstRect, srcRect;
 
 	if(dst == NULL || src == NULL)
 	    goto CLEANUP;
@@ -258,8 +279,8 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	
 	FIARECT src_intersection_rect, intersect_rect;
 
-	FIARECT dstRect = FIAImageRect(dst);
-	FIARECT srcRect = MakeFIARect(x, y, x + FreeImage_GetWidth(src) - 1, y + FreeImage_GetHeight(src) - 1);
+	dstRect = FIAImageRect(dst);
+	srcRect = MakeFIARect(x, y, x + FreeImage_GetWidth(src) - 1, y + FreeImage_GetHeight(src) - 1);
 
     if(FIA_IntersectingRect(dstRect, srcRect, &intersect_rect) == 0) {
         		

@@ -1,3 +1,23 @@
+/*
+ * Copyright 2007-2010 Glenn Pierce, Paul Barber,
+ * Oxford University (Gray Institute for Radiation Oncology and Biology) 
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "FreeImageAlgorithms_Arithmetic.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include <limits>
@@ -180,6 +200,7 @@ template < class Tsrc > double ARITHMATIC < Tsrc >::DifferenceMeasure (FIBITMAP 
 
     return sum;
 }
+
 template < class Tsrc > FIBITMAP * ARITHMATIC < Tsrc >::Log (FIBITMAP * src)
 {
 
@@ -786,6 +807,7 @@ FIA_DifferenceMeasure (FIBITMAP *src1, FIBITMAP *src2)
 
     return -1.0;
 }
+
 FIBITMAP *DLL_CALLCONV
 FIA_Log (FIBITMAP * src)
 {

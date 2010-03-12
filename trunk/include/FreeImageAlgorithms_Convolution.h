@@ -1,3 +1,23 @@
+/*
+ * Copyright 2007-2010 Glenn Pierce, Paul Barber,
+ * Oxford University (Gray Institute for Radiation Oncology and Biology) 
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef __FREEIMAGE_ALGORITHMS_CONVOLUTION__
 #define __FREEIMAGE_ALGORITHMS_CONVOLUTION__
 
@@ -21,6 +41,7 @@ typedef struct
 } FilterKernel;
 
 typedef enum {CORRELATION_KERNEL, CORRELATION_FFT} CorrelationType;
+
 typedef FIBITMAP* (__cdecl *CORRELATION_PREFILTER) (FIBITMAP*);
 
 /** \brief Create a kernel.
@@ -87,6 +108,7 @@ FIA_FFTCorrelateImageWithPreCorrelationFFT(FIBITMAP * fft_fib, FIBITMAP *_src1, 
 DLL_API FIBITMAP* __cdecl
 FIA_EdgeDetect(FIBITMAP *src);
 
+
 DLL_API int DLL_CALLCONV
 FIA_CorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2, CorrelationType type,
         CORRELATION_PREFILTER filter, FIAPOINT * pt);
@@ -94,6 +116,7 @@ FIA_CorrelateImages(FIBITMAP * _src1, FIBITMAP * _src2, CorrelationType type,
 DLL_API int DLL_CALLCONV
 FIA_CorrelateImageRegions(FIBITMAP * src1, FIARECT region1, FIBITMAP * src2, FIARECT region2,
         CorrelationType type, CORRELATION_PREFILTER filter, FIAPOINT *pt);
+
 
 #ifdef __cplusplus
 }

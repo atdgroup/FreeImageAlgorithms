@@ -1,3 +1,23 @@
+/*
+ * Copyright 2007-2010 Glenn Pierce, Paul Barber,
+ * Oxford University (Gray Institute for Radiation Oncology and Biology) 
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "FreeImageAlgorithms.h"
 #include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Drawing.h"
@@ -23,7 +43,7 @@ template < class Tsrc > class TemplateImageFunctionClass
 	FIBITMAP * IntegerRescaleToHalf (FIBITMAP * src);
     FIBITMAP *ColourRescaleToHalf (FIBITMAP * src);
     FIBITMAP *FloatRescaleToHalf (FIBITMAP * src);
-    
+
 	// Composite function for all image types
 	FIBITMAP *Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
 	int Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask);
@@ -40,6 +60,7 @@ static TemplateImageFunctionClass < double > DoubleImage;
 #ifdef _MSC_VER
 
 #include <xmmintrin.h>
+
 /***
  * int _os_support(int feature)
  *   - Checks if OS Supports the capablity or not
@@ -156,6 +177,7 @@ Round (double v)
 */
 
 #endif //  _MSC_VER
+
 FIAPOINT DLL_CALLCONV
 MakeFIAPoint (int x, int y)
 {
@@ -331,7 +353,6 @@ template < class Tsrc > void TemplateImageFunctionClass < Tsrc >::find (FIBITMAP
     *min = temp_min;
     *max = temp_max;
 }
-
 
 void DLL_CALLCONV
 FIA_FindMinMax (FIBITMAP * src, double *min, double *max)
@@ -1022,129 +1043,6 @@ GetPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, T * values)
     return len;
 }
 
-
-template < class Tsrc > class PixelValuesAlongLine
-{
-  public:
-    int GetValuesAsDoubles (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double* values);
-};
-
-PixelValuesAlongLine < unsigned char > UCharPixelValuesAlongLine;
-PixelValuesAlongLine < unsigned short > UShortPixelValuesAlongLine;
-PixelValuesAlongLine < short > ShortPixelValuesAlongLine;
-PixelValuesAlongLine < unsigned long > ULongPixelValuesAlongLine;
-PixelValuesAlongLine < long > LongPixelValuesAlongLine;
-PixelValuesAlongLine < float > FloatPixelValuesAlongLine;
-PixelValuesAlongLine < double > DoublePixelValuesAlongLine;
-
-/* Gets the values of the pixels along a line calculated using the Midpoint Line algorithm */
-template < class Tsrc > int PixelValuesAlongLine < Tsrc >::GetValuesAsDoubles (FIBITMAP * src,
-                                        FIAPOINT p1, FIAPOINT p2, double* values)
-{
-    double value;
-    int swapped = 0, dx, dy, abs_dy, incrN, incrE, incrNE, d, x, y, slope, tmp_y, len = 0;
-
-    // If necessary, switch the points so we're 
-    // always drawing from left to right. 
-    if (p2.x < p1.x)
-    {
-        swapped = 1;
-        SWAP (p1, p2);
-    }
-
-    dx = p2.x - p1.x;
-    dy = p2.y - p1.y;
-    abs_dy = abs(dy);
-
-    if (dy < 0)
-    {
-        slope = -1;
-        dy = -dy;
-    }
-    else
-    {
-        slope = 1;
-    }
-
-    x = p1.x;
-    y = p1.y;
-
-    if (abs_dy <= dx)
-    {
-        d = 2 * dy - dx;
-        incrE = 2 * dy;         // E
-        incrNE = 2 * (dy - dx); // NE
-
-        Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-
-        value = bits[x];
-
-        *values++ = value;
-
-        while (x <= p2.x)
-        {
-            if (d <= 0)
-            {
-                d += incrE;     // Going to E
-                x++;
-            }
-            else
-            {
-                d += incrNE;    // Going to NE
-                x++;
-                y += slope;
-            }
-
-            Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-
-            value = bits[x];
-
-            *values++ = value;
-            len++;
-        }
-    }
-    else
-    {
-
-        d = dy - 2 * dx;
-        incrN = 2 * -dx;        // N
-        incrNE = 2 * (dy - dx); // NE
-
-        tmp_y = 0;
-
-        Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-
-        value = bits[x];
-
-        *values++ = value;
-
-        for(tmp_y = 0; tmp_y < abs_dy; tmp_y++)
-        {
-            if (d > 0)
-            {
-
-                d += incrN;     // Going to N
-                y += slope;
-            }
-            else
-            {
-                d += incrNE;    // Going to NE
-                y += slope;
-                x++;
-            }
-
-            Tsrc *bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-
-            value = (double) bits[x];
-
-            *values++ = value;
-            len++;
-        }
-    }
-
-    return len;
-}
-
 int DLL_CALLCONV
 FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, void *values)
 {
@@ -1191,68 +1089,6 @@ FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, vo
         case FIT_DOUBLE:       // array of double: 64-bit
         {
             return GetPixelValuesForLine (src, p1, p2, (double*) values);
-        }
-
-        case FIT_COMPLEX:      // array of FICOMPLEX: 2 x 64-bit
-        {
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-    }
-
-    return FIA_ERROR; 
-}
-
-int DLL_CALLCONV
-FIA_GetGreyScalePixelValuesAsDoublesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double *values)
-{
-	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
-	int bpp = FreeImage_GetBPP(src);
-
-	switch (src_type)
-    {
-        case FIT_BITMAP:       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
-        {
-            if (FreeImage_GetBPP (src) == 8)
-            {
-				return UCharPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
-            }
-
-            break;
-        }
-        
-        case FIT_UINT16:       // array of unsigned short: unsigned 16-bit
-        {
-            return UShortPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
-        }
-        
-        case FIT_INT16:        // array of short: signed 16-bit
-        {
-            return ShortPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
-        }
-        
-        case FIT_UINT32:       // array of unsigned long: unsigned 32-bit
-        {
-            return ULongPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
-        }
-        
-        case FIT_INT32:        // array of long: signed 32-bit
-        {
-            return LongPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
-        }
-
-        case FIT_FLOAT:        // array of float: 32-bit
-        {
-            return FloatPixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
-        }
-
-        case FIT_DOUBLE:       // array of double: 64-bit
-        {
-            return DoublePixelValuesAlongLine.GetValuesAsDoubles (src, p1, p2, values);
         }
 
         case FIT_COMPLEX:      // array of FICOMPLEX: 2 x 64-bit
@@ -1422,7 +1258,6 @@ FIA_GetRGBPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2,
     return len;
 }
 
-
 // Find two intersecting rects
 int DLL_CALLCONV
 FIA_IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3)
@@ -1539,18 +1374,6 @@ FIA_Paste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
 {
 	return FIA_PasteFromTopLeft (dst, src, left,
 		FreeImage_GetHeight(dst) - bottom - FreeImage_GetHeight(src));
-}
-
-int DLL_CALLCONV
-FIA_SimplePaste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
-{
-	return FIA_Paste (dst, src, left, bottom);
-}
-
-int DLL_CALLCONV
-FIA_SimplePasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
-{
-	return FIA_PasteFromTopLeft(dst, src, left, top);
 }
 
 FIBITMAP* DLL_CALLCONV

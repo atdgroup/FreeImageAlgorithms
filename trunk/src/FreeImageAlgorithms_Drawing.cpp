@@ -1,5 +1,24 @@
+/*
+ * Copyright 2007-2010 Glenn Pierce, Paul Barber,
+ * Oxford University (Gray Institute for Radiation Oncology and Biology) 
+ *
+ * This file is part of FreeImageAlgorithms.
+ *
+ * FreeImageAlgorithms is free software: you can redistribute it and/or modify
+ * it under the terms of the Lesser GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FreeImageAlgorithms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * Lesser GNU General Public License for more details.
+ *
+ * You should have received a copy of the Lesser GNU General Public License
+ * along with FreeImageAlgorithms.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "FreeImageAlgorithms.h"
-#include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Utils.h"
 #include "FreeImageAlgorithms_Drawing.h"
 #include "FreeImageAlgorithms_Palettes.h"
@@ -13,6 +32,7 @@
 #include "agg_rasterizer_scanline_aa.h"
 #include "agg_rasterizer_outline.h"
 #include "agg_renderer_primitives.h"
+#include "agg_alpha_mask_u8.h"
 #include "agg_scanline_p.h"
 #include "agg_scanline_u.h"
 #include "agg_renderer_scanline.h"
@@ -179,6 +199,7 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
 
 	int src_pitch = FreeImage_GetPitch (src);
 	int dst_pitch = FreeImage_GetPitch (dst);
+
     // Create the src buffer
     agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, -src_pitch);
     
@@ -192,9 +213,13 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
 
     // "hardcoded" bilinear filter
     typedef agg::span_image_filter_rgba_bilinear_clip<src_pixfmt_type, interpolator_type> span_gen_type;
+//    typedef agg::span_image_filter_rgba_bilinear_clone<src_pixfmt_type, interpolator_type> span_gen_type;
+
     span_gen_type sg(pixf_src, agg::rgba8(colour.rgbRed,colour.rgbGreen,colour.rgbBlue,
-		(retain_background ? 0 : 255)), interpolator);
-        
+    		(retain_background ? 0 : 255)), interpolator);
+       
+//    span_gen_type sg(pixf_src, interpolator);
+ 
     // The Rasterizer definition  
     agg::rasterizer_scanline_aa<> ras;
     agg::scanline_p8 scanline;
@@ -209,12 +234,11 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
     ps.line_to(0.0, 0.0);
     
     ras.add_path(ps);
-        
+      
     agg::render_scanlines_aa(ras, scanline, rbase, sa, sg);
 
     return FIA_SUCCESS;
 }
-
 
 FIBITMAP* DLL_CALLCONV
 FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
