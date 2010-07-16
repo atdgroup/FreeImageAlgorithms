@@ -46,7 +46,7 @@ static void BorderTest2(CuTest* tc)
 
 	FIA_DrawSolidGreyscaleRect(src, rect, 255);
 	
-	err = FIA_SimplePaste(dst, src, 1, 1);
+	err = FIA_Paste(dst, src, 1, 1);
 
 	CuAssertTrue(tc, err == FIA_SUCCESS);
 
@@ -177,7 +177,7 @@ static void PasteTest(CuTest* tc)
 	FIBITMAP *src = FIA_LoadFIBFromFile(file1);
 	FIBITMAP *dst = FIA_LoadFIBFromFile(file2);
 
-	FIA_SimplePaste(dst, src, -100, -100);
+	FIA_Paste(dst, src, -100, -100);
 	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/paste_result.bmp", BIT8);
 	
 	FreeImage_Unload(src);

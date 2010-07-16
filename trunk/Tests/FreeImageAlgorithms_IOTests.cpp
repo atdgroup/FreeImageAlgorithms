@@ -65,7 +65,7 @@ TestFIA_IO(CuTest* tc)
 	FREE_IMAGE_TYPE type;
 	int bpp, err;
     
-    const char *file = TEST_DATA_DIR "drone-bee.jpg";
+    const char *file = TEST_DATA_DIR "001.tif";
 	dib1 = FIA_LoadFIBFromFile(file);
 
 	CuAssertTrue(tc, dib1 != NULL);
@@ -156,7 +156,7 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 	SUITE_ADD_TEST(suite, TestFIA_IO);
 //	SUITE_ADD_TEST(suite, TestFIA_IOLoadColourArrayData);
 //	SUITE_ADD_TEST(suite, TestFIA_SaveBPPWithPalette);
-	SUITE_ADD_TEST(suite, TestFIA_IOSaveTest);
+//	SUITE_ADD_TEST(suite, TestFIA_IOSaveTest);
 
 	return suite;
 }
