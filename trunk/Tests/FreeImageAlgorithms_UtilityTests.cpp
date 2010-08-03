@@ -17,6 +17,24 @@
 #include "profile.h"
 
 
+static void LineTest(CuTest* tc)
+{
+	const char *file = "C:\\test.png";
+	FIAPOINT p1, p2;
+	int len;
+	unsigned short values[2000];
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
+	
+	p1 = MakeFIAPoint(500, 0);
+	p2 = MakeFIAPoint(500, 1023);
+
+	len = FIA_GetUShortPixelValuesForLine(src, p1, p2, values);
+
+	FreeImage_Unload(src);
+}
+
+
 static void BorderTest(CuTest* tc)
 {
 	const char *file = TEST_DATA_DIR "drone-bee-greyscale.jpg";
@@ -195,8 +213,8 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 	//SUITE_ADD_TEST(suite, BorderTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
-	SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest);
-	SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest2);
+	SUITE_ADD_TEST(suite, LineTest);
+	//SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest2);
 	//SUITE_ADD_TEST(suite, PasteTest);
 
 	return suite;

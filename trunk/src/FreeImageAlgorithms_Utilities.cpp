@@ -1003,7 +1003,7 @@ GetPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, T * values)
     }
     else
     {
-
+		len = 1;
         d = dy - 2 * dx;
         incrN = 2 * -dx;        // N
         incrNE = 2 * (dy - dx); // NE
