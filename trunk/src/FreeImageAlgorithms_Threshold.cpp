@@ -61,6 +61,8 @@ template < class Tsrc > int THRESHOLD < Tsrc >::Threshold (FIBITMAP * src, Tsrc 
         {
             if (src_ptr[x] >= min && src_ptr[x] <= max)
                 src_ptr[x] = new_value;
+			else
+				src_ptr[x] = (Tsrc) 0;
         }
     }
 
