@@ -47,7 +47,7 @@ class FindMaxima
   private:
 
     void NonMaxSupression ();
-    inline int NeighbourhoodNMS (unsigned char *ptr);
+    inline unsigned char NeighbourhoodNMS (double *ptr);
     inline void SetNeighbours (unsigned char *ptr);
     void SetNeigbourPixels ();
     void RegionGrow (int x, int y);
@@ -69,10 +69,15 @@ class FindMaxima
     FIBITMAP *peek_image;
 };
 
-inline int
-FindMaxima::NeighbourhoodNMS (unsigned char *ptr)
+inline unsigned char
+FindMaxima::NeighbourhoodNMS (double *ptr)
 {
-    unsigned char *tmp_ptr = ptr - this->pitch_in_pixels - 1;
+	int bpp = FreeImage_GetBPP(this->original_image);
+	int bytes_per_pixel = bpp / 8;
+	int pitch_in_pixels = FreeImage_GetPitch (this->original_image) / bytes_per_pixel;
+	
+	// Top left of 3x3 kernel
+    double *tmp_ptr = ptr - pitch_in_pixels - 1;
 
     if (*ptr < tmp_ptr[0])
     {
@@ -103,7 +108,7 @@ FindMaxima::NeighbourhoodNMS (unsigned char *ptr)
     }
 
     // Next kernel line
-    tmp_ptr = ptr + this->pitch_in_pixels - 1;
+    tmp_ptr = ptr + pitch_in_pixels - 1;
 
     if (*ptr < tmp_ptr[0])
     {
@@ -126,24 +131,26 @@ FindMaxima::NeighbourhoodNMS (unsigned char *ptr)
 void
 FindMaxima::NonMaxSupression ()
 {
-    register unsigned char *src_ptr, *dst_ptr;
+	FIBITMAP *double_dib = FIA_ConvertToGreyscaleFloatType(this->original_image, FIT_DOUBLE);
+
+	register double *src_ptr;
+    register unsigned char *dst_ptr;
 
     for(register int y = 1; y < height - 1; y++)
     {
-        src_ptr = this->original_first_pixel_address_ptr + y * this->pitch_in_pixels + 1;
-        dst_ptr = this->processing_first_pixel_address_ptr + y * this->pitch_in_pixels + 1;
+		src_ptr = (double *) FreeImage_GetScanLine(double_dib, y);
+		dst_ptr = (unsigned char *) FreeImage_GetScanLine(this->processing_image, y);
 
         for(register int x = 1; x < width - 1; x++)
         {
-            if (*src_ptr > this->threshold)
+			if (src_ptr[x] > this->threshold)
             {
-                *dst_ptr = NeighbourhoodNMS (src_ptr);
+                dst_ptr[x] = NeighbourhoodNMS (src_ptr + x);
             }
-
-            src_ptr++;
-            dst_ptr++;
         }
     }
+
+	FreeImage_Unload(double_dib);
 }
 
 inline void
@@ -439,6 +446,7 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char thre
     this->min_separation = min_separation;
 
     this->original_image = src;
+	this->peek_image = NULL;
 
     this->width = FreeImage_GetWidth (this->original_image);
     this->height = FreeImage_GetHeight (this->original_image);
@@ -485,8 +493,8 @@ FIA_FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char threshold, i
 {
     FindMaxima maxima;
 
-    // Make sure we have the 8bit greyscale image.
-    if (FreeImage_GetBPP (src) != 8 && FreeImage_GetImageType (src) != FIT_BITMAP)
+    // Make sure we have a greyscale image.
+    if (!FIA_IsGreyScale(src))
     {
         return NULL;
     }
