@@ -58,8 +58,6 @@ class FindMaxima
     unsigned char min_separation;
     unsigned char threshold;
 
-    byte *original_first_pixel_address_ptr;
-    double *processing_first_pixel_address_ptr;
     int width;
     int height;
     int regionGrowCount;
@@ -364,7 +362,6 @@ FindMaxima::RegionGrow (int x, int y)
 void
 FindMaxima::PerformRegionGrow ()
 {
-    register double *src_ptr;
 	register byte *processing_ptr;
 
     for(register int y = 1; y < height - 1; y++)
@@ -524,26 +521,11 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char thre
 	this->original_image_double = FIA_ConvertToGreyscaleFloatType(this->original_image, FIT_DOUBLE);
     this->processing_image = FreeImage_Allocate (this->width, this->height, 8, 0, 0, 0);
 
-
-//    this->pitch_in_pixels = FreeImage_GetPitch (this->processing_image) / sizeof (unsigned char);
-
- //   this->original_first_pixel_address_ptr
- //       = (unsigned char *) FreeImage_GetBits (this->original_image);
-
- //   this->processing_first_pixel_address_ptr
-//        = (unsigned char *) FreeImage_GetBits (this->processing_image);
-
     this->NonMaxSupression ();
-
-	FIA_SaveFIBToFile(this->processing_image, "C:\\NonMaxSupressionFreeImage.bmp", BIT8);
 
     SetNeigbourPixels ();
 
-	FIA_SaveFIBToFile(this->processing_image, "C:\\SetNeigbourPixelsFreeImage.bmp", BIT8);
-
     PerformRegionGrow ();
-
-	FIA_SaveFIBToFile(this->processing_image, "C:\\PerformRegionGrowFreeImage2.bmp", BIT8);
 
     DrawMaxima (min_separation);
 
