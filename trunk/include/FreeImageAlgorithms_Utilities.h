@@ -80,6 +80,9 @@ _os_support(int feature);
 DLL_API void DLL_CALLCONV
 FIA_SSEFindFloatMinMax(const float *data, long n, float *min, float *max);
 
+DLL_API int DLL_CALLCONV
+FIA_GetPitchInPixels(FIBITMAP *dib);
+
 /** \brief Find the mininum and maximum values in a char array.
  *
  *  \param data Array of char data.

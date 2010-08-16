@@ -224,6 +224,14 @@ FIAImageRect (FIBITMAP * src)
     return rect;
 }
 
+int DLL_CALLCONV FIA_GetPitchInPixels(FIBITMAP *dib)
+{
+	int bpp = FreeImage_GetBPP(dib);
+	int bytes_per_pixel = bpp / 8;
+
+	return (FreeImage_GetPitch (dib) / bytes_per_pixel);
+}
+
 void DLL_CALLCONV
 FIA_FindCharMinMax (const char *data, long n, char *min, char *max)
 {

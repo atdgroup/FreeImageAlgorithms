@@ -113,7 +113,7 @@ static void TestFIA_ParticleInfoTest(CuTest* tc)
 static void
 TestFIA_FindImageMaximaTest(CuTest* tc)
 {
-	const char *file = "C:\\input.ics";
+	const char *file = "C:\\PreNonMaxSupression.ics";
 	
 	FIBITMAP *dib1 = FreeImageIcs_LoadFIBFromIcsFilePath(file);
 	//FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
