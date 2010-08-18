@@ -647,6 +647,12 @@ FIA_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_ConvertInt16ToUInt16(FIBITMAP *src);
 
+DLL_API FIBITMAP *DLL_CALLCONV
+FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src);
+
+DLL_API int DLL_CALLCONV
+FIA_InPlaceConvertInt16ToUInt16 (FIBITMAP ** src);
+
 /** \brief Rescales an image to half its size.
  *
  *	This is much much faster than the freeimage rescale function.

@@ -1665,9 +1665,12 @@ FIA_InPlaceConvertTo24Bit (FIBITMAP ** src)
 }
 
 int DLL_CALLCONV
-FIA_InPlaceConvertToStandardType (FIBITMAP ** src, int scale)
+FIA_InPlaceConvertToStandardType (FIBITMAP **src, int scale)
 {
     FIBITMAP *dst = FreeImage_ConvertToStandardType (*src, scale);
+
+	if(FreeImage_GetBPP(*src) == 8)
+		FIA_CopyPalette(*src, dst);
 
     FreeImage_Unload (*src);
     *src = dst;
@@ -1694,44 +1697,63 @@ FIA_ConvertFloatTo16Bit (FIBITMAP * src, int sign)
         return NULL;
 
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
-
+	
     // Mask has to be 8 bit 
     if (type != FIT_FLOAT)
         return NULL;
 
+	type = FIT_UINT16;
+
+	if(sign)
+		type = FIT_INT16;
+
     int width = FreeImage_GetWidth (src);
     int height = FreeImage_GetHeight (src);
 
-    FIBITMAP *dst = NULL;
+	FIBITMAP *dst = FreeImage_AllocateT (type, width, height, 16, 0, 0, 0);
 
+	double factor = 1.0, min, max, min16 = 0.0, max16;
+	FIA_FindMinMax(src, &min, &max);
+	FIA_GetMinPosibleValueForFib(dst, &min16);
+	FIA_GetMaxPosibleValueForFib(dst, &max16);
+
+	factor = (max16 - min16) / (max - min);
+   
     if (sign)
-    {
-        dst = FreeImage_AllocateT (FIT_INT16, width, height, 16, 0, 0, 0);
-
+    {      
         for(register int y = 0; y < height; y++)
         {
             float *src_ptr = (float *) FreeImage_GetScanLine (src, y);
             short *dst_ptr = (short *) FreeImage_GetScanLine (dst, y);
 
             for(register int x = 0; x < width; x++)
-                dst_ptr[x] = (short) src_ptr[x];
+                dst_ptr[x] = (short) (src_ptr[x] * factor + min16);
         }
     }
     else
     {
-        dst = FreeImage_AllocateT (FIT_UINT16, width, height, 16, 0, 0, 0);
-
         for(register int y = 0; y < height; y++)
         {
             float *src_ptr = (float *) FreeImage_GetScanLine (src, y);
             unsigned short *dst_ptr = (unsigned short *) FreeImage_GetScanLine (dst, y);
 
             for(register int x = 0; x < width; x++)
-                dst_ptr[x] = (unsigned short) src_ptr[x];
+                dst_ptr[x] = (unsigned short) (src_ptr[x] * factor + min16);
         }
     }
 
     return dst;
+}
+
+int DLL_CALLCONV
+FIA_InPlaceConvertInt16ToUInt16 (FIBITMAP ** src)
+{
+	FIBITMAP *dst = FIA_ConvertInt16ToUInt16 (*src);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
 }
 
 FIBITMAP *DLL_CALLCONV
@@ -1766,6 +1788,51 @@ FIA_ConvertInt16ToUInt16 (FIBITMAP * src)
     return dst;
 }
 
+
+FIBITMAP *DLL_CALLCONV
+FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
+{
+	if (src == NULL)
+        return NULL;
+
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
+
+    if (type != FIT_RGB16 && type != FIT_RGBA16)
+        return NULL;
+
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    FIBITMAP *dst = FreeImage_AllocateT (FIT_BITMAP, width, height, 24, 0, 0, 0);
+
+	int bytespp = FreeImage_GetLine (src) / FreeImage_GetWidth (src);
+	int channels = bytespp / 2;
+	double factor = 255.0 / 65535.0;
+
+	unsigned short *src_pixel_ptr = NULL;
+	byte *dst_pixel_ptr = NULL;
+
+    for(register int y = 0; y < height; y++)
+    {
+        unsigned short *src_ptr = (unsigned short *) FreeImage_GetScanLine (src, y);
+        byte *dst_ptr = (byte *) FreeImage_GetScanLine (dst, y);
+
+		for(register int x = 0; x < width; x++) {
+
+			src_pixel_ptr = &src_ptr[channels * x];
+			dst_pixel_ptr = &dst_ptr[3 * x];
+
+			dst_pixel_ptr[FI_RGBA_RED] = (byte) (src_pixel_ptr[FI_RGBA_BLUE] * factor);
+		    dst_pixel_ptr[FI_RGBA_GREEN] = (byte) (src_pixel_ptr[FI_RGBA_GREEN] * factor);
+		    dst_pixel_ptr[FI_RGBA_BLUE] = (byte) (src_pixel_ptr[FI_RGBA_RED] * factor);
+
+			if (channels == 4)
+				dst_pixel_ptr[FI_RGBA_ALPHA] = (byte) (src_pixel_ptr[FI_RGBA_ALPHA] * factor);
+		}
+    }
+
+    return dst;
+}
 
 template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
     Tsrc >::IntegerRescaleToHalf (FIBITMAP * src)

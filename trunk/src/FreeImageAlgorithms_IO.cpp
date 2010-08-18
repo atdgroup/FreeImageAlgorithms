@@ -321,104 +321,34 @@ FIA_LoadColourFIBFromArrayData (BYTE * data, int bpp, int width, int height, int
     return dib;
 }
 
-int DLL_CALLCONV
-FIA_SaveFIBToFile (FIBITMAP * dib, const char *filepath,
-                   FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_depth)
-{
-    FIBITMAP *standard_dib, *converted_dib;
-    FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-    FREE_IMAGE_TYPE type = FreeImage_GetImageType (dib);
 
-    if (dib == NULL)
-    {
-        return FIA_ERROR;
-    }
 
-    // try to guess the file format from the file extension
-    fif = FreeImage_GetFIFFromFilename (filepath);
 
-    if (fif != FIF_PNG && bit_depth == BIT16)
-    {
-        FreeImage_OutputMessageProc (FIF_UNKNOWN,
-                                     "Error Saving File! Image type can not save as 16 bit");
-        return FIA_ERROR;
-    }
+//static int
+//FIA_GetNextHighestDynamicRangeSaveFormatForFIF (FREE_IMAGE_TYPE image_type)
+//{
 
-    // check that the plugin has writing capabilities ... 
-    if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsWriting (fif))
-    {
-        if (fif == FIF_PNG && bit_depth == BIT16)
-        {
-            if (type == FIT_INT16 || type == FIT_UINT16)
-                converted_dib = FreeImage_Clone (dib);
-            else
-                converted_dib = FreeImage_ConvertToStandardType (dib, 0);
-        }
-        else
-        {
-            standard_dib = FreeImage_ConvertToStandardType (dib, 0);
-
-            if (bit_depth == BIT24)
-            {
-                converted_dib = FreeImage_ConvertTo24Bits (standard_dib);
-            }
-            else if (bit_depth == BIT32)
-            {
-                converted_dib = FreeImage_ConvertTo32Bits (standard_dib);
-            }
-            else
-            {
-                converted_dib = FreeImage_ConvertTo8Bits (standard_dib);
-
-                if(FreeImage_GetBPP(dib) == 8)
-                    FIA_CopyPalette(dib, converted_dib);
-            }
-
-            FreeImage_Unload (standard_dib);
-        }
-
-        if (converted_dib == NULL)
-        {
-            FreeImage_OutputMessageProc (FIF_UNKNOWN,
-                                         "Error Saving File! Failed converting to 8 or 24 bit");
-            return FIA_ERROR;
-        }
-
-        if (!FreeImage_Save (fif, converted_dib, filepath, 0))
-        {
-            FreeImage_OutputMessageProc (FIF_UNKNOWN,
-                                         "Unknown Error Saving File! FreeImage_Save Failed");
-            return FIA_ERROR;
-        }
-
-        FreeImage_Unload (converted_dib);
-    }
-    else
-    {
-        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Error Saving File! Unsupported Type");
-        return FIA_ERROR;
-    }
-
-    return FIA_SUCCESS;
-}
+//}
 
 int DLL_CALLCONV
-FIA_SimpleSaveFIBToFile (FIBITMAP * dib, const char *filepath)
+FIA_SimpleSaveFIBToFile (FIBITMAP *src, const char *filepath)
 {
 	// Pass a filepath to be saved
 	// Determine the file type from the extension
 	// Try to save in the highest bpp possible for that plugin.
-
-    FIBITMAP *converted_dib;
     FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-	int bpp = FreeImage_GetBPP(dib);
-    FREE_IMAGE_TYPE type = FreeImage_GetImageType (dib);
 
-    if (dib == NULL)
+    if (src == NULL)
         return FIA_ERROR;
 
     // Try to guess the file format from the file extension
     fif = FreeImage_GetFIFFromFilename (filepath);
+
+	if(fif == FIF_UNKNOWN) {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Error Saving File! Unknown FIF.");	
+		return FIA_ERROR;
+	}
 
 	// Check that the plugin has writing capabilities ... 
 	if(FreeImage_FIFSupportsWriting(fif) == 0)
@@ -428,39 +358,81 @@ FIA_SimpleSaveFIBToFile (FIBITMAP * dib, const char *filepath)
 		return FIA_ERROR;
 	}
 
-	int supportsBPPExport = FreeImage_FIFSupportsExportBPP(fif, bpp);
+	FIBITMAP* dib = FreeImage_Clone(src);
 
-	// Hack to fix bug in latest freeimage
-	if(fif == FIF_PNG && bpp == 16)
-		supportsBPPExport = 1;
+	FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(dib);
+	BOOL can_save = false;
 
-	int supportsTypeExport = FreeImage_FIFSupportsExportType(fif, type);
-		
-	int bCanSave = supportsBPPExport && supportsTypeExport;
+	if(image_type == FIT_BITMAP) {
 
-	if(bCanSave) {
-		
-		converted_dib = FreeImage_Clone (dib);
-	}
+		// standard bitmap type
+		// check that the plugin has sufficient writing
+		// and export capabilities ...
+		unsigned int bpp = FreeImage_GetBPP(dib);
+		can_save = (FreeImage_FIFSupportsWriting(fif) && FreeImage_FIFSupportsExportBPP(fif, bpp));
+	} 
 	else {
-		// Error Saving File! Image type can not save with the desired bpp or type;
-		// Try converting to a standard type.
-		converted_dib = FreeImage_ConvertToStandardType (dib, 1);
-	}
-	
-	if(FreeImage_GetBPP(dib) == 8)
-		FIA_CopyPalette(dib, converted_dib);
 
-	if (!FreeImage_Save (fif, converted_dib, filepath, 0))
+		// Png can onlty save FIT_UINT16 so lets convert it first
+		if (fif == FIF_PNG && image_type == FIT_INT16)
+        {
+           FIA_InPlaceConvertInt16ToUInt16(&dib);
+		   image_type = FIT_UINT16;
+		}
+
+		// special bitmap type
+		// check that the plugin has sufficient export capabilities
+		can_save = FreeImage_FIFSupportsExportType(fif, image_type);
+	}
+
+	// Error Saving File! Image type can not save with the desired bpp or type;
+	// Try converting to a standard type.
+	if(can_save == false)
+		FIA_InPlaceConvertToStandardType(&dib, 1);
+
+	if (!FreeImage_Save (fif, dib, filepath, 0))
     {
-		FreeImage_Unload (converted_dib);
+		FreeImage_Unload (dib);
 
 		FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Unknown Error Saving File! FreeImage_Save Failed");
         return FIA_ERROR;
     }
 
-	FreeImage_Unload (converted_dib);
+	FreeImage_Unload (dib);
 
 	return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_SaveFIBToFile (FIBITMAP *src, const char *filepath,
+                   FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_depth)
+{
+	FIBITMAP *tmp = FreeImage_ConvertToStandardType (src, 0);
+	FIBITMAP *dib = NULL;
+	
+    if (bit_depth == BIT24)
+		dib = FreeImage_ConvertTo24Bits (tmp);
+	//else if (bit_depth == BIT16)
+    //    dib = FreeImage_ConvertTo16Bits555 (tmp);
+    else if (bit_depth == BIT32)
+        dib = FreeImage_ConvertTo32Bits (tmp);
+    else
+        dib = FreeImage_ConvertTo8Bits (tmp);
+
+	if(FreeImage_GetBPP(src) == 8) {
+		FIA_CopyPalette(src, dib);
+    }
+	
+	int err = FIA_SimpleSaveFIBToFile (dib, filepath);
+
+	FreeImage_Unload(tmp);
+	FreeImage_Unload(dib);
+
+	if(err == FIA_ERROR) {
+		FreeImage_OutputMessageProc (FIF_UNKNOWN, "Error Saving File!");
+        return FIA_ERROR;
+	}
+
+	return err;
 }
