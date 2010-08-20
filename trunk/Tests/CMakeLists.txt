@@ -1,18 +1,20 @@
+SUBDIRS(FiaViewer)
+
 SET(FIA_TEST_SRCS AllTests.cpp
-	     	  CuTest.cpp
-	     	  FreeImageAlgorithms_ArithmeticTests.cpp
-	     	  FreeImageAlgorithms_DrawingTests.cpp
-	     	  FreeImageAlgorithms_IOTests.cpp
-	     	  FreeImageAlgorithms_LogicTests.cpp
-	     	  FreeImageAlgorithms_ColourTests.cpp
-	     	  FreeImageAlgorithms_ConvolutionTests.cpp
-		  FreeImageAlgorithms_GradientBlend.cpp
-	     	  FreeImageAlgorithms_FFTTests.cpp
-	    	  FreeImageAlgorithms_LinearScale.cpp
-	     	  FreeImageAlgorithms_MorphologyTests.cpp
-	     	  FreeImageAlgorithms_ParticleTests.cpp
-	     	  FreeImageAlgorithms_StatisticTests.cpp
-	     	  FreeImageAlgorithms_UtilityTests.cpp
+                  CuTest.cpp
+                  FreeImageAlgorithms_ArithmeticTests.cpp
+                  FreeImageAlgorithms_DrawingTests.cpp
+                  FreeImageAlgorithms_IOTests.cpp
+                  FreeImageAlgorithms_LogicTests.cpp
+                  FreeImageAlgorithms_ColourTests.cpp
+                  FreeImageAlgorithms_ConvolutionTests.cpp
+                  FreeImageAlgorithms_GradientBlend.cpp
+                  FreeImageAlgorithms_FFTTests.cpp
+                  FreeImageAlgorithms_LinearScale.cpp
+                  FreeImageAlgorithms_MorphologyTests.cpp
+                  FreeImageAlgorithms_ParticleTests.cpp
+                  FreeImageAlgorithms_StatisticTests.cpp
+                  FreeImageAlgorithms_UtilityTests.cpp
 )
 
 
