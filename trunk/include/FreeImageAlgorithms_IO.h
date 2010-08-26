@@ -67,6 +67,19 @@ DLL_API void DLL_CALLCONV
 FIA_CopyBytesToFBitmap (FIBITMAP * src, BYTE * data, int padded, int vertical_flip,
                         COLOUR_ORDER order);
 
+/** \brief Copy an array of bytes to FIBITMAP
+ *	
+ *  \param src FreeImage Bitmap to copy bytes to.
+ *  \param data bytes to copy.
+ *  \param padded Is the data padded to 32 bit boundaries.
+*/
+DLL_API void DLL_CALLCONV
+FIA_CopyColourBytesToFIBitmap (FIBITMAP * src, BYTE * data, int padded, int vertical_flip,
+                           COLOUR_ORDER order);
+
+DLL_API int DLL_CALLCONV
+FIA_CopyColourBytesTo8BitFIBitmap (FIBITMAP * src, BYTE * data, int data_bpp, int channel, int padded, int vertical_flip);
+
 /** \brief Load a greyscale FIBITMAP from an array of bytes
  *	
  *  \param data bytes to copy.

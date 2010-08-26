@@ -263,7 +263,7 @@ TestFIA_Convert48BitsToStandardType(CuTest* tc)
 
 	CuAssertTrue(tc, dib1 != NULL);
 	
-	dib2 = FIA_Convert48BitOr64BitRGBToStandardType(dib1);
+	dib2 = FIA_Convert48BitOr64BitRGBTo24BitColour(dib1);
 
 	CuAssertTrue(tc, dib2 != NULL);
 	
@@ -303,8 +303,8 @@ TestFIA_SaveBPPWithPalette(CuTest* tc)
 
 	FreeImage_Unload(dib1);
 }
+*/
 
-/*
 static void
 TestFIA_IOLoadColourArrayData(CuTest* tc)
 {
@@ -312,28 +312,30 @@ TestFIA_IOLoadColourArrayData(CuTest* tc)
 	FREE_IMAGE_TYPE type;
 	int bpp, err;
     
-    const char *file = TEST_DATA_DIR "lucy_pinder.jpg";
+	const char *file = "C:\\cup.tif";
 	dib1 = FIA_LoadFIBFromFile(file);
 
 	CuAssertTrue(tc, dib1 != NULL);
 
-	dib2 = FreeImage_AllocateT (FIT_BITMAP, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1), 24, 0, 0, 0);
+	dib2 = FreeImage_AllocateT (FIT_BITMAP, FreeImage_GetWidth(dib1), FreeImage_GetHeight(dib1), 8, 0, 0, 0);
 
 	PROFILE_START("CopyColourBytesToFIBitmap");
 
-	for(int i=0; i < 500; i++) {
+	for(int i=0; i < 1000; i++) {
 
-		CopyColourBytesToFIBitmap (dib2, FreeImage_GetBits(dib1), 0, 1, COLOUR_ORDER_RGB);
+		//FIA_CopyColourBytesToFIBitmap (dib2, FreeImage_GetBits(dib1), 0, 1, COLOUR_ORDER_RGB);
+		FIA_CopyColourBytesTo8BitFIBitmap (dib2, FreeImage_GetBits(dib1), 24, FI_RGBA_RED, 0, 1);
+
 	}
 
 	PROFILE_STOP("CopyColourBytesToFIBitmap");
 
-	FIA_SaveFIBToFile (dib2, TEST_DATA_OUTPUT_DIR "/IO/save-colour-test.bmp", BIT24);
+	FIA_SaveFIBToFile (dib2, TEST_DATA_OUTPUT_DIR "/IO/save-colour-test.bmp", BIT8);
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib2);
 }
-*/
+
 
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsIOSuite(void)
@@ -344,6 +346,7 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO/SimpleSave");
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO/ForcedSave");
 
+	/*
 	SUITE_ADD_TEST(suite, TestFIA_IOSave8BitPngTest);
 	SUITE_ADD_TEST(suite, TestFIA_IOSave8BitTifTest);
 	SUITE_ADD_TEST(suite, TestFIA_IOSave16UBitPngTest);
@@ -360,9 +363,10 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 	SUITE_ADD_TEST(suite, TestFIA_IOSaveForced32BitPngTest);
 
 	SUITE_ADD_TEST(suite, TestFIA_Convert48BitsToStandardType);
+	*/
 
 	//SUITE_ADD_TEST(suite, TestFIA_IO);
-	//SUITE_ADD_TEST(suite, TestFIA_IOLoadColourArrayData);
+	SUITE_ADD_TEST(suite, TestFIA_IOLoadColourArrayData);
 	//SUITE_ADD_TEST(suite, TestFIA_SaveBPPWithPalette);
 
 	return suite;

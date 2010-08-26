@@ -10,8 +10,6 @@
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
 
-#include "FreeImageIcs_IO.h"
-
 #include <iostream>
 #include <fstream>
 
@@ -115,8 +113,7 @@ TestFIA_FindImageMaximaTest(CuTest* tc)
 {
 	const char *file = "C:\\PreNonMaxSupression.ics";
 	
-	FIBITMAP *dib1 = FreeImageIcs_LoadFIBFromIcsFilePath(file);
-	//FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
 	CuAssertTrue(tc, dib1 != NULL);
 
@@ -149,7 +146,7 @@ static void TestFIA_ParticleInfoTest2(CuTest* tc)
 {
 	const char *file = TEST_DATA_DIR "AccImageResult.bmp";
 
-	FIBITMAP *dib1 = FreeImageIcs_LoadFIBFromIcsFilePath(file);
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
 	CuAssertTrue(tc, dib1 != NULL);
 
