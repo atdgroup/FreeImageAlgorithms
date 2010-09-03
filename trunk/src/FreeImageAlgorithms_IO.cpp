@@ -416,15 +416,6 @@ FIA_LoadColourFIBFromArrayData (BYTE * data, int bpp, int width, int height, int
     return dib;
 }
 
-
-
-
-//static int
-//FIA_GetNextHighestDynamicRangeSaveFormatForFIF (FREE_IMAGE_TYPE image_type)
-//{
-
-//}
-
 int DLL_CALLCONV
 FIA_SimpleSaveFIBToFile (FIBITMAP *src, const char *filepath)
 {
