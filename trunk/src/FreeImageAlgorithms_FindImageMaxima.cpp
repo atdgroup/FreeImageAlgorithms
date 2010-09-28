@@ -389,6 +389,8 @@ FindMaxima::DrawMaxima (int size)
         size = 1;               // Just a check as this has created much confusion
     }
 
+	int half_size = size / 2;
+
     this->peek_image = FreeImage_Allocate (this->width, this->height, 8, 0, 0, 0);
 
     FIA_SetGreyLevelPalette (this->peek_image);
@@ -408,15 +410,18 @@ FindMaxima::DrawMaxima (int size)
         {
             if (src_ptr[x] == 1)
             {
-                rect.left = x;
-                rect.bottom = this->height - y - 1;
-                rect.right = rect.left + size - 1;
-                rect.top = rect.bottom - size + 1;
+                rect.left = x - half_size;
+                rect.top = y - half_size;
+                rect.right = rect.left + size;
+                rect.bottom = rect.top + size;
+
+				// FIBITMAP Bottom starts at zero so we must correct.
+				rect.bottom = this->height - rect.bottom - 1;
+                rect.top = this->height - rect.top - 1;
 
                 FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
 
                 dst_ptr[x] = 255;
-
             }
         }
     }
