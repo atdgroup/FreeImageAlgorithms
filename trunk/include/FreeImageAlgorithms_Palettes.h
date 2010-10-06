@@ -134,6 +134,15 @@ FIA_SetPileUpPalette(FIBITMAP *src, RGBQUAD colour1, RGBQUAD colour2,
 DLL_API int DLL_CALLCONV
 FIA_SetFalseColourPalette(FIBITMAP *src, double wavelength);
 
+/** \brief Set the pallete of a FIBITMAP image to a false colour palette.
+ *
+ *  \param src Image to set palette to false colour.
+ *  \param colour RGBQUAD of the false colour.
+ *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_SetFalseColourPalette_ForColour (FIBITMAP * src, RGBQUAD colour);
+
 /** \brief Set the pallete of a FIBITMAP image to a greyscale overload palette.
  *
  *  \param src Image to set palette to greyscale overload.
@@ -233,6 +242,16 @@ FIA_GetLogColourPalette(RGBQUAD *palette);
 */
 DLL_API int DLL_CALLCONV
 FIA_GetFalseColourPalette(RGBQUAD *palette, double wavelength);
+
+/** \brief Creates a false colour palette for the given colour.
+ *
+ *  \param  palette RGBQUAD* array.
+ *  \param wavelength of the false colour palette.
+ *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_GetFalseColourPalette_ForColour (RGBQUAD *palette, RGBQUAD colour);
+
 
 /** \brief Get a temperature pallete into a RGBQUAD array.
  *

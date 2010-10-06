@@ -216,6 +216,21 @@ FIA_SetFalseColourPalette (FIBITMAP * src, double wavelength)
 }
 
 int DLL_CALLCONV
+FIA_SetFalseColourPalette_ForColour (FIBITMAP * src, RGBQUAD colour)
+{
+    RGBQUAD *palette;
+
+    if ((palette = FreeImage_GetPalette (src)) == NULL)
+    {
+        return FIA_ERROR;
+    }
+
+    FIA_GetFalseColourPalette (palette, colour);
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
 FIA_SetPileUpPalette (FIBITMAP * src, RGBQUAD colour1, RGBQUAD colour2,
                       RGBQUAD colour3, BYTE * size)
 {
@@ -582,6 +597,28 @@ FIA_GetFalseColourPalette (RGBQUAD * palette, double wavelength)
         palette[i].rgbRed = (BYTE) (red * i);
         palette[i].rgbGreen = (BYTE) (green * i);
         palette[i].rgbBlue = (BYTE) (blue * i);
+    }
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_GetFalseColourPalette_ForColour (RGBQUAD * palette, RGBQUAD colour)
+{
+    if (palette == NULL)
+    {
+        return FIA_ERROR;
+    }
+
+    double red_inre = (double) colour.rgbRed / 255.0;
+	double green_inre = (double) colour.rgbGreen / 255.0;
+	double blue_inre = (double) colour.rgbBlue / 255.0;
+
+    for(int i = 0; i < 256; i++)
+    {
+        palette[i].rgbRed = (BYTE) (red_inre * i);
+        palette[i].rgbGreen = (BYTE) (green_inre * i);
+        palette[i].rgbBlue = (BYTE) (blue_inre * i);
     }
 
     return FIA_SUCCESS;
