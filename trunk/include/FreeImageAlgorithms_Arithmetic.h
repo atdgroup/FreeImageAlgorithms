@@ -156,7 +156,8 @@ FIA_SumOfAllPixels(FIBITMAP* src, FIBITMAP* mask, double *sum);
 DLL_API int DLL_CALLCONV 
 FIA_GetMaxIntensityFromImages(FIBITMAP* dst, FIBITMAP* src);
 
-
+DLL_API int DLL_CALLCONV
+FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib);
 
 #ifdef __cplusplus
 }

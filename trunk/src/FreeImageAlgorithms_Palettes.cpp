@@ -225,7 +225,7 @@ FIA_SetFalseColourPalette_ForColour (FIBITMAP * src, RGBQUAD colour)
         return FIA_ERROR;
     }
 
-    FIA_GetFalseColourPalette (palette, colour);
+    FIA_GetFalseColourPalette_ForColour (palette, colour);
 
     return FIA_SUCCESS;
 }

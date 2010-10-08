@@ -15,6 +15,7 @@ SET(FIA_TEST_SRCS AllTests.cpp
                   FreeImageAlgorithms_ParticleTests.cpp
                   FreeImageAlgorithms_StatisticTests.cpp
                   FreeImageAlgorithms_UtilityTests.cpp
+                  FreeImageAlgorithms_PaletteTests.cpp
 )
 
 
