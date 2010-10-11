@@ -3,7 +3,7 @@ project(FiaViewer) # the name of your project
 cmake_minimum_required(VERSION 2.6.0)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
-find_package(Qt4 REQUIRED) # find and setup Qt4 for this project
+find_package(Qt4) # find and setup Qt4 for this project
 FIND_PACKAGE(FreeImage REQUIRED)
 
 SET(QT_USE_QTMAIN TRUE)
@@ -35,6 +35,8 @@ SET(UIRS  FiaWindow.ui)
 # -> this will cause cmake to include and link against the OpenGL module
 INCLUDE(${QT_USE_FILE})
 
+IF(QT4_FOUND)
+
 QT4_WRAP_UI(UI_OUT_SRCS ${UIRS})
 
 # generate rules for building source files from the resources
@@ -43,8 +45,6 @@ QT4_WRAP_UI(UI_OUT_SRCS ${UIRS})
 # generate rules for building source files that moc generates
 QT4_WRAP_CPP(MOC_SRCS ${MOCS})
 
-#IF(QT4_INSTALLED)
-
 # build sources, moc'd sources, and rcc'd sources
 ADD_EXECUTABLE(FiaViewer ${SRCS} ${MOC_SRCS} ${QRCS_SRCS} ${UI_OUT_SRCS})
 
@@ -52,4 +52,4 @@ ADD_EXECUTABLE(FiaViewer ${SRCS} ${MOC_SRCS} ${QRCS_SRCS} ${UI_OUT_SRCS})
 # Which libraries exactly, is defined by the "include(${QT_USE_FILE})" line above, which sets up this variable.
 TARGET_LINK_LIBRARIES(FiaViewer ${QT_LIBRARIES} ${FREEIMAGE_LIBRARY} freeimagealgorithms)
 
-#ENDIF(QT4_INSTALLED)
+ENDIF(QT4_FOUND)
