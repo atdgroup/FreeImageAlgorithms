@@ -27,6 +27,15 @@
 extern "C" {
 #endif
 
+typedef enum 
+{
+	GREY_LEVEL_ADD_ADD,
+	GREY_LEVEL_ADD_AVERAGE,
+	GREY_LEVEL_ADD_FILL_RANGE
+
+} GREY_LEVEL_ADD_TO_COLOURTYPE;
+
+
 /*! \file 
 	Provides various arithmetic methods.
 */ 
@@ -157,7 +166,10 @@ DLL_API int DLL_CALLCONV
 FIA_GetMaxIntensityFromImages(FIBITMAP* dst, FIBITMAP* src);
 
 DLL_API int DLL_CALLCONV
-FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib);
+FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib, GREY_LEVEL_ADD_TO_COLOURTYPE type);
+
+DLL_API int DLL_CALLCONV
+FIA_Overlay8BitImageOverColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib, BYTE threshold);
 
 #ifdef __cplusplus
 }

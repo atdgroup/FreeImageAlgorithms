@@ -1232,7 +1232,7 @@ FIA_SumOfAllPixels (FIBITMAP * src, FIBITMAP * mask, double *sum)
 }
 
 int DLL_CALLCONV
-FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib)
+FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib, GREY_LEVEL_ADD_TO_COLOURTYPE type)
 {
     RGBQUAD *palette;
 
@@ -1269,24 +1269,128 @@ FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib)
 
 			palette_entry = palette[gs_bits[x]];
 
-			new_value = colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed;
-		    
+		    if(type == GREY_LEVEL_ADD_ADD)
+				new_value = (colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed) / 2;
+			else if(type == GREY_LEVEL_ADD_FILL_RANGE)
+				new_value = colour_bits[cx + FI_RGBA_RED] + (palette_entry.rgbRed * (255 - colour_bits[cx + FI_RGBA_RED])/255);
+			else		
+				new_value = (colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed) / 2;
+
 			#ifdef WIN32
 				colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
 			#else
 				colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
 			#endif
 		
-			new_value = colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen;
-		    
+			if(type == GREY_LEVEL_ADD_ADD)
+				new_value = (colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen) / 2;
+			else if(type == GREY_LEVEL_ADD_FILL_RANGE)
+				new_value = colour_bits[cx + FI_RGBA_GREEN] + (palette_entry.rgbGreen * (255 - colour_bits[cx + FI_RGBA_GREEN])/255);
+			else		
+				new_value = (colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen) / 2;
+
 			#ifdef WIN32
 				colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
 			#else
 				colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
 			#endif
 
-			new_value = colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue;
-		    
+			if(type == GREY_LEVEL_ADD_ADD)
+				new_value = (colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue) / 2;
+			else if(type == GREY_LEVEL_ADD_FILL_RANGE)
+				new_value = colour_bits[cx + FI_RGBA_BLUE] + (palette_entry.rgbBlue * (255 - colour_bits[cx + FI_RGBA_BLUE])/255);
+			else		
+				new_value = (colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue) / 2;
+
+			#ifdef WIN32
+				colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
+			#else
+				colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
+			#endif
+		}
+	}
+  
+    return FIA_SUCCESS;
+}
+
+
+int DLL_CALLCONV
+FIA_Overlay8BitImageOverColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib, BYTE threshold)
+{
+    RGBQUAD *palette;
+
+	// Has to be the same size
+    if (CheckDimensions (colour_dib, greyscale_dib) == FIA_ERROR)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "Colour source and greyscale image have different dimensions");
+        return FIA_ERROR;
+    }
+
+	int width = FreeImage_GetWidth(colour_dib);
+	int height = FreeImage_GetHeight(colour_dib);
+
+	int bytespp = FreeImage_GetLine (colour_dib) / FreeImage_GetWidth (colour_dib);
+
+	// Can be NULL. Just won't have palette weighted adds.
+    palette = FreeImage_GetPalette (greyscale_dib);
+
+	if(palette == NULL)
+		FIA_GetGreyLevelPalette(palette);
+
+	BYTE *colour_bits = NULL;
+	BYTE *gs_bits = NULL;
+	RGBQUAD palette_entry;
+	int new_value;
+
+	for(register int y = 0; y < height; y++)
+	{
+		colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
+		gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
+
+		for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
+
+			palette_entry = palette[gs_bits[x]];
+
+			if(gs_bits[x] > threshold) {
+
+				new_value = palette_entry.rgbRed;
+			}
+			else {
+
+				new_value = colour_bits[cx + FI_RGBA_RED];
+			}
+
+			#ifdef WIN32
+				colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
+			#else
+				colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
+			#endif
+		
+			if(gs_bits[x] > threshold) {
+
+				new_value = palette_entry.rgbGreen;
+			}
+			else {
+
+				new_value = colour_bits[cx + FI_RGBA_GREEN];
+			}
+
+			#ifdef WIN32
+				colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
+			#else
+				colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
+			#endif
+
+			if(gs_bits[x] > threshold) {
+
+				new_value = palette_entry.rgbBlue;
+			}
+			else {
+
+				new_value = colour_bits[cx + FI_RGBA_BLUE];
+			}
+
 			#ifdef WIN32
 				colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
 			#else
