@@ -139,6 +139,12 @@ TestFIA_IOSave32BitFloat(CuTest* tc, FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_dept
 }
 
 static void
+TestFIA_IOSave8BitJpegTest(CuTest* tc)
+{
+	TestFIA_IOSave8Bit(tc, BIT_NONE, "jpg");
+}
+
+static void
 TestFIA_IOSave8BitPngTest(CuTest* tc)
 {
 	TestFIA_IOSave8Bit(tc, BIT_NONE, "png");
@@ -345,6 +351,8 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO");
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO/SimpleSave");
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO/ForcedSave");
+
+	SUITE_ADD_TEST(suite, TestFIA_IOSave8BitJpegTest);
 
 	/*
 	SUITE_ADD_TEST(suite, TestFIA_IOSave8BitPngTest);

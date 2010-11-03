@@ -47,11 +47,11 @@ void RunAllTests(void)
 
 	current_function_helper();
 
-	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsPaletteSuite());
+	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsPaletteSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsColourSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsUtilitySuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsStatisticSuite());
-	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsIOSuite());
+	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsIOSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsMorphologySuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsLogicSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsParticleSuite());

@@ -446,6 +446,8 @@ FIA_SimpleSaveFIBToFile (FIBITMAP *src, const char *filepath)
 
 	FIBITMAP* dib = FreeImage_Clone(src);
 
+	FIA_CopyPalette(src, dib);
+
 	FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(dib);
 	BOOL can_save = false;
 
