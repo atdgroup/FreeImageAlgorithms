@@ -112,7 +112,7 @@ FIA_Fillholes(FIBITMAP* src,
 */
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_FindImageMaxima(FIBITMAP* src, FIBITMAP *mask,
-                                    unsigned char threshold,
+                                    double threshold,
 						            int min_separation, FIAPeak **peaks,
                                     int number, int *peaks_found);
 
