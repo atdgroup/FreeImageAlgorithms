@@ -1719,6 +1719,50 @@ TestFIA_CorrelateSpiceSection6(CuTest* tc)
 }
 
 
+static void
+TestFIA_SobelAdvancedTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "test.tif";
+
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+	CuAssertTrue(tc, dib1 != NULL);
+
+	PROFILE_START("FreeImageAlgorithms_SobelAdvanced");
+
+	FIBITMAP *vertical_dib = NULL, *horizontal_dib = NULL, *mag_dib = NULL;
+
+    int err = FIA_SobelAdvanced(dib1, &vertical_dib,
+        &horizontal_dib, NULL);
+
+    CuAssertTrue(tc, err == FIA_SUCCESS);
+
+	PROFILE_STOP("FreeImageAlgorithms_SobelAdvanced");
+
+    FIBITMAP* bit8_dib = FreeImage_ConvertToStandardType(horizontal_dib, 0);
+
+    if(vertical_dib != NULL)
+	    FIA_SaveFIBToFile(vertical_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/test_vertical.bmp", BIT8);
+
+    if(horizontal_dib != NULL)
+        FIA_SaveFIBToFile(bit8_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/test_sobel_horizontal_dib.bmp", BIT8);
+
+    if(mag_dib != NULL)
+        FIA_SaveFIBToFile(mag_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/test_sobel_magnitude_dib.bmp", BIT8);
+
+    if(vertical_dib != NULL)
+	    FreeImage_Unload(vertical_dib);
+
+    if(horizontal_dib != NULL)
+	    FreeImage_Unload(horizontal_dib);
+
+    if(mag_dib != NULL)
+        FreeImage_Unload(mag_dib);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsConvolutionSuite(void)
 {
@@ -1726,11 +1770,13 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Convolution");
 
-	SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
-	SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);
-	SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection3);
-	SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection4);
-	SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection5);
+	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+
+	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
+	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);
+	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection3);
+	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection4);
+	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection5);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection6);
 	
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateBloodTissueImages);
