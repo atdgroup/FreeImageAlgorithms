@@ -41,7 +41,7 @@ class FindMaxima
 {
   public:
 
-    FIBITMAP * FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char threshold,
+    FIBITMAP * FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
                                 int min_separation, FIAPeak ** peaks, int number, int *peaks_found);
 
   private:
@@ -56,7 +56,7 @@ class FindMaxima
     int StoreBrightestPeaks (int number, FIAPeak ** peaks);
 
     unsigned char min_separation;
-    unsigned char threshold;
+    double threshold;
 
     int width;
     int height;
@@ -403,8 +403,8 @@ FindMaxima::DrawMaxima (int size)
     for(register int y = 1; y < height - 1; y++)
     {
         //src_ptr = this->processing_first_pixel_address_ptr + y * pitch_in_pixels;
-		src_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
-        dst_ptr = FreeImage_GetScanLine (this->peek_image, y);
+		src_ptr = (byte *) FIA_GetScanLineFromTop(this->processing_image, y);
+        dst_ptr = (byte *) FIA_GetScanLineFromTop (this->peek_image, y);
 
         for(register int x = 1; x < width - 1; x++)
         {
@@ -416,8 +416,8 @@ FindMaxima::DrawMaxima (int size)
                 rect.bottom = rect.top + size;
 
 				// FIBITMAP Bottom starts at zero so we must correct.
-				rect.bottom = this->height - rect.bottom - 1;
-                rect.top = this->height - rect.top - 1;
+				//rect.bottom = this->height - rect.bottom - 1;
+               // rect.top = this->height - rect.top - 1;
 
                 FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
 
@@ -502,7 +502,7 @@ FindMaxima::StoreBrightestPeaks (int number, FIAPeak ** peaks_ref)
 }
 
 FIBITMAP *
-FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char threshold,
+FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
                              int min_separation, FIAPeak ** peaks, int number, int *peaks_found)
 {
 	*peaks_found = 0;
@@ -549,7 +549,7 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char thre
 }
 
 FIBITMAP *DLL_CALLCONV
-FIA_FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, unsigned char threshold, int min_separation,
+FIA_FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold, int min_separation,
                      FIAPeak ** peaks, int number, int *peaks_found)
 {
     FindMaxima maxima;
