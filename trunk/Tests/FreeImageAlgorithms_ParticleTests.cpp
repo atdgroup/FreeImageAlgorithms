@@ -111,7 +111,7 @@ static void TestFIA_ParticleInfoTest(CuTest* tc)
 static void
 TestFIA_FindImageMaximaTest(CuTest* tc)
 {
-	const char *file = "C:\\PreNonMaxSupression.ics";
+	const char *file = "C:\\FIA_FindImageMaximaInput.tif";
 	
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
@@ -125,20 +125,20 @@ TestFIA_FindImageMaximaTest(CuTest* tc)
 
 	FIAPeak *peaks = NULL;
 	int number_of_peaks;
-	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 1,
-        0, &peaks, 0, &number_of_peaks);
+
+	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 30.0,
+        4, &peaks, 0, &number_of_peaks);
 
 	PROFILE_STOP("FindImageMaxima");
 
-	FIA_SetGreyLevelPalette(dib3);
+	//FIA_SetGreyLevelPalette(dib3);
+	FIA_SetTemperaturePalette(dib3);
+	//FIA_SetRainBowPalette(dib3);
 
-	FIBITMAP *dst = FreeImage_ConvertTo24Bits(dib3);
-
-	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "\\find_image_maxima.bmp", BIT8); 
+	FIA_SaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "\\find_image_maxima.bmp", BIT24); 
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib3);
-	FreeImage_Unload(dst);
 }
 
 
