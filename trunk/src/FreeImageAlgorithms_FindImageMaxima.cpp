@@ -63,7 +63,7 @@ class FindMaxima
     int regionGrowCount;
 
     FIBITMAP *original_image;
-	FIBITMAP *original_image_double;
+    FIBITMAP *original_image_double;
     FIBITMAP *processing_image;
     FIBITMAP *peek_image;
 };
@@ -71,9 +71,9 @@ class FindMaxima
 inline unsigned char
 FindMaxima::NeighbourhoodNMS (double *ptr)
 {
-	int pitch_in_pixels = FIA_GetPitchInPixels (this->original_image_double);
-	
-	// Top left of 3x3 kernel
+    int pitch_in_pixels = FIA_GetPitchInPixels (this->original_image_double);
+    
+    // Top left of 3x3 kernel
     double *tmp_ptr = ptr - pitch_in_pixels - 1;
 
     if (*ptr < tmp_ptr[0])
@@ -128,17 +128,17 @@ FindMaxima::NeighbourhoodNMS (double *ptr)
 void
 FindMaxima::NonMaxSupression ()
 {
-	register double *src_ptr;
+    register double *src_ptr;
     register unsigned char *dst_ptr;
 
     for(register int y = 1; y < height - 1; y++)
     {
-		src_ptr = (double *) FreeImage_GetScanLine(this->original_image_double, y);
-		dst_ptr = (unsigned char *) FreeImage_GetScanLine(this->processing_image, y);
+        src_ptr = (double *) FreeImage_GetScanLine(this->original_image_double, y);
+        dst_ptr = (unsigned char *) FreeImage_GetScanLine(this->processing_image, y);
 
         for(register int x = 1; x < width - 1; x++)
         {
-			if (src_ptr[x] > this->threshold)
+            if (src_ptr[x] > this->threshold)
             {
                 dst_ptr[x] = NeighbourhoodNMS (src_ptr + x);
             }
@@ -149,8 +149,8 @@ FindMaxima::NonMaxSupression ()
 inline void
 FindMaxima::SetNeighbours (unsigned char *ptr)
 {
-	int pitch_in_pixels = FIA_GetPitchInPixels (this->processing_image);
-	
+    int pitch_in_pixels = FIA_GetPitchInPixels (this->processing_image);
+    
     unsigned char *tmp_ptr = ptr - pitch_in_pixels - 1;
 
     if (!tmp_ptr[0])
@@ -208,8 +208,8 @@ FindMaxima::SetNeigbourPixels ()
 
     for(register int y = 1; y < height - 1; y++)
     {
-		src_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
-	
+        src_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
+    
         for(register int x = 1; x < width - 1; x++)
         {
             if (src_ptr[x] == 1)
@@ -300,73 +300,73 @@ FindMaxima::RegionGrow (int x, int y)
 
 static inline bool CheckToGrowDownHill(double kernel_centre_val, double kernel_neighbour_val)
 {
-	if(kernel_neighbour_val != 0.0 && kernel_neighbour_val <= kernel_centre_val)
-		return true;
+    if(kernel_neighbour_val != 0.0 && kernel_neighbour_val <= kernel_centre_val)
+        return true;
 
-	return false;
+    return false;
 }
 
 // Region growing downhill
 inline void
 FindMaxima::RegionGrow (int x, int y)
 {
-	if (regionGrowCount++ > MAX_REGIONGROW_CALLS)
+    if (regionGrowCount++ > MAX_REGIONGROW_CALLS)
         return;
 
-	if(y <= 0 || y >= (this->height - 1))
-		return;
+    if(y <= 0 || y >= (this->height - 1))
+        return;
 
-	if (x <= 0 || x >= (this->width - 1))
-		return;
+    if (x <= 0 || x >= (this->width - 1))
+        return;
 
-	double *original_ptr_ptr = (double *) FreeImage_GetScanLine(this->original_image_double, y) + x;
-	byte *processing_image_ptr = FreeImage_GetScanLine(this->processing_image, y) + x;
+    double *original_ptr_ptr = (double *) FreeImage_GetScanLine(this->original_image_double, y) + x;
+    byte *processing_image_ptr = FreeImage_GetScanLine(this->processing_image, y) + x;
 
-	*processing_image_ptr = 3;	// Mark as done
+    *processing_image_ptr = 3;	// Mark as done
 
-	// Top left of 3x3 kernel
+    // Top left of 3x3 kernel
     double *kernel_original_ptr = original_ptr_ptr + FIA_GetPitchInPixels(this->original_image_double) - 1;
-	byte *kernel_processing_ptr = processing_image_ptr + FIA_GetPitchInPixels(this->processing_image) - 1;
+    byte *kernel_processing_ptr = processing_image_ptr + FIA_GetPitchInPixels(this->processing_image) - 1;
 
-	if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
-		 RegionGrow (x-1, y+1);
+    if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
+         RegionGrow (x-1, y+1);
 
-	if(kernel_processing_ptr[1] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[1]))
-		 RegionGrow (x, y+1);
+    if(kernel_processing_ptr[1] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[1]))
+         RegionGrow (x, y+1);
 
-	if(kernel_processing_ptr[2] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[2]))
-		 RegionGrow (x+1, y+1);
+    if(kernel_processing_ptr[2] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[2]))
+         RegionGrow (x+1, y+1);
 
-	kernel_original_ptr = original_ptr_ptr - 1;
-	kernel_processing_ptr = processing_image_ptr - 1;
+    kernel_original_ptr = original_ptr_ptr - 1;
+    kernel_processing_ptr = processing_image_ptr - 1;
 
-	if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
-		 RegionGrow (x-1, y);
+    if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
+         RegionGrow (x-1, y);
 
-	if(kernel_processing_ptr[2] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[2]))
-		 RegionGrow (x+1, y);
+    if(kernel_processing_ptr[2] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[2]))
+         RegionGrow (x+1, y);
 
-	kernel_original_ptr = original_ptr_ptr - FIA_GetPitchInPixels(this->original_image_double) - 1;
-	kernel_processing_ptr = processing_image_ptr - FIA_GetPitchInPixels(this->processing_image) - 1;
+    kernel_original_ptr = original_ptr_ptr - FIA_GetPitchInPixels(this->original_image_double) - 1;
+    kernel_processing_ptr = processing_image_ptr - FIA_GetPitchInPixels(this->processing_image) - 1;
 
-	if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
-		 RegionGrow (x-1, y-1);
+    if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
+         RegionGrow (x-1, y-1);
 
-	if(kernel_processing_ptr[1] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[1]))
-		 RegionGrow (x, y-1);
+    if(kernel_processing_ptr[1] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[1]))
+         RegionGrow (x, y-1);
 
-	if(kernel_processing_ptr[2] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[2]))
-		 RegionGrow (x+1, y-1);
+    if(kernel_processing_ptr[2] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[2]))
+         RegionGrow (x+1, y-1);
 }
 
 void
 FindMaxima::PerformRegionGrow ()
 {
-	register byte *processing_ptr;
+    register byte *processing_ptr;
 
     for(register int y = 1; y < height - 1; y++)
     {
-		processing_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
+        processing_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
 
         for(register int x = 1; x < width - 1; x++)
         {
@@ -389,7 +389,7 @@ FindMaxima::DrawMaxima (int size)
         size = 1;               // Just a check as this has created much confusion
     }
 
-	int half_size = size / 2;
+    int half_size = size / 2;
 
     this->peek_image = FreeImage_Allocate (this->width, this->height, 8, 0, 0, 0);
 
@@ -398,12 +398,12 @@ FindMaxima::DrawMaxima (int size)
     register byte *src_ptr, *dst_ptr;
     FIARECT rect;
 
-	//int pitch_in_pixels = FIA_GetPitchInPixels(this->processing_image);
+    //int pitch_in_pixels = FIA_GetPitchInPixels(this->processing_image);
 
     for(register int y = 1; y < height - 1; y++)
     {
         //src_ptr = this->processing_first_pixel_address_ptr + y * pitch_in_pixels;
-		src_ptr = (byte *) FIA_GetScanLineFromTop(this->processing_image, y);
+        src_ptr = (byte *) FIA_GetScanLineFromTop(this->processing_image, y);
         dst_ptr = (byte *) FIA_GetScanLineFromTop (this->peek_image, y);
 
         for(register int x = 1; x < width - 1; x++)
@@ -415,11 +415,12 @@ FindMaxima::DrawMaxima (int size)
                 rect.right = rect.left + size;
                 rect.bottom = rect.top + size;
 
-				// FIBITMAP Bottom starts at zero so we must correct.
-				//rect.bottom = this->height - rect.bottom - 1;
-               // rect.top = this->height - rect.top - 1;
+                // FIBITMAP Bottom starts at zero so we must correct.
+                //rect.bottom = this->height - rect.bottom - 1;
+                // rect.top = this->height - rect.top - 1;
 
-                FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
+                //FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
+                FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 1);
 
                 dst_ptr[x] = 255;
             }
@@ -456,7 +457,7 @@ FindMaxima::StoreBrightestPeaks (int number, FIAPeak ** peaks_ref)
     PARTICLEINFO *info = NULL;
 
     if(FIA_ParticleInfo (this->peek_image, &info, 1) == FIA_ERROR)
-		return FIA_ERROR;
+        return FIA_ERROR;
 
     int total_blobs = info->number_of_blobs;
 
@@ -505,25 +506,25 @@ FIBITMAP *
 FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
                              int min_separation, FIAPeak ** peaks, int number, int *peaks_found)
 {
-	*peaks_found = 0;
+    *peaks_found = 0;
 
     this->regionGrowCount = 0;
     this->threshold = threshold;
     this->min_separation = min_separation;
 
     this->original_image = src;
-	this->peek_image = NULL;
+    this->peek_image = NULL;
 
     this->width = FreeImage_GetWidth (this->original_image);
     this->height = FreeImage_GetHeight (this->original_image);
 
-	if(this->width == 0 || this->height == 0) {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+    if(this->width == 0 || this->height == 0) {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Error image size is %d x %d", width, height);	
-		return NULL;
-	}
+        return NULL;
+    }
 
-	this->original_image_double = FIA_ConvertToGreyscaleFloatType(this->original_image, FIT_DOUBLE);
+    this->original_image_double = FIA_ConvertToGreyscaleFloatType(this->original_image, FIT_DOUBLE);
     this->processing_image = FreeImage_Allocate (this->width, this->height, 8, 0, 0, 0);
 
     this->NonMaxSupression ();
@@ -543,7 +544,7 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
     *peaks_found = StoreBrightestPeaks (number, peaks);
 
     FreeImage_Unload (this->processing_image);
-	FreeImage_Unload (this->original_image_double);
+    FreeImage_Unload (this->original_image_double);
 
     return this->peek_image;
 }

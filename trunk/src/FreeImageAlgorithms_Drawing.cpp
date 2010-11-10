@@ -174,7 +174,7 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
     typedef agg::pixfmt_bgra32                       src_pixfmt_type;
     typedef agg::pixfmt_bgra32                       dst_pixfmt_type;
     typedef agg::renderer_base < dst_pixfmt_type >   renbase_type;
-    	
+        
     int src_width = FreeImage_GetWidth (src);
     int src_height = FreeImage_GetHeight (src);
     
@@ -197,8 +197,8 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
     
     unsigned char *dst_bits = FreeImage_GetBits (dst);
 
-	int src_pitch = FreeImage_GetPitch (src);
-	int dst_pitch = FreeImage_GetPitch (dst);
+    int src_pitch = FreeImage_GetPitch (src);
+    int dst_pitch = FreeImage_GetPitch (dst);
 
     // Create the src buffer
     agg::rendering_buffer rbuf_src (src_bits, src_width, src_height, -src_pitch);
@@ -216,7 +216,7 @@ DrawTransformedImage (FIBITMAP *src, FIBITMAP *dst, agg::trans_affine image_mtx,
 //    typedef agg::span_image_filter_rgba_bilinear_clone<src_pixfmt_type, interpolator_type> span_gen_type;
 
     span_gen_type sg(pixf_src, agg::rgba8(colour.rgbRed,colour.rgbGreen,colour.rgbBlue,
-    		(retain_background ? 0 : 255)), interpolator);
+            (retain_background ? 0 : 255)), interpolator);
        
 //    span_gen_type sg(pixf_src, interpolator);
  
@@ -265,25 +265,25 @@ FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
 
 int DLL_CALLCONV
 FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
-			  int dstLeft, int dstTop, int dstWidth, int dstHeight,
-			  int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour, int retain_background)
+              int dstLeft, int dstTop, int dstWidth, int dstHeight,
+              int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour, int retain_background)
 {
     if (FreeImage_GetImageType (dst) != FIT_BITMAP)
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Destination image is not of type FIT_BITMAP");
         return FIA_ERROR;
     }
     
     if (FreeImage_GetBPP (dst) != 32)
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Destination image is not 32 bpp");
         return FIA_ERROR;
     }
 
     FIBITMAP* src_region = FIA_Copy(src, srcLeft, srcTop,
-			srcLeft + srcWidth - 1, srcTop + srcHeight - 1);
+            srcLeft + srcWidth - 1, srcTop + srcHeight - 1);
 
     if(src_region == NULL) {
 
@@ -301,21 +301,21 @@ FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
         src32 = FreeImage_Clone(src_region);
     }
 
-	FIA_Matrix* dstMatrix = FIA_MatrixNew();
-	
-	double scalex = (double) dstWidth / srcWidth;
-	double scaley = (double) dstHeight / srcHeight;
+    FIA_Matrix* dstMatrix = FIA_MatrixNew();
+    
+    double scalex = (double) dstWidth / srcWidth;
+    double scaley = (double) dstHeight / srcHeight;
 
-	FIA_MatrixTranslate(dstMatrix, dstLeft - 1, dstTop - 1, FIA_MatrixOrderPrepend);
-	FIA_MatrixScale(dstMatrix, scalex, scaley, FIA_MatrixOrderPrepend);
+    FIA_MatrixTranslate(dstMatrix, dstLeft - 1, dstTop - 1, FIA_MatrixOrderPrepend);
+    FIA_MatrixScale(dstMatrix, scalex, scaley, FIA_MatrixOrderPrepend);
 
-	if(matrix != NULL) {
-		dstMatrix->trans_affine *= matrix->trans_affine;
-	}
+    if(matrix != NULL) {
+        dstMatrix->trans_affine *= matrix->trans_affine;
+    }
 
     DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour, retain_background);
         
-	FIA_MatrixDestroy(dstMatrix);
+    FIA_MatrixDestroy(dstMatrix);
 
     FreeImage_Unload(src32);
     FreeImage_Unload(src_region);
@@ -325,18 +325,18 @@ FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
 
 int DLL_CALLCONV
 FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
-			  int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background)
+              int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background)
 {
     if (FreeImage_GetImageType (dst) != FIT_BITMAP)
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Destination image is not of type FIT_BITMAP");
         return FIA_ERROR;
     }
     
     if (FreeImage_GetBPP (dst) != 32)
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Destination image is not 32 bpp");
         return FIA_ERROR;
     }
@@ -351,21 +351,21 @@ FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
         src32 = FreeImage_Clone(src);
     }
 
-	FIA_Matrix* dstMatrix = FIA_MatrixNew();
-	
-	double scalex = (double) dstWidth / FreeImage_GetWidth(src);
-	double scaley = (double) dstHeight / FreeImage_GetHeight(src);
+    FIA_Matrix* dstMatrix = FIA_MatrixNew();
+    
+    double scalex = (double) dstWidth / FreeImage_GetWidth(src);
+    double scaley = (double) dstHeight / FreeImage_GetHeight(src);
 
-	FIA_MatrixTranslate(dstMatrix, dstLeft - 1, dstTop - 1, FIA_MatrixOrderPrepend);
-	FIA_MatrixScale(dstMatrix, scalex, scaley, FIA_MatrixOrderPrepend);
+    FIA_MatrixTranslate(dstMatrix, dstLeft - 1, dstTop - 1, FIA_MatrixOrderPrepend);
+    FIA_MatrixScale(dstMatrix, scalex, scaley, FIA_MatrixOrderPrepend);
 
-	if(matrix != NULL) {
-		dstMatrix->trans_affine *= matrix->trans_affine;
-	}
+    if(matrix != NULL) {
+        dstMatrix->trans_affine *= matrix->trans_affine;
+    }
 
     DrawTransformedImage (src32, dst, dstMatrix->trans_affine, colour, retain_background);
         
-	FIA_MatrixDestroy(dstMatrix);
+    FIA_MatrixDestroy(dstMatrix);
 
     FreeImage_Unload(src32);
         
@@ -499,7 +499,7 @@ FIA_DrawColourSolidEllipse (FIBITMAP * src, FIARECT rect, RGBQUAD colour, int an
     if (type == FIT_BITMAP && bpp == 32)
     {
         typedef agg::pixfmt_bgra32                       pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+        typedef agg::renderer_base < pixfmt_type >       renbase_type;
      
         pixfmt_type pixf(rbuf);
         renbase_type rbase(pixf);
@@ -508,8 +508,8 @@ FIA_DrawColourSolidEllipse (FIBITMAP * src, FIARECT rect, RGBQUAD colour, int an
     }
     else if (type == FIT_BITMAP && bpp == 24)
     {
-	    typedef agg::pixfmt_bgr24                        pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+        typedef agg::pixfmt_bgr24                        pixfmt_type;
+        typedef agg::renderer_base < pixfmt_type >       renbase_type;
 
         pixfmt_type pixf(rbuf);
         renbase_type rbase(pixf);
@@ -696,7 +696,7 @@ FIA_DrawColourSolidPolygon (FIBITMAP * src, FIAPOINT * points,
     if (type == FIT_BITMAP && bpp == 32)
     {
         typedef agg::pixfmt_bgra32                       pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+        typedef agg::renderer_base < pixfmt_type >       renbase_type;
      
         pixfmt_type pixf(rbuf);
         renbase_type rbase(pixf);
@@ -707,8 +707,8 @@ FIA_DrawColourSolidPolygon (FIBITMAP * src, FIAPOINT * points,
     }
     else if (type == FIT_BITMAP && bpp == 24)
     {
-	    typedef agg::pixfmt_bgr24                        pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+        typedef agg::pixfmt_bgr24                        pixfmt_type;
+        typedef agg::renderer_base < pixfmt_type >       renbase_type;
 
         pixfmt_type pixf(rbuf);
         renbase_type rbase(pixf);
@@ -779,7 +779,7 @@ orthogonal_draw_line (FIBITMAP * src, int x1, int y1, int x2, int y2, ValueType 
     bool greyscale_image = true;
 
     if(FreeImage_GetImageType(src) == FIT_BITMAP && FreeImage_GetBPP(src) > 8) {
-	    greyscale_image = false;
+        greyscale_image = false;
     }
 
     if (x1 != x2)
@@ -793,34 +793,34 @@ orthogonal_draw_line (FIBITMAP * src, int x1, int y1, int x2, int y2, ValueType 
 
         BYTE *bits = (BYTE *) FreeImage_GetScanLine (src, y1) + (x1 * bytespp);
 
-	    if(greyscale_image)
-	    {
-            	while (x1 <= x2)
-            	{
-                	*(ValueType*)bits = value;  
+        if(greyscale_image)
+        {
+                while (x1 <= x2)
+                {
+                    *(ValueType*)bits = value;  
                     // jump to next pixel
-		            bits += bytespp;
+                    bits += bytespp;
                     x1++;
-            	}
-	    }
-	    else {
+                }
+        }
+        else {
 
-		    for(register int x = x1; x <= x2; x++)
+            for(register int x = x1; x <= x2; x++)
             {
-		        bits[FI_RGBA_RED] = colour.rgbRed;
-		        bits[FI_RGBA_GREEN] = colour.rgbGreen;
-		        bits[FI_RGBA_BLUE] = colour.rgbBlue;
+                bits[FI_RGBA_RED] = colour.rgbRed;
+                bits[FI_RGBA_GREEN] = colour.rgbGreen;
+                bits[FI_RGBA_BLUE] = colour.rgbBlue;
 
-		        if (bytespp == 4)
-		        {
-		            bits[FI_RGBA_ALPHA] = 0;
-		        }
+                if (bytespp == 4)
+                {
+                    bits[FI_RGBA_ALPHA] = 0;
+                }
 
-		        // jump to next pixel
-		        bits += bytespp;
-		    }
-	    }
-	
+                // jump to next pixel
+                bits += bytespp;
+            }
+        }
+    
         return FIA_SUCCESS;
     }
 
@@ -836,35 +836,35 @@ orthogonal_draw_line (FIBITMAP * src, int x1, int y1, int x2, int y2, ValueType 
         // Get starting point
         BYTE *bits = (BYTE *) (FreeImage_GetScanLine (src, y1) + (x1 * bytespp));
 
-	    if(greyscale_image)
-	    {
-		    while (y1 <= y2)
-		    {
-		        *(ValueType*)bits = value;
+        if(greyscale_image)
+        {
+            while (y1 <= y2)
+            {
+                *(ValueType*)bits = value;
 
-		        bits += pitch;
+                bits += pitch;
 
-		        y1++;
-		    }
-	    }
-	    else {
+                y1++;
+            }
+        }
+        else {
 
-		    while (y1 <= y2)
-		    {
-		        bits[FI_RGBA_RED] = colour.rgbRed;
-		        bits[FI_RGBA_GREEN] = colour.rgbGreen;
-		        bits[FI_RGBA_BLUE] = colour.rgbBlue;
+            while (y1 <= y2)
+            {
+                bits[FI_RGBA_RED] = colour.rgbRed;
+                bits[FI_RGBA_GREEN] = colour.rgbGreen;
+                bits[FI_RGBA_BLUE] = colour.rgbBlue;
 
-		        if (bytespp == 4)
-		        {
-			        bits[FI_RGBA_ALPHA] = 0;
-		        }
+                if (bytespp == 4)
+                {
+                    bits[FI_RGBA_ALPHA] = 0;
+                }
 
-		        bits += pitch;
+                bits += pitch;
 
-		        y1++;
-		    }
-	    }
+                y1++;
+            }
+        }
 
         return FIA_SUCCESS;
     }
@@ -951,7 +951,7 @@ DrawSolidRectangle (FIBITMAP * src, FIARECT rect, ValueType value, RGBQUAD colou
     bool greyscale_image = true;
 
     if(FreeImage_GetImageType(src) == FIT_BITMAP && FreeImage_GetBPP(src) > 8) {
-	    greyscale_image = false;
+        greyscale_image = false;
     }
    
     if(greyscale_image)
@@ -982,15 +982,15 @@ DrawSolidRectangle (FIBITMAP * src, FIARECT rect, ValueType value, RGBQUAD colou
             for(register int x = tmp_rect.left; x <= right; x++) {
         
                 buf[FI_RGBA_RED] = colour.rgbRed;
-		        buf[FI_RGBA_GREEN] = colour.rgbGreen;
-		        buf[FI_RGBA_BLUE] = colour.rgbBlue;
+                buf[FI_RGBA_GREEN] = colour.rgbGreen;
+                buf[FI_RGBA_BLUE] = colour.rgbBlue;
 
-		        if (bytespp == 4)
-		        {
-			        buf[x + FI_RGBA_ALPHA] = 0;
-		        }
+                if (bytespp == 4)
+                {
+                    buf[x + FI_RGBA_ALPHA] = 0;
+                }
 
-		        buf += bytespp;
+                buf += bytespp;
 
             }
         }
@@ -1086,26 +1086,26 @@ FIA_DrawColourLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, RGBQUAD colour,
     if (type == FIT_BITMAP && bpp == 32)
     {
         typedef agg::pixfmt_bgra32                       pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+        typedef agg::renderer_base < pixfmt_type >       renbase_type;
 
-    	pixfmt_type pixf(rbuf);
-    	renbase_type rbase(pixf);
+        pixfmt_type pixf(rbuf);
+        renbase_type rbase(pixf);
 
         return DrawLine (rbase, src, p1_tmp, p2_tmp, colour, line_width, antialiased);
     }
 
     if (type == FIT_BITMAP && bpp == 24)
     {
-	typedef agg::pixfmt_bgr24                        pixfmt_type;
-    	typedef agg::renderer_base < pixfmt_type >       renbase_type;
+    typedef agg::pixfmt_bgr24                        pixfmt_type;
+        typedef agg::renderer_base < pixfmt_type >       renbase_type;
 
-    	// Create the rendering buffer
-    	agg::rendering_buffer rbuf (buf, width, height, FreeImage_GetPitch (src));
+        // Create the rendering buffer
+        agg::rendering_buffer rbuf (buf, width, height, FreeImage_GetPitch (src));
 
-    	pixfmt_type pixf(rbuf);
-    	renbase_type rbase(pixf);
+        pixfmt_type pixf(rbuf);
+        renbase_type rbase(pixf);
 
-    	return DrawLine (rbase, src, p1_tmp, p2_tmp, colour, line_width, antialiased);
+        return DrawLine (rbase, src, p1_tmp, p2_tmp, colour, line_width, antialiased);
     }
 
     return FIA_ERROR;
@@ -1135,7 +1135,7 @@ FIA_DrawGreyscaleLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double value,
 
     if (type == FIT_BITMAP && bpp == 8)
     {
-	    typedef agg::pixfmt_gray8                        pixfmt_type;
+        typedef agg::pixfmt_gray8                        pixfmt_type;
         typedef agg::renderer_base < pixfmt_type >       renbase_type;
 
         // Create the rendering buffer
@@ -1144,11 +1144,11 @@ FIA_DrawGreyscaleLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double value,
         pixfmt_type pixf(rbuf);
         renbase_type rbase(pixf);
 
-	    RGBQUAD colour;
+        RGBQUAD colour;
 
-	    colour.rgbRed = (unsigned char) value;
-	    colour.rgbGreen = (unsigned char) value;
-	    colour.rgbBlue = (unsigned char) value;
+        colour.rgbRed = (unsigned char) value;
+        colour.rgbGreen = (unsigned char) value;
+        colour.rgbBlue = (unsigned char) value;
 
         return DrawLine (rbase, src, p1_tmp, p2_tmp, colour, line_width, antialiased);
     }
@@ -1236,26 +1236,26 @@ FIA_DrawGreyscaleRect (FIBITMAP * src, FIARECT rect, double value, int line_widt
 int DLL_CALLCONV
 FIA_DrawGreyScaleCheckerBoard (FIBITMAP * src, int square_size)
 {
-	int row;   // Row number, from 0 to cols
+    int row;   // Row number, from 0 to cols
     int col;   // Column number, from 0 to rows
-	int x, y;   // Top-left corner of square
-	double value;
+    int x, y;   // Top-left corner of square
+    double value;
 
-	// Minimum grid size
-	if(square_size < 5)
-		square_size = 5;
+    // Minimum grid size
+    if(square_size < 5)
+        square_size = 5;
 
-	// Sret Maximum grid size
-	if(square_size > 500)
-		square_size = 500;
+    // Sret Maximum grid size
+    if(square_size > 500)
+        square_size = 500;
 
-	int width =  FreeImage_GetWidth(src);
-	int height = FreeImage_GetHeight(src);
+    int width =  FreeImage_GetWidth(src);
+    int height = FreeImage_GetHeight(src);
 
-	int cols = width / square_size;
-	int rows = height / square_size;
+    int cols = width / square_size;
+    int rows = height / square_size;
 
-	for ( row = 0;  row < rows + 1;  row++ ) {
+    for ( row = 0;  row < rows + 1;  row++ ) {
 
          for ( col = 0;  col < cols + 1;  col++) {
 
@@ -1267,12 +1267,12 @@ FIA_DrawGreyScaleCheckerBoard (FIBITMAP * src, int square_size)
             else
                value = 0.0;
 
-			if(FIA_DrawSolidGreyscaleRect (src, MakeFIARect(x, y, x + square_size, y + square_size), value) == FIA_ERROR)
-				return FIA_ERROR;
+            if(FIA_DrawSolidGreyscaleRect (src, MakeFIARect(x, y, x + square_size, y + square_size), value) == FIA_ERROR)
+                return FIA_ERROR;
          }
       }
 
-	return FIA_SUCCESS;
+    return FIA_SUCCESS;
 }
 
 

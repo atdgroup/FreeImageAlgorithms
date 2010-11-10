@@ -22,7 +22,7 @@
 #define __FREEIMAGE_ALGORITHMS_DRAWING__
 
 /*! \file 
-	Provides methods for drawing on a freeimage bitmap.
+    Provides methods for drawing on a freeimage bitmap.
 */ 
 
 #include "FreeImageAlgorithms.h"
@@ -192,12 +192,12 @@ FIA_AffineTransform(FIBITMAP *src, int image_dst_width, int image_dst_height,
            
 DLL_API int DLL_CALLCONV
 FIA_DrawImageFromSrcToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
-			  int dstLeft, int dstTop, int dstWidth, int dstHeight,
-			  int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour, int retain_background);
+              int dstLeft, int dstTop, int dstWidth, int dstHeight,
+              int srcLeft, int srcTop, int srcWidth, int srcHeight, RGBQUAD colour, int retain_background);
                
 DLL_API int DLL_CALLCONV
 FIA_DrawImageToDst(FIBITMAP *dst, FIBITMAP *src, FIA_Matrix *matrix,
-			  int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background);
+              int dstLeft, int dstTop, int dstWidth, int dstHeight, RGBQUAD colour, int retain_background);
 
 #ifdef __cplusplus
 }
