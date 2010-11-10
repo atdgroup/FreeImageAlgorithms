@@ -33,7 +33,7 @@ template < class Tsrc > class Statistic
     int CalculateHistogram (FIBITMAP * src, double min, double max, int number_of_bins,
                             unsigned long *hist);
 
-    int CalculateStatisticReport (FIBITMAP * src, StatisticReport * report);
+    int CalculateStatisticReport (FIBITMAP * src,  FIBITMAP * mask, StatisticReport * report);
 
     int Centroid (FIBITMAP * src, float *x_centroid, float *y_centroid);
 
@@ -115,14 +115,32 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * s
     return FIA_SUCCESS;
 }
 
-template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITMAP * src,
+template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITMAP * src, FIBITMAP * mask,
                                                                           StatisticReport * report)
 {
-	memset(report, 0, sizeof(StatisticReport));
+    memset(report, 0, sizeof(StatisticReport));
 
     if (report == NULL)
     {
         return FIA_ERROR;
+    }
+
+    if (mask != NULL)
+    {
+        // Mask has to be the same size
+        if (FIA_CheckDimensions (src, mask) == FIA_ERROR)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "Image source and mask have different dimensions");
+            return FIA_ERROR;
+        }
+
+        // Mask has to be 8 bit 
+        if (FreeImage_GetBPP (mask) != 8 || FreeImage_GetImageType (mask) != FIT_BITMAP)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask must be an 8bit FIT_BITMAP");
+            return FIA_ERROR;
+        }
     }
 
     int width = FreeImage_GetWidth (src);
@@ -130,59 +148,118 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
 
     double sum = 0.0, sd_sum = 0.0;
     Tsrc *bits;
-	int	amount_of_overloaded_pixels = 0;
+    int	amount_of_overloaded_pixels = 0;
     int	amount_of_underloaded_pixels = 0;
 
-	double min_possible_for_type = 0.0;
-	double max_possible_for_type = 0.0;
+    double min_possible_for_type = 0.0;
+    double max_possible_for_type = 0.0;
 
-	FIA_GetMinPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &min_possible_for_type);
-	FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &max_possible_for_type);
+    FIA_GetMinPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &min_possible_for_type);
+    FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &max_possible_for_type);
 
     report->maxValue = report->minValue = FreeImage_GetBits (src)[0];
 
-    for(register int y = 0; y < height; y++)
+
+    if (mask != NULL)
     {
-        bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-
-        for(register int x = 0; x < width; x++)
+        for(register int y = 0; y < height; y++)
         {
-            if (bits[x] > report->maxValue)
+            bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+            byte *mask_ptr = (byte *) FreeImage_GetScanLine (mask, y);
+
+            for(register int x = 0; x < width; x++)
             {
-                report->maxValue = (double) bits[x];
-            }
+                if(mask_ptr[x] == 0)
+                    continue;
 
-            if (bits[x] < report->minValue)
+                if (bits[x] > report->maxValue)
+                {
+                    report->maxValue = (double) bits[x];
+                }
+
+                if (bits[x] < report->minValue)
+                {
+                    report->minValue = (double) bits[x];
+                }
+
+                if(bits[x] <= min_possible_for_type)
+                {
+                    amount_of_underloaded_pixels++;
+                }
+
+                if(bits[x] >= max_possible_for_type)
+                {
+                    amount_of_overloaded_pixels++;
+                }
+
+                sum += bits[x];
+            }
+        }
+    }
+    else {
+
+        for(register int y = 0; y < height; y++)
+        {
+            bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
             {
-                report->minValue = (double) bits[x];
+                if (bits[x] > report->maxValue)
+                {
+                    report->maxValue = (double) bits[x];
+                }
+
+                if (bits[x] < report->minValue)
+                {
+                    report->minValue = (double) bits[x];
+                }
+
+                if(bits[x] <= min_possible_for_type)
+                {
+                    amount_of_underloaded_pixels++;
+                }
+
+                if(bits[x] >= max_possible_for_type)
+                {
+                    amount_of_overloaded_pixels++;
+                }
+
+                sum += bits[x];
             }
-
-			if(bits[x] <= min_possible_for_type)
-			{
-				amount_of_underloaded_pixels++;
-			}
-
-			if(bits[x] >= max_possible_for_type)
-			{
-				amount_of_overloaded_pixels++;
-			}
-
-            sum += bits[x];
         }
     }
 
     report->area = width * height;
     report->mean = (double) sum / report->area;
-	report->percentage_underloaded = (float) amount_of_underloaded_pixels / report->area;
-	report->percentage_overloaded = (float) amount_of_overloaded_pixels / report->area;
+    report->percentage_underloaded = (float) amount_of_underloaded_pixels / report->area;
+    report->percentage_overloaded = (float) amount_of_overloaded_pixels / report->area;
 
-    for(register int y = 0; y < height; y++)
+    if (mask != NULL)
     {
-        bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-
-        for(register int x = 0; x < width; x++)
+        for(register int y = 0; y < height; y++)
         {
-            sd_sum += ((bits[x] - report->mean) * (bits[x] - report->mean));
+            bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+            byte *mask_ptr = (byte *) FreeImage_GetScanLine (mask, y);
+
+            for(register int x = 0; x < width; x++)
+            {
+                if(mask_ptr[x] == 0)
+                    continue;
+
+                sd_sum += ((bits[x] - report->mean) * (bits[x] - report->mean));
+            }
+        }
+    }
+    else
+    {
+        for(register int y = 0; y < height; y++)
+        {
+            bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
+            {
+                sd_sum += ((bits[x] - report->mean) * (bits[x] - report->mean));
+            }
         }
     }
 
@@ -323,39 +400,97 @@ FIA_StatisticReport (FIBITMAP * src, StatisticReport * report)
         {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
             if (FreeImage_GetBPP (src) == 8)
             {
-                return statisticUCharImage.CalculateStatisticReport (src, report);
+                return statisticUCharImage.CalculateStatisticReport (src, NULL, report);
             }
             break;
         }
 
         case FIT_UINT16:
         {                       // array of unsigned short: unsigned 16-bit
-            return statisticUShortImage.CalculateStatisticReport (src, report);
+            return statisticUShortImage.CalculateStatisticReport (src, NULL, report);
         }
 
         case FIT_INT16:
         {                       // array of short: signed 16-bit
-            return statisticShortImage.CalculateStatisticReport (src, report);
+            return statisticShortImage.CalculateStatisticReport (src, NULL, report);
         }
 
         case FIT_UINT32:
         {                       // array of unsigned long: unsigned 32-bit
-            return statisticULongImage.CalculateStatisticReport (src, report);
+            return statisticULongImage.CalculateStatisticReport (src, NULL, report);
         }
 
         case FIT_INT32:
         {                       // array of long: signed 32-bit
-            return statisticLongImage.CalculateStatisticReport (src, report);
+            return statisticLongImage.CalculateStatisticReport (src, NULL, report);
         }
 
         case FIT_FLOAT:
         {                       // array of float: 32-bit
-            return statisticFloatImage.CalculateStatisticReport (src, report);
+            return statisticFloatImage.CalculateStatisticReport (src, NULL, report);
         }
 
         case FIT_DOUBLE:
         {                       // array of double: 64-bit
-            return statisticDoubleImage.CalculateStatisticReport (src, report);
+            return statisticDoubleImage.CalculateStatisticReport (src, NULL, report);
+        }
+
+        default:
+        {                       // array of FICOMPLEX: 2 x 64-bit
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_StatisticReportWithMask (FIBITMAP * src, FIBITMAP * mask, StatisticReport * report)
+{
+    if (!src)
+        return FIA_ERROR;
+
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src) == 8)
+            {
+                return statisticUCharImage.CalculateStatisticReport (src, mask, report);
+            }
+            break;
+        }
+
+        case FIT_UINT16:
+        {                       // array of unsigned short: unsigned 16-bit
+            return statisticUShortImage.CalculateStatisticReport (src, mask, report);
+        }
+
+        case FIT_INT16:
+        {                       // array of short: signed 16-bit
+            return statisticShortImage.CalculateStatisticReport (src, mask, report);
+        }
+
+        case FIT_UINT32:
+        {                       // array of unsigned long: unsigned 32-bit
+            return statisticULongImage.CalculateStatisticReport (src, mask, report);
+        }
+
+        case FIT_INT32:
+        {                       // array of long: signed 32-bit
+            return statisticLongImage.CalculateStatisticReport (src, mask, report);
+        }
+
+        case FIT_FLOAT:
+        {                       // array of float: 32-bit
+            return statisticFloatImage.CalculateStatisticReport (src, mask, report);
+        }
+
+        case FIT_DOUBLE:
+        {                       // array of double: 64-bit
+            return statisticDoubleImage.CalculateStatisticReport (src, mask, report);
         }
 
         default:

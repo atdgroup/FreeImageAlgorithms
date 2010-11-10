@@ -35,21 +35,6 @@ template < typename Tsrc > class LOGIC
     int InvertMaskImage (FIBITMAP * mask);
 };
 
-static int
-CheckDimensions (FIBITMAP * src, FIBITMAP * mask)
-{
-    // Check src is the same size as dst
-    int src_width = FreeImage_GetWidth (src);
-    int src_height = FreeImage_GetHeight (src);
-    int dst_width = FreeImage_GetWidth (mask);
-    int dst_height = FreeImage_GetHeight (mask);
-
-    if (src_width != dst_width || src_height != dst_height)
-        return FIA_ERROR;
-
-    return FIA_SUCCESS;
-}
-
 template < typename Tsrc > int LOGIC < Tsrc >::MaskImage (FIBITMAP * src, FIBITMAP * mask)
 {
     if (mask == NULL || src == NULL)
@@ -58,7 +43,7 @@ template < typename Tsrc > int LOGIC < Tsrc >::MaskImage (FIBITMAP * src, FIBITM
     }
 
     // Have to be the same size
-    if (CheckDimensions (src, mask) == FIA_ERROR)
+    if (FIA_CheckDimensions (src, mask) == FIA_ERROR)
     {
         return FIA_ERROR;
     }
@@ -75,7 +60,7 @@ template < typename Tsrc > int LOGIC < Tsrc >::MaskImage (FIBITMAP * src, FIBITM
     bool greyscale_image = true;
 
     if(FreeImage_GetImageType(src) == FIT_BITMAP && FreeImage_GetBPP(src) > 8) {
-	    greyscale_image = false;
+        greyscale_image = false;
     }
     
     if(greyscale_image) {
@@ -105,11 +90,11 @@ template < typename Tsrc > int LOGIC < Tsrc >::MaskImage (FIBITMAP * src, FIBITM
                 if (!mask_ptr[x]) {
 
                     src_ptr[FI_RGBA_RED] = 0;
-		            src_ptr[FI_RGBA_GREEN] = 0;
-		            src_ptr[FI_RGBA_BLUE] = 0;
+                    src_ptr[FI_RGBA_GREEN] = 0;
+                    src_ptr[FI_RGBA_BLUE] = 0;
 
-		            if (bytespp == 4)
-			          src_ptr[FI_RGBA_ALPHA] = 0;   
+                    if (bytespp == 4)
+                      src_ptr[FI_RGBA_ALPHA] = 0;   
                 }
                 
                 src_ptr += bytespp;

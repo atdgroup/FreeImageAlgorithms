@@ -44,21 +44,6 @@ template < class Tsrc > class ARITHMATIC
     FIBITMAP *Log (FIBITMAP * src);
 };
 
-static int
-CheckDimensions (FIBITMAP * dst, FIBITMAP * src)
-{
-    // Check src is the same size as dst
-    int src_width = FreeImage_GetWidth (src);
-    int src_height = FreeImage_GetHeight (src);
-    int dst_width = FreeImage_GetWidth (dst);
-    int dst_height = FreeImage_GetHeight (dst);
-
-    if (src_width != dst_width || src_height != dst_height)
-        return FIA_ERROR;
-
-    return FIA_SUCCESS;
-}
-
 template < typename Tsrc > int ARITHMATIC < Tsrc >::SumOfAllPixels (FIBITMAP * src,
                                                                     FIBITMAP * mask, double *sum)
 {
@@ -68,7 +53,7 @@ template < typename Tsrc > int ARITHMATIC < Tsrc >::SumOfAllPixels (FIBITMAP * s
     if (mask != NULL)
     {
         // Mask has to be the same size
-        if (CheckDimensions (src, mask) == FIA_ERROR)
+        if (FIA_CheckDimensions (src, mask) == FIA_ERROR)
         {
             FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                          "Image source and mask have different dimensions");
@@ -235,7 +220,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::MaxOfTwoImages (FIBITMAP * dst,
     if (dst == NULL || src == NULL)
         return FIA_ERROR;
 
-    if (CheckDimensions (dst, src) == FIA_ERROR)
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination and source have different dimensions");
@@ -301,7 +286,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::MultiplyImages (FIBITMAP * dst,
     if (dst == NULL || src == NULL)
         return FIA_ERROR;
 
-    if (CheckDimensions (dst, src) == FIA_ERROR)
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination and source have different dimensions");
@@ -337,7 +322,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::DivideImages (FIBITMAP * dst, F
     if (dst == NULL || src == NULL)
         return FIA_ERROR;
 
-    if (CheckDimensions (dst, src) == FIA_ERROR)
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination and source have different dimensions");
@@ -381,7 +366,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddImages (FIBITMAP * dst, FIBI
     if (dst == NULL || src == NULL)
         return FIA_ERROR;
 
-    if (CheckDimensions (dst, src) == FIA_ERROR)
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination and source have different dimensions");
@@ -440,7 +425,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractImages (FIBITMAP * dst,
     if (dst == NULL || src == NULL)
         return FIA_ERROR;
 
-    if (CheckDimensions (dst, src) == FIA_ERROR)
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination and source have different dimensions");
@@ -1155,7 +1140,7 @@ FIA_MultiplyComplexImages (FIBITMAP * dst, FIBITMAP * src)
     if (dst == NULL || src == NULL)
         return FIA_ERROR;
 
-    if (CheckDimensions (dst, src) == FIA_ERROR)
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination and source have different dimensions");
@@ -1236,142 +1221,142 @@ FIA_Add8BitImageToColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_dib, GR
 {
     RGBQUAD *palette;
 
-	// Has to be the same size
-    if (CheckDimensions (colour_dib, greyscale_dib) == FIA_ERROR)
+    // Has to be the same size
+    if (FIA_CheckDimensions (colour_dib, greyscale_dib) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                          "Colour source and greyscale image have different dimensions");
         return FIA_ERROR;
     }
 
-	int width = FreeImage_GetWidth(colour_dib);
-	int height = FreeImage_GetHeight(colour_dib);
+    int width = FreeImage_GetWidth(colour_dib);
+    int height = FreeImage_GetHeight(colour_dib);
 
-	int bytespp = FreeImage_GetLine (colour_dib) / FreeImage_GetWidth (colour_dib);
+    int bytespp = FreeImage_GetLine (colour_dib) / FreeImage_GetWidth (colour_dib);
 
-	// Can be NULL. Just won't have palette weighted adds.
+    // Can be NULL. Just won't have palette weighted adds.
     palette = FreeImage_GetPalette (greyscale_dib);
 
-	if(palette == NULL)
-		FIA_GetGreyLevelPalette(palette);
+    if(palette == NULL)
+        FIA_GetGreyLevelPalette(palette);
 
-	BYTE *colour_bits = NULL;
-	BYTE *gs_bits = NULL;
-	RGBQUAD palette_entry;
-	int new_value;
+    BYTE *colour_bits = NULL;
+    BYTE *gs_bits = NULL;
+    RGBQUAD palette_entry;
+    int new_value;
 
-	if(type == GREY_LEVEL_ADD_ADD) {
+    if(type == GREY_LEVEL_ADD_ADD) {
 
-		for(register int y = 0; y < height; y++)
-		{
-			colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
-			gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
+        for(register int y = 0; y < height; y++)
+        {
+            colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
+            gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
 
-			for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
+            for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
 
-				palette_entry = palette[gs_bits[x]];
+                palette_entry = palette[gs_bits[x]];
 
-				new_value = (colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed);
-				
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
-				#endif
-			
-				new_value = (colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen);
-			
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
-				#endif
+                new_value = (colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed);
+                
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
+                #endif
+            
+                new_value = (colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen);
+            
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
+                #endif
 
-				new_value = (colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue);
-				
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
-				#endif
-			}
-		}
-	}
-	else if(type == GREY_LEVEL_ADD_AVERAGE) {
+                new_value = (colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue);
+                
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
+                #endif
+            }
+        }
+    }
+    else if(type == GREY_LEVEL_ADD_AVERAGE) {
 
-		for(register int y = 0; y < height; y++)
-		{
-			colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
-			gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
+        for(register int y = 0; y < height; y++)
+        {
+            colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
+            gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
 
-			for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
+            for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
 
-				palette_entry = palette[gs_bits[x]];
+                palette_entry = palette[gs_bits[x]];
 
-				new_value = (colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed) / 2;
+                new_value = (colour_bits[cx + FI_RGBA_RED] + palette_entry.rgbRed) / 2;
 
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
-				#endif
-			
-				new_value = (colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen) / 2;
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
+                #endif
+            
+                new_value = (colour_bits[cx + FI_RGBA_GREEN] + palette_entry.rgbGreen) / 2;
 
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
-				#endif
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
+                #endif
 
-				new_value = (colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue) / 2;
+                new_value = (colour_bits[cx + FI_RGBA_BLUE] + palette_entry.rgbBlue) / 2;
 
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
-				#endif
-			}
-		}
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
+                #endif
+            }
+        }
 
-	}
-	else if(type == GREY_LEVEL_ADD_FILL_RANGE) {
+    }
+    else if(type == GREY_LEVEL_ADD_FILL_RANGE) {
 
-		for(register int y = 0; y < height; y++)
-		{
-			colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
-			gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
+        for(register int y = 0; y < height; y++)
+        {
+            colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
+            gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
 
-			for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
+            for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
 
-				palette_entry = palette[gs_bits[x]];
-		
-				new_value = colour_bits[cx + FI_RGBA_RED] + (palette_entry.rgbRed * (255 - colour_bits[cx + FI_RGBA_RED])/255);
-				
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
-				#endif
-			
-				new_value = colour_bits[cx + FI_RGBA_GREEN] + (palette_entry.rgbGreen * (255 - colour_bits[cx + FI_RGBA_GREEN])/255);
-				
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
-				#endif
+                palette_entry = palette[gs_bits[x]];
+        
+                new_value = colour_bits[cx + FI_RGBA_RED] + (palette_entry.rgbRed * (255 - colour_bits[cx + FI_RGBA_RED])/255);
+                
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
+                #endif
+            
+                new_value = colour_bits[cx + FI_RGBA_GREEN] + (palette_entry.rgbGreen * (255 - colour_bits[cx + FI_RGBA_GREEN])/255);
+                
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
+                #endif
 
-				new_value = colour_bits[cx + FI_RGBA_BLUE] + (palette_entry.rgbBlue * (255 - colour_bits[cx + FI_RGBA_BLUE])/255);
-			
-				#ifdef WIN32
-					colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
-				#else
-					colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
-				#endif
-			}
-		}
-	}
+                new_value = colour_bits[cx + FI_RGBA_BLUE] + (palette_entry.rgbBlue * (255 - colour_bits[cx + FI_RGBA_BLUE])/255);
+            
+                #ifdef WIN32
+                    colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
+                #else
+                    colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
+                #endif
+            }
+        }
+    }
 
     return FIA_SUCCESS;
 }
@@ -1382,85 +1367,85 @@ FIA_Overlay8BitImageOverColourImage (FIBITMAP *colour_dib, FIBITMAP *greyscale_d
 {
     RGBQUAD *palette;
 
-	// Has to be the same size
-    if (CheckDimensions (colour_dib, greyscale_dib) == FIA_ERROR)
+    // Has to be the same size
+    if (FIA_CheckDimensions (colour_dib, greyscale_dib) == FIA_ERROR)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                          "Colour source and greyscale image have different dimensions");
         return FIA_ERROR;
     }
 
-	int width = FreeImage_GetWidth(colour_dib);
-	int height = FreeImage_GetHeight(colour_dib);
+    int width = FreeImage_GetWidth(colour_dib);
+    int height = FreeImage_GetHeight(colour_dib);
 
-	int bytespp = FreeImage_GetLine (colour_dib) / FreeImage_GetWidth (colour_dib);
+    int bytespp = FreeImage_GetLine (colour_dib) / FreeImage_GetWidth (colour_dib);
 
-	// Can be NULL. Just won't have palette weighted adds.
+    // Can be NULL. Just won't have palette weighted adds.
     palette = FreeImage_GetPalette (greyscale_dib);
 
-	if(palette == NULL)
-		FIA_GetGreyLevelPalette(palette);
+    if(palette == NULL)
+        FIA_GetGreyLevelPalette(palette);
 
-	BYTE *colour_bits = NULL;
-	BYTE *gs_bits = NULL;
-	RGBQUAD palette_entry;
-	int new_value;
+    BYTE *colour_bits = NULL;
+    BYTE *gs_bits = NULL;
+    RGBQUAD palette_entry;
+    int new_value;
 
-	for(register int y = 0; y < height; y++)
-	{
-		colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
-		gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
+    for(register int y = 0; y < height; y++)
+    {
+        colour_bits = (BYTE *) FreeImage_GetScanLine (colour_dib, y);
+        gs_bits = (BYTE *) FreeImage_GetScanLine (greyscale_dib, y);
 
-		for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
+        for(register int x=0, cx=0; x < width; x++, cx+=bytespp) {
 
-			palette_entry = palette[gs_bits[x]];
+            palette_entry = palette[gs_bits[x]];
 
-			if(gs_bits[x] > threshold) {
+            if(gs_bits[x] > threshold) {
 
-				new_value = palette_entry.rgbRed;
-			}
-			else {
+                new_value = palette_entry.rgbRed;
+            }
+            else {
 
-				new_value = colour_bits[cx + FI_RGBA_RED];
-			}
+                new_value = colour_bits[cx + FI_RGBA_RED];
+            }
 
-			#ifdef WIN32
-				colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
-			#else
-				colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
-			#endif
-		
-			if(gs_bits[x] > threshold) {
+            #ifdef WIN32
+                colour_bits[cx + FI_RGBA_RED] = min(max(0, new_value), 255);
+            #else
+                colour_bits[cx + FI_RGBA_RED] = std::min(std::max(0, new_value), 255);
+            #endif
+        
+            if(gs_bits[x] > threshold) {
 
-				new_value = palette_entry.rgbGreen;
-			}
-			else {
+                new_value = palette_entry.rgbGreen;
+            }
+            else {
 
-				new_value = colour_bits[cx + FI_RGBA_GREEN];
-			}
+                new_value = colour_bits[cx + FI_RGBA_GREEN];
+            }
 
-			#ifdef WIN32
-				colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
-			#else
-				colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
-			#endif
+            #ifdef WIN32
+                colour_bits[cx + FI_RGBA_GREEN] = min(max(0, new_value), 255);
+            #else
+                colour_bits[cx + FI_RGBA_GREEN] = std::min(std::max(0, new_value), 255);
+            #endif
 
-			if(gs_bits[x] > threshold) {
+            if(gs_bits[x] > threshold) {
 
-				new_value = palette_entry.rgbBlue;
-			}
-			else {
+                new_value = palette_entry.rgbBlue;
+            }
+            else {
 
-				new_value = colour_bits[cx + FI_RGBA_BLUE];
-			}
+                new_value = colour_bits[cx + FI_RGBA_BLUE];
+            }
 
-			#ifdef WIN32
-				colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
-			#else
-				colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
-			#endif
-		}
-	}
+            #ifdef WIN32
+                colour_bits[cx + FI_RGBA_BLUE] = min(max(0, new_value), 255);
+            #else
+                colour_bits[cx + FI_RGBA_BLUE] = std::min(std::max(0, new_value), 255);
+            #endif
+        }
+    }
   
     return FIA_SUCCESS;
 }

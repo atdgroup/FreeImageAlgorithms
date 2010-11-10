@@ -53,6 +53,9 @@ MakeFIAPoint(int x, int y);
 DLL_API FIARECT DLL_CALLCONV
 MakeFIARect(int left, int top, int right, int bottom);
 
+DLL_API int DLL_CALLCONV 
+FIA_CheckDimensions (FIBITMAP * dst, FIBITMAP * src);
+
 DLL_API int DLL_CALLCONV
 FIARectIsEmpty (FIARECT rect);
 

@@ -232,6 +232,21 @@ int DLL_CALLCONV FIA_GetPitchInPixels(FIBITMAP *dib)
 	return (FreeImage_GetPitch (dib) / bytes_per_pixel);
 }
 
+int DLL_CALLCONV 
+FIA_CheckDimensions (FIBITMAP * dst, FIBITMAP * src)
+{
+    // Check src is the same size as dst
+    int src_width = FreeImage_GetWidth (src);
+    int src_height = FreeImage_GetHeight (src);
+    int dst_width = FreeImage_GetWidth (dst);
+    int dst_height = FreeImage_GetHeight (dst);
+
+    if (src_width != dst_width || src_height != dst_height)
+        return FIA_ERROR;
+
+    return FIA_SUCCESS;
+}
+
 void DLL_CALLCONV
 FIA_FindCharMinMax (const char *data, long n, char *min, char *max)
 {

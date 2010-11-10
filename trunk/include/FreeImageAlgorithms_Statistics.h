@@ -146,6 +146,8 @@ FIA_MonoTrueFalsePositiveComparison(FIBITMAP *src, FIBITMAP *result,
 DLL_API int DLL_CALLCONV
 FIA_StatisticReport(FIBITMAP *src, StatisticReport *report);
 
+DLL_API int DLL_CALLCONV
+FIA_StatisticReportWithMask (FIBITMAP * src, FIBITMAP * mask, StatisticReport * report);
 
 /** \brief This function determines the center of pixel energy of an image.
  *
