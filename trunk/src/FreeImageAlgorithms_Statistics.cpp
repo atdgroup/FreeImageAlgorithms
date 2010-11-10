@@ -148,6 +148,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
 
     double sum = 0.0, sd_sum = 0.0;
     Tsrc *bits;
+	int number_of_pixels = 0;
     int	amount_of_overloaded_pixels = 0;
     int	amount_of_underloaded_pixels = 0;
 
@@ -158,7 +159,6 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
     FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &max_possible_for_type);
 
     report->maxValue = report->minValue = FreeImage_GetBits (src)[0];
-
 
     if (mask != NULL)
     {
@@ -192,6 +192,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
                     amount_of_overloaded_pixels++;
                 }
 
+				number_of_pixels++;
                 sum += bits[x];
             }
         }
@@ -224,12 +225,13 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
                     amount_of_overloaded_pixels++;
                 }
 
+				number_of_pixels++;
                 sum += bits[x];
             }
         }
     }
 
-    report->area = width * height;
+    report->area = number_of_pixels;
     report->mean = (double) sum / report->area;
     report->percentage_underloaded = (float) amount_of_underloaded_pixels / report->area;
     report->percentage_overloaded = (float) amount_of_overloaded_pixels / report->area;
