@@ -387,6 +387,7 @@ TestFIA_ColourTextTest(CuTest* tc)
     FreeImage_Unload(dst);
 }
 
+/*
 static void
 TestFIA_ColourTTFTextTest(CuTest* tc)
 {
@@ -406,7 +407,7 @@ TestFIA_ColourTTFTextTest(CuTest* tc)
     FreeImage_Unload(src);
     FreeImage_Unload(dst);
 }
-
+*/
 
 static void
 TestFIA_GreyscaleTextTest(CuTest* tc)
@@ -416,7 +417,10 @@ TestFIA_GreyscaleTextTest(CuTest* tc)
     FIBITMAP *src = FIA_LoadFIBFromFile(file);
     CuAssertTrue(tc, src != NULL);
     
-    FIA_DrawHorizontalGreyscaleText (src, 10, 10, "A quick brown fox jumps over the lazy dog 0123456789", 0);
+    //FIA_DrawHorizontalGreyscaleText (src, 10, 10, "A quick brown fox jumps over the lazy dog 0123456789", 0);
+    FIA_DrawHorizontalGreyscaleText (src, 10, 10, FIA_AGG_FONT_VERDANA_12_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", 0);
+    FIA_DrawHorizontalGreyscaleText (src, 10, 40, FIA_AGG_FONT_VERDANA_16, "A quick brown fox jumps over the lazy dog 0123456789", 0);
+    FIA_DrawHorizontalGreyscaleText (src, 10, 60, FIA_AGG_FONT_GSE_8x16_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", 0);
 
     CuAssertTrue(tc, src != NULL);
 
@@ -1260,6 +1264,7 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     MkDir(TEST_DATA_OUTPUT_DIR "/Drawing");
 
     SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
+    SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
 
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);

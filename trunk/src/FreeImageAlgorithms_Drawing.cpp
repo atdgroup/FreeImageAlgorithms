@@ -1529,7 +1529,7 @@ FIA_DrawHorizontalColourText (FIBITMAP *src, int left, int top, FIA_AggEmbeddedF
 }
 
 int DLL_CALLCONV
-FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, const char *text, unsigned char value)
+FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, FIA_AggEmbeddedFont font, const char *text, unsigned char value)
 {
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
 
@@ -1558,7 +1558,9 @@ FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, const char *
               
                 renderer.color(agg::rgba8(value, value,value));
 
-                glyph.font(agg::verdana18_bold);
+                glyph.font(AggEmbeddedFonts[font]);
+
+				top = height - top - 1;
 
                 renderer.render_text(left, top, text, false);
             }

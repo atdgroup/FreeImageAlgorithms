@@ -198,10 +198,7 @@ DLL_API int DLL_CALLCONV
 FIA_DrawHorizontalColourText (FIBITMAP *src, int left, int top, FIA_AggEmbeddedFont font, const char *text, RGBQUAD colour);
 
 DLL_API int DLL_CALLCONV
-FIA_DrawColourText (FIBITMAP *src, int left, int top, const char *text, RGBQUAD colour);
-
-DLL_API int DLL_CALLCONV
-FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, const char *text, unsigned char value);
+FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, FIA_AggEmbeddedFont font, const char *text, unsigned char value);
 
 DLL_API FIA_Matrix * DLL_CALLCONV
 FIA_MatrixNew();
