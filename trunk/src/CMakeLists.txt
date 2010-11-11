@@ -201,7 +201,7 @@ SET(AGG_SRCS
 
 IF (WIN32)
   SET(FIA_SRCS ${FIA_SRCS} FreeImageAlgorithms_HBitmap.cpp)
-  #SET(AGG_SRCS ${AGG_SRCS} ${FreeImageAlgorithms_SOURCE_DIR}/src/agg/src/agg_font_win32_tt.cpp)
+  SET(AGG_SRCS ${AGG_SRCS} ${FreeImageAlgorithms_SOURCE_DIR}/src/agg/src/agg_font_win32_tt.cpp)
 ENDIF (WIN32)
 
 #IF (UNIX)

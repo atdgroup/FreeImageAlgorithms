@@ -31,6 +31,46 @@
 extern "C" {
 #endif
 
+typedef enum {
+                FIA_AGG_FONT_GSE_4x6,
+                FIA_AGG_FONT_GSE_4x8,
+                FIA_AGG_FONT_GSE_5x7,
+                FIA_AGG_FONT_GSE_5x9,
+                FIA_AGG_FONT_GSE_6x12,
+                FIA_AGG_FONT_GSE_6x9,
+                FIA_AGG_FONT_GSE_7x11,
+                FIA_AGG_FONT_GSE_7x11_BOLD,
+                FIA_AGG_FONT_GSE_7x15,
+                FIA_AGG_FONT_GSE_7x15_BOLD,
+                FIA_AGG_FONT_GSE_8x16,
+                FIA_AGG_FONT_GSE_8x16_BOLD,
+
+                FIA_AGG_FONT_MCS11_PROP,
+                FIA_AGG_FONT_MCS11_PROP_CONDENSED,
+                FIA_AGG_FONT_MCS12_PROP,
+                FIA_AGG_FONT_MCS13_PROP,
+                FIA_AGG_FONT_MCS_5x10_MONO,
+                FIA_AGG_FONT_MCS_5x11_MONO,
+                FIA_AGG_FONT_MCS_6x10_MONO,
+                FIA_AGG_FONT_MCS_6x11_MONO,
+                FIA_AGG_FONT_MCS_7x12_MONO_HIGH,
+                FIA_AGG_FONT_MCS_7x12_MONO_LOW,
+
+                FIA_AGG_FONT_VERDANA_12,
+                FIA_AGG_FONT_VERDANA_12_BOLD,
+                FIA_AGG_FONT_VERDANA_13,
+                FIA_AGG_FONT_VERDANA_13_BOLD,
+                FIA_AGG_FONT_VERDANA_14,
+                FIA_AGG_FONT_VERDANA_14_BOLD,
+                FIA_AGG_FONT_VERDANA_16,
+                FIA_AGG_FONT_VERDANA_16_BOLD,
+                FIA_AGG_FONT_VERDANA_17,
+                FIA_AGG_FONT_VERDANA_17_BOLD,
+                FIA_AGG_FONT_VERDANA_18,
+                FIA_AGG_FONT_VERDANA_18_BOLD
+
+             } FIA_AggEmbeddedFont;
+
 /** \brief Draw a line on an image.
  *
  *  \param src Image to draw on.
@@ -155,7 +195,10 @@ DLL_API int DLL_CALLCONV
 FIA_DrawGreyScaleCheckerBoard (FIBITMAP *src, int square_size);
 
 DLL_API int DLL_CALLCONV
-FIA_DrawHorizontalColourText (FIBITMAP *src, int left, int top, const char *text, RGBQUAD colour);
+FIA_DrawHorizontalColourText (FIBITMAP *src, int left, int top, FIA_AggEmbeddedFont font, const char *text, RGBQUAD colour);
+
+DLL_API int DLL_CALLCONV
+FIA_DrawColourText (FIBITMAP *src, int left, int top, const char *text, RGBQUAD colour);
 
 DLL_API int DLL_CALLCONV
 FIA_DrawHorizontalGreyscaleText (FIBITMAP * src, int left, int top, const char *text, unsigned char value);

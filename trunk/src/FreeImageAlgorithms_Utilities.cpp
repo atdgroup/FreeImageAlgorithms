@@ -39,14 +39,14 @@ template < class Tsrc > class TemplateImageFunctionClass
     void find (FIBITMAP * src, double *min, double *max);
     void find_max_xy (FIBITMAP * src, double *max, FIAPOINT * pt);
 
-	// FastSimpleResample
-	FIBITMAP * IntegerRescaleToHalf (FIBITMAP * src);
+    // FastSimpleResample
+    FIBITMAP * IntegerRescaleToHalf (FIBITMAP * src);
     FIBITMAP *ColourRescaleToHalf (FIBITMAP * src);
     FIBITMAP *FloatRescaleToHalf (FIBITMAP * src);
 
-	// Composite function for all image types
-	FIBITMAP *Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
-	int Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask);
+    // Composite function for all image types
+    FIBITMAP *Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
+    int Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask);
 };
 
 static TemplateImageFunctionClass < unsigned char > UCharImage;
@@ -206,7 +206,7 @@ int DLL_CALLCONV
 FIARectIsEmpty (FIARECT rect)
 {
     if(rect.left == 0 && rect.top == 0 && rect.right == 0 && rect.bottom == 0)
-		return 1;
+        return 1;
 
     return 0;
 }
@@ -226,10 +226,10 @@ FIAImageRect (FIBITMAP * src)
 
 int DLL_CALLCONV FIA_GetPitchInPixels(FIBITMAP *dib)
 {
-	int bpp = FreeImage_GetBPP(dib);
-	int bytes_per_pixel = bpp / 8;
+    int bpp = FreeImage_GetBPP(dib);
+    int bytes_per_pixel = bpp / 8;
 
-	return (FreeImage_GetPitch (dib) / bytes_per_pixel);
+    return (FreeImage_GetPitch (dib) / bytes_per_pixel);
 }
 
 int DLL_CALLCONV 
@@ -397,10 +397,10 @@ FIA_FindMinMax (FIBITMAP * src, double *min, double *max)
             }
             else if (FreeImage_GetBPP (src) == 24 || FreeImage_GetBPP (src) == 32)
             {
-				// colour images, just set 0 and 255
-				*min = 0.0;
-				*max = 255.0;
-			}
+                // colour images, just set 0 and 255
+                *min = 0.0;
+                *max = 255.0;
+            }
             break;
         }
 
@@ -450,9 +450,9 @@ FIA_FindMinMax (FIBITMAP * src, double *min, double *max)
 template < class Tsrc > void TemplateImageFunctionClass < Tsrc >::find_max_xy (FIBITMAP * src,
                                                                         double *max, FIAPOINT * pt)
 {
-	pt->x = 0;
-	pt->y = 0;
-	*max = 0.0;
+    pt->x = 0;
+    pt->y = 0;
+    *max = 0.0;
 
     if (src == NULL)
         return;
@@ -490,9 +490,9 @@ template < class Tsrc > void TemplateImageFunctionClass < Tsrc >::find_max_xy (F
 void DLL_CALLCONV
 FIA_FindMaxXY (FIBITMAP * src, double *max, FIAPOINT * pt)
 {
-	pt->x = 0;
-	pt->y = 0;
-	*max = 0.0;
+    pt->x = 0;
+    pt->y = 0;
+    *max = 0.0;
 
     if (!src)
         return;
@@ -1026,7 +1026,7 @@ GetPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, T * values)
     }
     else
     {
-		len = 1;
+        len = 1;
         d = dy - 2 * dx;
         incrN = 2 * -dx;        // N
         incrNE = 2 * (dy - dx); // NE
@@ -1069,16 +1069,16 @@ GetPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, T * values)
 int DLL_CALLCONV
 FIA_GetGreyScalePixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, void *values)
 {
-	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
-	int bpp = FreeImage_GetBPP(src);
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
+    int bpp = FreeImage_GetBPP(src);
 
-	switch (src_type)
+    switch (src_type)
     {
         case FIT_BITMAP:       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
         {
             if (FreeImage_GetBPP (src) == 8)
             {
-				return GetPixelValuesForLine (src, p1, p2, (BYTE*) values);
+                return GetPixelValuesForLine (src, p1, p2, (BYTE*) values);
             }
 
             break;
@@ -1189,7 +1189,7 @@ FIA_GetRGBPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2,
 
     dx = p2.x - p1.x;
     dy = p2.y - p1.y;
-	abs_dy = abs(dy);
+    abs_dy = abs(dy);
 
     if (dy < 0)
     {
@@ -1215,8 +1215,8 @@ FIA_GetRGBPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2,
         *green_values++ = value.rgbGreen;
         *blue_values++ = value.rgbBlue;
 
-		x++;
-		len++;
+        x++;
+        len++;
 
         while (x <= p2.x)
         {
@@ -1253,7 +1253,7 @@ FIA_GetRGBPixelValuesForLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2,
         *green_values++ = value.rgbGreen;
         *blue_values++ = value.rgbBlue;
 
-		len++;
+        len++;
 
         for(tmp_y = 0; tmp_y < abs_dy; tmp_y++)
         {
@@ -1288,13 +1288,13 @@ FIA_IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3)
     int fIntersect = (r2.left <= r1.right && r2.right >= r1.left &&
             r2.top <= r1.bottom && r2.bottom >= r1.top);
 
-	MakeFIARect(0,0,0,0);
+    MakeFIARect(0,0,0,0);
 
     if(fIntersect)
     {
 #ifdef WIN32
 
-		r3->left = max(r1.left, r2.left);
+        r3->left = max(r1.left, r2.left);
         r3->top = max(r1.top, r2.top);
         r3->right = min(r1.right, r2.right);
         r3->bottom = min(r1.bottom, r2.bottom);
@@ -1304,55 +1304,55 @@ FIA_IntersectingRect(FIARECT r1, FIARECT r2, FIARECT *r3)
         r3->right = std::min(r1.right, r2.right);
         r3->bottom = std::min(r1.bottom, r2.bottom);
 #endif
-	}
+    }
 
     return fIntersect;
 }
 
 static FIARECT SetRectRelativeToPoint(FIARECT rect, FIAPOINT pt)
 {
-	FIARECT r;
+    FIARECT r;
 
-	r.left = rect.left - pt.x;
-	r.right = rect.right - pt.x;
-	r.top = rect.top - pt.y;
-	r.bottom = rect.bottom - pt.y;
+    r.left = rect.left - pt.x;
+    r.right = rect.right - pt.x;
+    r.top = rect.top - pt.y;
+    r.bottom = rect.bottom - pt.y;
 
-	return r;
+    return r;
 }
 
 FIARECT DLL_CALLCONV
 FIA_MakeFiaRectRelativeToImageBottomLeft (FIBITMAP *src, FIARECT rt)
 {
-	FIARECT rect = rt;
-	int height =  FreeImage_GetHeight(src);
-	rect.top = height - 1 - rt.top;
-	rect.bottom = height - 1 - rt.bottom;
+    FIARECT rect = rt;
+    int height =  FreeImage_GetHeight(src);
+    rect.top = height - 1 - rt.top;
+    rect.bottom = height - 1 - rt.bottom;
 
-	return rect;	
+    return rect;	
 }
 
 BYTE* DLL_CALLCONV
 FIA_GetScanLineFromTop (FIBITMAP *src, int line)
 {
-	return (BYTE*) FreeImage_GetScanLine(src, FreeImage_GetHeight(src) - 1 - line);	
+    return (BYTE*) FreeImage_GetScanLine(src, FreeImage_GetHeight(src) - 1 - line);	
 }
 
 int DLL_CALLCONV
 FIA_PasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
 {
-	int lines, dst_start = 0;
-	int src_width = FreeImage_GetWidth (src);
+    int lines, dst_start = 0;
+    int src_width = FreeImage_GetWidth (src);
     int src_height = FreeImage_GetHeight (src);
-	int dst_width = FreeImage_GetWidth (dst);
+    int dst_width = FreeImage_GetWidth (dst);
     int dst_height = FreeImage_GetHeight (dst);
     int dst_pitch = FreeImage_GetPitch (dst);
-	FIARECT src_rect, intersect_rect;
+    FIARECT src_rect, intersect_rect;
     FIAPOINT pt;
 
-	if (FreeImage_GetImageType (dst) != FreeImage_GetImageType (src))
+    if (FreeImage_GetImageType (dst) != FreeImage_GetImageType (src))
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Destination and src image are not of the same type");
         return FIA_ERROR;
     }
@@ -1362,30 +1362,30 @@ FIA_PasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
     // calculate the number of bytes per pixel
     int bytespp = FreeImage_GetLine (dst) / FreeImage_GetWidth (dst);
 
-	if(FIA_IntersectingRect(MakeFIARect(0, 0, dst_width - 1, dst_height - 1),
-		MakeFIARect(left, top, left + src_width - 1, top + src_height - 1), &intersect_rect) == 0)
-	{
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+    if(FIA_IntersectingRect(MakeFIARect(0, 0, dst_width - 1, dst_height - 1),
+        MakeFIARect(left, top, left + src_width - 1, top + src_height - 1), &intersect_rect) == 0)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Destination and src image do not intersect");
-		return FIA_ERROR;
-	}
+        return FIA_ERROR;
+    }
 
-	pt.x = left;
-	pt.y = top;
-	src_rect = SetRectRelativeToPoint(intersect_rect, pt);
+    pt.x = left;
+    pt.y = top;
+    src_rect = SetRectRelativeToPoint(intersect_rect, pt);
 
-	dst_start = bytespp * intersect_rect.left;
+    dst_start = bytespp * intersect_rect.left;
     src_line_bytes = bytespp * (intersect_rect.right - intersect_rect.left + 1);
 
     BYTE *dst_bits = NULL;
     BYTE *src_bits;
 
-	lines = intersect_rect.bottom - intersect_rect.top + 1;
+    lines = intersect_rect.bottom - intersect_rect.top + 1;
 
     for(int i = 0; i < lines; i++)
     {
         src_bits = FIA_GetScanLineFromTop (src, src_rect.top + i) + (src_rect.left * bytespp);
-		dst_bits = FIA_GetScanLineFromTop (dst, intersect_rect.top + i) + dst_start;
+        dst_bits = FIA_GetScanLineFromTop (dst, intersect_rect.top + i) + dst_start;
         memcpy (dst_bits, src_bits, src_line_bytes);
     }
 
@@ -1395,18 +1395,18 @@ FIA_PasteFromTopLeft (FIBITMAP * dst, FIBITMAP * src, int left, int top)
 int DLL_CALLCONV
 FIA_Paste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
 {
-	return FIA_PasteFromTopLeft (dst, src, left,
-		FreeImage_GetHeight(dst) - bottom - FreeImage_GetHeight(src));
+    return FIA_PasteFromTopLeft (dst, src, left,
+        FreeImage_GetHeight(dst) - bottom - FreeImage_GetHeight(src));
 }
 
 FIBITMAP* DLL_CALLCONV
 FIA_Copy ( FIBITMAP * src, int left, int top, int right, int bottom)
 {
-	// I have assumed clients want to copy the pixel of left and right
-	// This is different to FreeImage_Copy which
-	// assumes the returned bitmap is defined by a width equal to (right - left)
-	right += 1;
-	bottom += 1;
+    // I have assumed clients want to copy the pixel of left and right
+    // This is different to FreeImage_Copy which
+    // assumes the returned bitmap is defined by a width equal to (right - left)
+    right += 1;
+    bottom += 1;
 
     int max_right = FreeImage_GetWidth(src);
     int max_bottom = FreeImage_GetHeight(src);
@@ -1429,26 +1429,26 @@ FIA_Copy ( FIBITMAP * src, int left, int top, int right, int bottom)
 void DLL_CALLCONV
 FIA_RectChangeWidthHeight (FIARECT *rect, int width, int height)
 {
-	rect->right = rect->left + width - 1;
-	rect->bottom = rect->top + height - 1;
+    rect->right = rect->left + width - 1;
+    rect->bottom = rect->top + height - 1;
 }
 
 int DLL_CALLCONV
 FIA_RectWidth (FIARECT *rect)
 {
-	return rect->right - rect->left + 1;
+    return rect->right - rect->left + 1;
 }
 
 int DLL_CALLCONV
 FIA_RectHeight (FIARECT *rect)
 {
-	return rect->bottom - rect->top + 1;
+    return rect->bottom - rect->top + 1;
 }
 
 FIBITMAP* DLL_CALLCONV
 FIA_CopyLeftTopWidthHeight ( FIBITMAP * src, int left, int top, int width, int height)
 {
-	return FIA_Copy (src, left, top, left + width - 1, top + height - 1);
+    return FIA_Copy (src, left, top, left + width - 1, top + height - 1);
 }
 
 int DLL_CALLCONV
@@ -1634,7 +1634,7 @@ FIA_GetPixelValue (FIBITMAP * src, int x, int y, double *val)
             return FIA_SUCCESS;
         }
 
-		case 64:
+        case 64:
         {
             if (type == FIT_DOUBLE)
                 *val = *((double *) line_ptr + x);
@@ -1684,8 +1684,8 @@ FIA_InPlaceConvertToStandardType (FIBITMAP **src, int scale)
 {
     FIBITMAP *dst = FreeImage_ConvertToStandardType (*src, scale);
 
-	if(FreeImage_GetBPP(*src) == 8)
-		FIA_CopyPalette(*src, dst);
+    if(FreeImage_GetBPP(*src) == 8)
+        FIA_CopyPalette(*src, dst);
 
     FreeImage_Unload (*src);
     *src = dst;
@@ -1712,27 +1712,27 @@ FIA_ConvertFloatTo16Bit (FIBITMAP * src, int sign)
         return NULL;
 
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
-	
+    
     // Mask has to be 8 bit 
     if (type != FIT_FLOAT)
         return NULL;
 
-	type = FIT_UINT16;
+    type = FIT_UINT16;
 
-	if(sign)
-		type = FIT_INT16;
+    if(sign)
+        type = FIT_INT16;
 
     int width = FreeImage_GetWidth (src);
     int height = FreeImage_GetHeight (src);
 
-	FIBITMAP *dst = FreeImage_AllocateT (type, width, height, 16, 0, 0, 0);
+    FIBITMAP *dst = FreeImage_AllocateT (type, width, height, 16, 0, 0, 0);
 
-	double factor = 1.0, min, max, min16 = 0.0, max16;
-	FIA_FindMinMax(src, &min, &max);
-	FIA_GetMinPosibleValueForFib(dst, &min16);
-	FIA_GetMaxPosibleValueForFib(dst, &max16);
+    double factor = 1.0, min, max, min16 = 0.0, max16;
+    FIA_FindMinMax(src, &min, &max);
+    FIA_GetMinPosibleValueForFib(dst, &min16);
+    FIA_GetMaxPosibleValueForFib(dst, &max16);
 
-	factor = (max16 - min16) / (max - min);
+    factor = (max16 - min16) / (max - min);
    
     if (sign)
     {      
@@ -1763,7 +1763,7 @@ FIA_ConvertFloatTo16Bit (FIBITMAP * src, int sign)
 int DLL_CALLCONV
 FIA_InPlaceConvertInt16ToUInt16 (FIBITMAP ** src)
 {
-	FIBITMAP *dst = FIA_ConvertInt16ToUInt16 (*src);
+    FIBITMAP *dst = FIA_ConvertInt16ToUInt16 (*src);
 
     FreeImage_Unload (*src);
     *src = dst;
@@ -1807,7 +1807,7 @@ FIA_ConvertInt16ToUInt16 (FIBITMAP * src)
 FIBITMAP *DLL_CALLCONV
 FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
 {
-	if (src == NULL)
+    if (src == NULL)
         return NULL;
 
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
@@ -1820,30 +1820,30 @@ FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
 
     FIBITMAP *dst = FreeImage_AllocateT (FIT_BITMAP, width, height, 24, 0, 0, 0);
 
-	int bytespp = FreeImage_GetLine (src) / FreeImage_GetWidth (src);
-	int channels = bytespp / 2;
-	double factor = 255.0 / 65535.0;
+    int bytespp = FreeImage_GetLine (src) / FreeImage_GetWidth (src);
+    int channels = bytespp / 2;
+    double factor = 255.0 / 65535.0;
 
-	unsigned short *src_pixel_ptr = NULL;
-	byte *dst_pixel_ptr = NULL;
+    unsigned short *src_pixel_ptr = NULL;
+    byte *dst_pixel_ptr = NULL;
 
     for(register int y = 0; y < height; y++)
     {
         unsigned short *src_ptr = (unsigned short *) FreeImage_GetScanLine (src, y);
         byte *dst_ptr = (byte *) FreeImage_GetScanLine (dst, y);
 
-		for(register int x = 0; x < width; x++) {
+        for(register int x = 0; x < width; x++) {
 
-			src_pixel_ptr = &src_ptr[channels * x];
-			dst_pixel_ptr = &dst_ptr[3 * x];
+            src_pixel_ptr = &src_ptr[channels * x];
+            dst_pixel_ptr = &dst_ptr[3 * x];
 
-			dst_pixel_ptr[FI_RGBA_RED] = (byte) (src_pixel_ptr[FI_RGBA_BLUE] * factor);
-		    dst_pixel_ptr[FI_RGBA_GREEN] = (byte) (src_pixel_ptr[FI_RGBA_GREEN] * factor);
-		    dst_pixel_ptr[FI_RGBA_BLUE] = (byte) (src_pixel_ptr[FI_RGBA_RED] * factor);
+            dst_pixel_ptr[FI_RGBA_RED] = (byte) (src_pixel_ptr[FI_RGBA_BLUE] * factor);
+            dst_pixel_ptr[FI_RGBA_GREEN] = (byte) (src_pixel_ptr[FI_RGBA_GREEN] * factor);
+            dst_pixel_ptr[FI_RGBA_BLUE] = (byte) (src_pixel_ptr[FI_RGBA_RED] * factor);
 
-			if (channels == 4)
-				dst_pixel_ptr[FI_RGBA_ALPHA] = (byte) (src_pixel_ptr[FI_RGBA_ALPHA] * factor);
-		}
+            if (channels == 4)
+                dst_pixel_ptr[FI_RGBA_ALPHA] = (byte) (src_pixel_ptr[FI_RGBA_ALPHA] * factor);
+        }
     }
 
     return dst;
@@ -2092,91 +2092,91 @@ FIA_CheckSizesAreSame(FIBITMAP *fib1, FIBITMAP *fib2)
 template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
     Tsrc >::Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask)
 {
-	if (FreeImage_GetImageType (fg) != FreeImage_GetImageType (bg))
+    if (FreeImage_GetImageType (fg) != FreeImage_GetImageType (bg))
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Foreground and background image are not of the same type");
         return NULL;
     }
 
-	if (FreeImage_GetImageType (normalised_alpha_values) != FIT_FLOAT)
+    if (FreeImage_GetImageType (normalised_alpha_values) != FIT_FLOAT)
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Normalised_alpha_values is not a FIT_FLOAT image");
         return NULL;
     }
 
-	if(mask != NULL) {
-		if (FreeImage_GetImageType (mask) != FIT_BITMAP)
-		{
-			FreeImage_OutputMessageProc (FIF_UNKNOWN,
-										 "mask is not a FIT_BITMAP image");
-			return NULL;
-		}
-	}
+    if(mask != NULL) {
+        if (FreeImage_GetImageType (mask) != FIT_BITMAP)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "mask is not a FIT_BITMAP image");
+            return NULL;
+        }
+    }
 
-	if(FIA_CheckSizesAreSame(fg, bg) == 0) {
+    if(FIA_CheckSizesAreSame(fg, bg) == 0) {
 
         FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and background image are not the same size");
 
         return NULL;
     }
 
-	if(FIA_CheckSizesAreSame(fg, normalised_alpha_values) == 0) {
+    if(FIA_CheckSizesAreSame(fg, normalised_alpha_values) == 0) {
 
         FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and normalised_alpha_values image are not the same size");
 
         return NULL;
     }
 
-	if(mask != NULL) {
+    if(mask != NULL) {
 
-		if(FIA_CheckSizesAreSame(fg, mask) == 0) {
+        if(FIA_CheckSizesAreSame(fg, mask) == 0) {
 
-			FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and mask image are not the same size");
+            FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and mask image are not the same size");
 
-			return NULL;
-		}
-	}
+            return NULL;
+        }
+    }
 
     int fg_width = FreeImage_GetWidth (fg);
     int fg_height = FreeImage_GetHeight (fg);
 
     FIBITMAP *dst = FIA_CloneImageType (fg, fg_width, fg_height);
 
-	if(mask != NULL) {
+    if(mask != NULL) {
 
-		for(register int y = 0; y < fg_height; y++)
-		{
-			Tsrc *dst_ptr = (Tsrc *) FIA_GetScanLineFromTop (dst, y);
-			Tsrc *fg_ptr = (Tsrc *) FIA_GetScanLineFromTop (fg, y);
-			Tsrc *bg_ptr = (Tsrc *) FIA_GetScanLineFromTop (bg, y);
-			BYTE *mask_ptr = (BYTE *) FIA_GetScanLineFromTop (mask, y);
-			float *alpha_ptr = (float *) FIA_GetScanLineFromTop (normalised_alpha_values, y);
+        for(register int y = 0; y < fg_height; y++)
+        {
+            Tsrc *dst_ptr = (Tsrc *) FIA_GetScanLineFromTop (dst, y);
+            Tsrc *fg_ptr = (Tsrc *) FIA_GetScanLineFromTop (fg, y);
+            Tsrc *bg_ptr = (Tsrc *) FIA_GetScanLineFromTop (bg, y);
+            BYTE *mask_ptr = (BYTE *) FIA_GetScanLineFromTop (mask, y);
+            float *alpha_ptr = (float *) FIA_GetScanLineFromTop (normalised_alpha_values, y);
 
-			for(register int x = 0; x < fg_width; x++)
-			{
-				if(mask_ptr[x] > 0)
-					dst_ptr[x] = (Tsrc) ((alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]));
-				else
-					dst_ptr[x] = (Tsrc) fg_ptr[x];
-			}
-		}
-	}
-	else {
-		for(register int y = 0; y < fg_height; y++)
-		{
-			Tsrc *dst_ptr = (Tsrc *) FIA_GetScanLineFromTop (dst, y);
-			Tsrc *fg_ptr = (Tsrc *) FIA_GetScanLineFromTop (fg, y);
-			Tsrc *bg_ptr = (Tsrc *) FIA_GetScanLineFromTop (bg, y);
-			float *alpha_ptr = (float *) FIA_GetScanLineFromTop (normalised_alpha_values, y);
+            for(register int x = 0; x < fg_width; x++)
+            {
+                if(mask_ptr[x] > 0)
+                    dst_ptr[x] = (Tsrc) ((alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]));
+                else
+                    dst_ptr[x] = (Tsrc) fg_ptr[x];
+            }
+        }
+    }
+    else {
+        for(register int y = 0; y < fg_height; y++)
+        {
+            Tsrc *dst_ptr = (Tsrc *) FIA_GetScanLineFromTop (dst, y);
+            Tsrc *fg_ptr = (Tsrc *) FIA_GetScanLineFromTop (fg, y);
+            Tsrc *bg_ptr = (Tsrc *) FIA_GetScanLineFromTop (bg, y);
+            float *alpha_ptr = (float *) FIA_GetScanLineFromTop (normalised_alpha_values, y);
 
-			for(register int x = 0; x < fg_width; x++)
-			{
-				dst_ptr[x] = (Tsrc) ((alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]));
-			}
-		}
-	}
+            for(register int x = 0; x < fg_width; x++)
+            {
+                dst_ptr[x] = (Tsrc) ((alpha_ptr[x] * fg_ptr[x]) + ((1 - alpha_ptr[x]) * bg_ptr[x]));
+            }
+        }
+    }
 
     return dst;
 }
@@ -2185,35 +2185,35 @@ template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
 template < typename Tsrc > int TemplateImageFunctionClass
   <Tsrc >::Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask)
 {
-	if (FreeImage_GetImageType (fg) != FreeImage_GetImageType (dst))
+    if (FreeImage_GetImageType (fg) != FreeImage_GetImageType (dst))
     {
-		FreeImage_OutputMessageProc (FIF_UNKNOWN,
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Foreground and background image are not of the same type");
         return NULL;
     }
 
-	if(mask != NULL) {
-		if (FreeImage_GetImageType (mask) != FIT_BITMAP)
-		{
-			FreeImage_OutputMessageProc (FIF_UNKNOWN,
-										 "mask is not a FIT_BITMAP image");
-			return NULL;
-		}
-	}
+    if(mask != NULL) {
+        if (FreeImage_GetImageType (mask) != FIT_BITMAP)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "mask is not a FIT_BITMAP image");
+            return NULL;
+        }
+    }
 
-	if(FIA_CheckSizesAreSame(fg, dst) == 0) {
+    if(FIA_CheckSizesAreSame(fg, dst) == 0) {
 
         FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and background image are not the same size");
 
         return NULL;
     }
 
-	if(FIA_CheckSizesAreSame(fg, mask) == 0) {
+    if(FIA_CheckSizesAreSame(fg, mask) == 0) {
 
-		FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and mask image are not the same size");
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Foreground and mask image are not the same size");
 
-		return NULL;
-	}
+        return NULL;
+    }
 
     int fg_width = FreeImage_GetWidth (fg);
     int fg_height = FreeImage_GetHeight (fg);
@@ -2221,49 +2221,49 @@ template < typename Tsrc > int TemplateImageFunctionClass
     bool greyscale_image = true;
     
     if(FreeImage_GetImageType(fg) == FIT_BITMAP && FreeImage_GetBPP(fg) > 8) {
-	    greyscale_image = false;
+        greyscale_image = false;
     }
     
     if(greyscale_image) {
-	    for(register int y = 0; y < fg_height; y++)
-	    {
-		    Tsrc *dst_ptr = (Tsrc *) FIA_GetScanLineFromTop (dst, y);
-		    Tsrc *fg_ptr = (Tsrc *) FIA_GetScanLineFromTop (fg, y);
-		    BYTE *mask_ptr = (BYTE *) FIA_GetScanLineFromTop (mask, y);
+        for(register int y = 0; y < fg_height; y++)
+        {
+            Tsrc *dst_ptr = (Tsrc *) FIA_GetScanLineFromTop (dst, y);
+            Tsrc *fg_ptr = (Tsrc *) FIA_GetScanLineFromTop (fg, y);
+            BYTE *mask_ptr = (BYTE *) FIA_GetScanLineFromTop (mask, y);
 
-		    for(register int x = 0; x < fg_width; x++)
-		    {
-			    if(mask_ptr[x] > 0)
-				    dst_ptr[x] = (Tsrc) fg_ptr[x];
-		    }
-	    }
+            for(register int x = 0; x < fg_width; x++)
+            {
+                if(mask_ptr[x] > 0)
+                    dst_ptr[x] = (Tsrc) fg_ptr[x];
+            }
+        }
     }
     else {
     
         int bytespp = FreeImage_GetLine (dst) / FreeImage_GetWidth (dst);
         
         for(register int y = 0; y < fg_height; y++)
-	    {
-		    BYTE *dst_ptr = (BYTE *) FIA_GetScanLineFromTop (dst, y);
-		    BYTE *fg_ptr = (BYTE *) FIA_GetScanLineFromTop (fg, y);
-		    BYTE *mask_ptr = (BYTE *) FIA_GetScanLineFromTop (mask, y);
+        {
+            BYTE *dst_ptr = (BYTE *) FIA_GetScanLineFromTop (dst, y);
+            BYTE *fg_ptr = (BYTE *) FIA_GetScanLineFromTop (fg, y);
+            BYTE *mask_ptr = (BYTE *) FIA_GetScanLineFromTop (mask, y);
 
-		    for(register int x = 0; x < fg_width; x++)
-		    {
-			    if(mask_ptr[x] > 0) {
-		
-			      dst_ptr[FI_RGBA_RED] = fg_ptr[FI_RGBA_RED];
-			      dst_ptr[FI_RGBA_GREEN] = fg_ptr[FI_RGBA_GREEN];
-			      dst_ptr[FI_RGBA_BLUE] = fg_ptr[FI_RGBA_BLUE];
-			    
-			      if (bytespp == 4)
-			          dst_ptr[FI_RGBA_ALPHA] = 0;   
+            for(register int x = 0; x < fg_width; x++)
+            {
+                if(mask_ptr[x] > 0) {
+        
+                  dst_ptr[FI_RGBA_RED] = fg_ptr[FI_RGBA_RED];
+                  dst_ptr[FI_RGBA_GREEN] = fg_ptr[FI_RGBA_GREEN];
+                  dst_ptr[FI_RGBA_BLUE] = fg_ptr[FI_RGBA_BLUE];
+                
+                  if (bytespp == 4)
+                      dst_ptr[FI_RGBA_ALPHA] = 0;   
                 }
-				  
-				dst_ptr += bytespp;
-				fg_ptr += bytespp;
-		    }
-	    }
+                  
+                dst_ptr += bytespp;
+                fg_ptr += bytespp;
+            }
+        }
     }
     
     return FIA_SUCCESS;
@@ -2290,35 +2290,35 @@ FIA_Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, 
             }
             else
             {
-				// Do the composite for each channel
-				FIBITMAP* red_channel_fg = FreeImage_GetChannel(fg, FICC_RED);
-				FIBITMAP* red_channel_bg = FreeImage_GetChannel(bg, FICC_RED);
+                // Do the composite for each channel
+                FIBITMAP* red_channel_fg = FreeImage_GetChannel(fg, FICC_RED);
+                FIBITMAP* red_channel_bg = FreeImage_GetChannel(bg, FICC_RED);
 
-				FIBITMAP* green_channel_fg = FreeImage_GetChannel(fg, FICC_GREEN);
-				FIBITMAP* green_channel_bg = FreeImage_GetChannel(bg, FICC_GREEN);
+                FIBITMAP* green_channel_fg = FreeImage_GetChannel(fg, FICC_GREEN);
+                FIBITMAP* green_channel_bg = FreeImage_GetChannel(bg, FICC_GREEN);
 
-				FIBITMAP* blue_channel_fg = FreeImage_GetChannel(fg, FICC_BLUE);
-				FIBITMAP* blue_channel_bg = FreeImage_GetChannel(bg, FICC_BLUE);
+                FIBITMAP* blue_channel_fg = FreeImage_GetChannel(fg, FICC_BLUE);
+                FIBITMAP* blue_channel_bg = FreeImage_GetChannel(bg, FICC_BLUE);
 
-				FIBITMAP* dst1 = UCharImage.Composite (red_channel_fg, red_channel_bg, normalised_alpha_values, mask);
-				FIBITMAP* dst2 = UCharImage.Composite (green_channel_fg, green_channel_bg, normalised_alpha_values, mask);
-				FIBITMAP* dst3 = UCharImage.Composite (blue_channel_fg, blue_channel_bg, normalised_alpha_values, mask);
+                FIBITMAP* dst1 = UCharImage.Composite (red_channel_fg, red_channel_bg, normalised_alpha_values, mask);
+                FIBITMAP* dst2 = UCharImage.Composite (green_channel_fg, green_channel_bg, normalised_alpha_values, mask);
+                FIBITMAP* dst3 = UCharImage.Composite (blue_channel_fg, blue_channel_bg, normalised_alpha_values, mask);
 
-				dst = FIA_CloneImageType(fg, FreeImage_GetWidth(fg), FreeImage_GetHeight(fg));
+                dst = FIA_CloneImageType(fg, FreeImage_GetWidth(fg), FreeImage_GetHeight(fg));
 
-				FreeImage_SetChannel(dst, dst1, FICC_RED);
-				FreeImage_SetChannel(dst, dst2, FICC_GREEN);
-				FreeImage_SetChannel(dst, dst3, FICC_BLUE);
+                FreeImage_SetChannel(dst, dst1, FICC_RED);
+                FreeImage_SetChannel(dst, dst2, FICC_GREEN);
+                FreeImage_SetChannel(dst, dst3, FICC_BLUE);
 
-				FreeImage_Unload(red_channel_fg);
-				FreeImage_Unload(red_channel_bg);
-				FreeImage_Unload(green_channel_fg);
-				FreeImage_Unload(green_channel_bg);
-				FreeImage_Unload(blue_channel_fg);
-				FreeImage_Unload(blue_channel_bg);
-				FreeImage_Unload(dst1);
-				FreeImage_Unload(dst2);
-				FreeImage_Unload(dst3);
+                FreeImage_Unload(red_channel_fg);
+                FreeImage_Unload(red_channel_bg);
+                FreeImage_Unload(green_channel_fg);
+                FreeImage_Unload(green_channel_bg);
+                FreeImage_Unload(blue_channel_fg);
+                FreeImage_Unload(blue_channel_bg);
+                FreeImage_Unload(dst1);
+                FreeImage_Unload(dst2);
+                FreeImage_Unload(dst3);
             }
             break;
         }
@@ -2444,38 +2444,38 @@ FIA_Combine(FIBITMAP *dst, FIBITMAP *fg, FIBITMAP *mask)
 int DLL_CALLCONV
 FIA_CompositeRegion(FIBITMAP * fg, FIBITMAP * bg, FIARECT rect)
 {
-	FIBITMAP *bg_region = FIA_Copy(bg, rect.left, rect.top, rect.right, rect.bottom);
+    FIBITMAP *bg_region = FIA_Copy(bg, rect.left, rect.top, rect.right, rect.bottom);
 
-	FIBITMAP *bg_24bit = FreeImage_ConvertTo24Bits(bg_region);
+    FIBITMAP *bg_24bit = FreeImage_ConvertTo24Bits(bg_region);
 
-	FIBITMAP *blended = FreeImage_Composite(fg, 1, NULL, bg_24bit);
+    FIBITMAP *blended = FreeImage_Composite(fg, 1, NULL, bg_24bit);
 
-	if(blended == NULL) {
+    if(blended == NULL) {
 
-		if(FIA_CheckSizesAreSame(fg, bg_region) == 0) {
+        if(FIA_CheckSizesAreSame(fg, bg_region) == 0) {
 
-			FreeImage_OutputMessageProc (FIF_UNKNOWN, "FreeImage_Composite failed. Images not the same size."
-				"fg (%dx%d) bg (%dx%d)", FreeImage_GetWidth(fg), FreeImage_GetHeight(fg),
-										 FreeImage_GetWidth(bg_24bit), FreeImage_GetHeight(bg_24bit));
+            FreeImage_OutputMessageProc (FIF_UNKNOWN, "FreeImage_Composite failed. Images not the same size."
+                "fg (%dx%d) bg (%dx%d)", FreeImage_GetWidth(fg), FreeImage_GetHeight(fg),
+                                         FreeImage_GetWidth(bg_24bit), FreeImage_GetHeight(bg_24bit));
 
-			goto CleanUp;
-		}
+            goto CleanUp;
+        }
 
-	}
+    }
 
     FIA_PasteFromTopLeft(bg, blended, rect.left, rect.top);
 
-	FreeImage_Unload(bg_region);
-	FreeImage_Unload(bg_24bit);
-	FreeImage_Unload(blended);
+    FreeImage_Unload(bg_region);
+    FreeImage_Unload(bg_24bit);
+    FreeImage_Unload(blended);
 
-	return FIA_SUCCESS;
+    return FIA_SUCCESS;
 
 CleanUp:
 
-	FreeImage_Unload(bg_region);
-	FreeImage_Unload(bg_24bit);
-	FreeImage_Unload(blended);
+    FreeImage_Unload(bg_region);
+    FreeImage_Unload(bg_24bit);
+    FreeImage_Unload(blended);
 
-	return FIA_ERROR;
+    return FIA_ERROR;
 }
