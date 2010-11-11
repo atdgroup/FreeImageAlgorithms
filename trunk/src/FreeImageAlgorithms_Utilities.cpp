@@ -1646,6 +1646,15 @@ FIA_GetPixelValue (FIBITMAP * src, int x, int y, double *val)
     return FIA_ERROR;
 }
 
+
+int DLL_CALLCONV
+FIA_GetPixelValueFromTopLeft (FIBITMAP *src, int x, int y, double *val)
+{
+    y = FreeImage_GetHeight(src) - y - 1;
+
+    return FIA_GetPixelValue (src, x, y, val);
+}
+
 int DLL_CALLCONV
 FIA_InPlaceConvertTo8Bit (FIBITMAP ** src)
 {

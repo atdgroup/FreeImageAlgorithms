@@ -70,7 +70,7 @@ TestFIA_ColourElipseTest(CuTest* tc)
     FIBITMAP *src = FIA_LoadFIBFromFile(file);
     CuAssertTrue(tc, src != NULL);
 
-    FIARECT rect, rect2;
+    FIARECT rect, rect2, rect3;
     rect.left = 50;
     rect.top = 100;
     rect.bottom = 200;
@@ -81,8 +81,16 @@ TestFIA_ColourElipseTest(CuTest* tc)
     rect2.bottom = 200;
     rect2.right = 300;
 
+	rect3.left = -50;
+    rect3.top = -50;
+    rect3.bottom = 50;
+    rect3.right = 50;
+
     FIA_DrawColourSolidEllipse (src, rect, FIA_RGBQUAD(0, 255, 0), 1);
     FIA_DrawColourSolidEllipse (src, rect2, FIA_RGBQUAD(0, 0, 255), 0);
+    FIA_DrawColourSolidEllipse (src, rect3, FIA_RGBQUAD(255, 0, 0), 0);
+   
+	FIA_DrawColourRect (src, rect3, FIA_RGBQUAD(255, 0, 0), 2);
    
     FIA_SaveFIBToFile(src, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_ColourElipseTest.bmp", BIT24);
 
@@ -1265,6 +1273,7 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 
     SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
     SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
+	SUITE_ADD_TEST(suite, TestFIA_ColourElipseTest);
 
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);

@@ -639,6 +639,9 @@ DLL_API int DLL_CALLCONV
 FIA_GetPixelValue(FIBITMAP *src, int x, int y, double* val);
 
 DLL_API int DLL_CALLCONV
+FIA_GetPixelValueFromTopLeft(FIBITMAP *src, int x, int y, double* val);
+
+DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertToStandardType(FIBITMAP **src, int scale);
 
 DLL_API int DLL_CALLCONV
