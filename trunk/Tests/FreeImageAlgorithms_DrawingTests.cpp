@@ -262,13 +262,19 @@ TestFIA_Rect24bitTest(CuTest* tc)
 
     CuAssertTrue(tc, src != NULL);
 
-    FIARECT rect;
+    FIARECT rect, rect2;
     rect.left = 165;
     rect.top = 118;
     rect.bottom = 156;
     rect.right = 200;
     
+	rect2.left = -50;
+    rect2.top = -50;
+    rect2.bottom = 50;
+    rect2.right = 50;
+
     FIA_DrawColourRect (src24, rect, FIA_RGBQUAD(255,0,0), 1);
+	FIA_DrawColourRect (src24, rect2, FIA_RGBQUAD(255,255,0), 1);
 
     FIA_SaveFIBToFile(src24, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_Rect24bitTest.bmp", BIT24);
 
@@ -377,6 +383,7 @@ static void
 TestFIA_ColourTextTest(CuTest* tc)
 {
     const char *file = TEST_DATA_DIR "fly.bmp";
+	int bpp;
 
     FIBITMAP *src = FIA_LoadFIBFromFile(file);
     CuAssertTrue(tc, src != NULL);
@@ -386,6 +393,12 @@ TestFIA_ColourTextTest(CuTest* tc)
     FIA_DrawHorizontalColourText (dst, 10, 10, FIA_AGG_FONT_VERDANA_12_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 255, 0));
     FIA_DrawHorizontalColourText (dst, 10, 40, FIA_AGG_FONT_VERDANA_16, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 0, 255));
     FIA_DrawHorizontalColourText (dst, 10, 60, FIA_AGG_FONT_GSE_8x16_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 255, 255));
+	FIA_DrawHorizontalColourText (dst, 1000, 600, FIA_AGG_FONT_GSE_8x16_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 255, 255));
+	FIA_DrawHorizontalColourText (dst, -500, -600, FIA_AGG_FONT_GSE_8x16_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 255, 255));
+	FIA_DrawHorizontalColourText (dst, 0, 200, FIA_AGG_FONT_GSE_8x16_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 255, 255));
+	FIA_DrawHorizontalColourText (dst, 0, 300, FIA_AGG_FONT_GSE_8x16_BOLD, "A quick brown fox jumps over the lazy dog 0123456789", FIA_RGBQUAD(0, 255, 255));
+
+	bpp = FreeImage_GetBPP(dst);
 
     CuAssertTrue(tc, dst != NULL);
 
@@ -1274,16 +1287,16 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
     SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
 	SUITE_ADD_TEST(suite, TestFIA_ColourElipseTest);
+	SUITE_ADD_TEST(suite, TestFIA_Rect24bitTest);
+    SUITE_ADD_TEST(suite, TestFIA_Rect32bitTest);
+    SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
+    SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
+    SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
 
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);
     SUITE_ADD_TEST(suite, TestFIA_Colour32bitLineTest);
     SUITE_ADD_TEST(suite, TestFIA_GSLineTest);
-    SUITE_ADD_TEST(suite, TestFIA_Rect24bitTest);
-    SUITE_ADD_TEST(suite, TestFIA_Rect32bitTest);
-    SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
-    SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
-    SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
     SUITE_ADD_TEST(suite, TestFIA_GreyscaleU16bitElipseTest);
     SUITE_ADD_TEST(suite, TestFIA_GreyscaleElipseTest);
     SUITE_ADD_TEST(suite, TestFIA_ColourElipseTest);

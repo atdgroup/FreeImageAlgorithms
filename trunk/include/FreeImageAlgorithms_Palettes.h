@@ -165,7 +165,7 @@ FIA_SetGreyLevelOverLoadPalette(FIBITMAP *src);
  *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
-FIA_SetTernaryPalettePalette(FIBITMAP *src, RGBQUAD background_colour,
+FIA_SetTernaryPalette(FIBITMAP *src, RGBQUAD background_colour,
 									  int pos1, RGBQUAD colour1, int pos2, RGBQUAD colour2);
 
 
