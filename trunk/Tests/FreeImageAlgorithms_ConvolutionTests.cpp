@@ -1770,6 +1770,7 @@ TestFIA_BinningTest(CuTest* tc)
 	const char *file = TEST_DATA_DIR "Adele.jpg";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+	FIBITMAP *converted = NULL;
 
 	FIA_InPlaceConvertToGreyscaleFloatType(&dib1, FIT_FLOAT);
 
@@ -1823,6 +1824,13 @@ TestFIA_BinningTest(CuTest* tc)
     if(binned_dib != NULL) {
 	    FIA_SimpleSaveFIBToFile(binned_dib,
             TEST_DATA_OUTPUT_DIR "/Convolution/binned_gaussian_3x3.tif");
+	}
+
+	converted = FIA_ConvertGreyscaleFloatImageToTypeNoScale(binned_dib, FIT_UINT16);
+
+	if(converted != NULL) {
+	    FIA_SimpleSaveFIBToFile(converted,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_gaussian_3x3_converted.tif");
 	}
 
 	FreeImage_Unload(binned_dib);
