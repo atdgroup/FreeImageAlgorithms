@@ -1763,6 +1763,84 @@ TestFIA_SobelAdvancedTest(CuTest* tc)
         FreeImage_Unload(mag_dib);
 }
 
+
+static void
+TestFIA_BinningTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "Adele.jpg";
+
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+	FIA_InPlaceConvertToGreyscaleFloatType(&dib1, FIT_FLOAT);
+
+	CuAssertTrue(tc, dib1 != NULL);
+
+	FIA_SimpleSaveFIBToFile(dib1,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_square_original.tif");
+
+    FIBITMAP* binned_dib = FIA_Binning (dib1, FIA_BINNING_SQUARE, 3);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_square_3x3.tif");
+	}
+
+    FreeImage_Unload(binned_dib);
+
+	binned_dib = FIA_Binning (dib1, FIA_BINNING_SQUARE, 5);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_square_5x5.tif");
+	}
+
+	FreeImage_Unload(binned_dib);
+
+	// Circular Binning
+
+	binned_dib = FIA_Binning (dib1, FIA_BINNING_CIRCULAR, 3);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_circular_3x3.tif");
+	}
+
+	FreeImage_Unload(binned_dib);
+
+	binned_dib = FIA_Binning (dib1, FIA_BINNING_CIRCULAR, 5);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_circular_5x5.tif");
+	}
+
+	FreeImage_Unload(binned_dib);
+
+	// Gaussian Binning
+
+	binned_dib = FIA_Binning (dib1, FIA_BINNING_GAUSSIAN, 3);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_gaussian_3x3.tif");
+	}
+
+	FreeImage_Unload(binned_dib);
+
+	binned_dib = FIA_Binning (dib1, FIA_BINNING_GAUSSIAN, 5);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_gaussian_5x5.tif");
+	}
+
+	FreeImage_Unload(binned_dib);
+
+
+	FreeImage_Unload(dib1);
+}
+
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsConvolutionSuite(void)
 {
@@ -1770,7 +1848,8 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Convolution");
 
-	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	SUITE_ADD_TEST(suite, TestFIA_BinningTest);
 
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);
