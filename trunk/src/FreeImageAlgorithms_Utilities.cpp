@@ -1728,6 +1728,17 @@ FIA_InPlaceConvertToGreyscale (FIBITMAP ** src)
     return FIA_SUCCESS;
 }
 
+int DLL_CALLCONV
+FIA_InPlaceConvertToInt32Type (FIBITMAP ** src, int scale)
+{
+    FIBITMAP *dst = FreeImage_ConvertToType (*src, FIT_INT32, 0);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
+}
+
 FIBITMAP *DLL_CALLCONV
 FIA_ConvertFloatTo16Bit (FIBITMAP * src, int sign)
 {

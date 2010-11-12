@@ -653,6 +653,9 @@ FIA_InPlaceConvertToStandardType(FIBITMAP **src, int scale);
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertToGreyscale(FIBITMAP **src);
 
+DLL_API int DLL_CALLCONV
+FIA_InPlaceConvertToInt32Type (FIBITMAP ** src, int scale);
+
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_ConvertFloatTo16Bit(FIBITMAP *src, int sign);
 

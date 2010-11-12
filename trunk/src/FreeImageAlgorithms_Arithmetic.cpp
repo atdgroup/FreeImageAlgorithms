@@ -377,10 +377,10 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddImages (FIBITMAP * dst, FIBI
     // the arithmetic.
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (dst);
 
-    if (type != FIT_DOUBLE && type != FIT_FLOAT)
+    if (type != FIT_DOUBLE && type != FIT_FLOAT && type != FIT_INT32)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
-                                     "Image destination was not a FIT_FLOAT or FIT_DOUBLE");
+                                     "Image destination was not a FIT_FLOAT, FIT_DOUBLE or FIT_INT32");
         return FIA_ERROR;
     }
 
@@ -403,7 +403,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddImages (FIBITMAP * dst, FIBI
                 dst_ptr[x] = (double) (dst_ptr[x] + src_ptr[x]);
         }
     }
-    else
+    else if (type == FIT_FLOAT)
     {
         float *dst_ptr;
 
@@ -414,6 +414,20 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddImages (FIBITMAP * dst, FIBI
 
             for(register int x = 0; x < width; x++)
                 dst_ptr[x] = (float) (dst_ptr[x] + src_ptr[x]);
+        }
+    }
+	else if (type == FIT_INT32)
+    {
+        int *dst_ptr;
+
+        for(register int y = 0; y < height; y++)
+        {
+
+            dst_ptr = (int *) FreeImage_GetScanLine (dst, y);
+            src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
+                dst_ptr[x] = (int) (dst_ptr[x] - src_ptr[x]);
         }
     }
 
@@ -436,10 +450,10 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractImages (FIBITMAP * dst,
     // the arithmetic.
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (dst);
 
-    if (type != FIT_DOUBLE && type != FIT_FLOAT)
+    if (type != FIT_DOUBLE && type != FIT_FLOAT && type != FIT_INT32)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
-                                     "Image destination was not a FIT_FLOAT or FIT_DOUBLE");
+                                     "Image destination was not a FIT_FLOAT, FIT_DOUBLE or FIT_INT32");
         return FIA_ERROR;
     }
 
@@ -462,7 +476,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractImages (FIBITMAP * dst,
                 dst_ptr[x] = (double) (dst_ptr[x] - src_ptr[x]);
         }
     }
-    else
+    else if (type == FIT_FLOAT)
     {
         float *dst_ptr;
 
@@ -474,6 +488,20 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractImages (FIBITMAP * dst,
 
             for(register int x = 0; x < width; x++)
                 dst_ptr[x] = (float) (dst_ptr[x] - src_ptr[x]);
+        }
+    }
+	else if (type == FIT_INT32)
+    {
+        int *dst_ptr;
+
+        for(register int y = 0; y < height; y++)
+        {
+
+            dst_ptr = (int *) FreeImage_GetScanLine (dst, y);
+            src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
+                dst_ptr[x] = (int) (dst_ptr[x] - src_ptr[x]);
         }
     }
 
