@@ -574,6 +574,12 @@ FIA_InPlaceConvertToGreyscaleFloatType(FIBITMAP **src, FREE_IMAGE_TYPE type);
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertTo32Bit (FIBITMAP ** src);
 
+DLL_API FIBITMAP *DLL_CALLCONV
+FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP *src, FREE_IMAGE_TYPE type);
+
+DLL_API int DLL_CALLCONV
+FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP **src, FREE_IMAGE_TYPE type);
+
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertTo24Bit (FIBITMAP ** src);
 /** \brief Performs a threshold on greyscale images.

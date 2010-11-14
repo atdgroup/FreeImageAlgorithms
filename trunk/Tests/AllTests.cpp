@@ -77,6 +77,7 @@ static void OnError(FREE_IMAGE_FORMAT fif, const char *msg)
 
 int __cdecl main(void)
 {
+	MSG			msg;
 
     FreeImage_SetOutputMessage(OnError);
 
@@ -86,7 +87,11 @@ int __cdecl main(void)
 	RunAllTests();
 
 	#if WIN32
-		while(1);
+		// message-loop
+		while(GetMessage(&msg, NULL, 0, 0) > 0)
+		{
+			DispatchMessage(&msg);
+		}
 	#endif
 
 	return 0;

@@ -13,6 +13,11 @@
 #include "FreeImageAlgorithms_Statistics.h"
 #include "FreeImageAlgorithms_Convolution.h"
 
+#include "FreeImageAlgorithms_LinearScale.h"
+
+#include "ImageViewer.h"
+#include "BasicWin32Window.h"
+
 #include <iostream>
 
 static const double kernel[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -37,7 +42,7 @@ static const double kernel[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
 						  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
 					  	  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 
-/*
+
 static void
 TestFIA_ConvolutionTest(CuTest* tc)
 {
@@ -149,6 +154,7 @@ TestFIA_SobelAdvancedTest(CuTest* tc)
 }
 
 
+/*
 static void
 TestFIA_SeparableSobelTest(CuTest* tc)
 {
@@ -169,7 +175,7 @@ TestFIA_SeparableSobelTest(CuTest* tc)
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib2);
 }
-
+*/
 
 
 static void
@@ -209,6 +215,7 @@ TestFIA_MedianFilterTest(CuTest* tc)
 	FreeImage_Unload(dib5);
 }
 
+/*
 static void
 TestFIA_CorrelateFilterTest(CuTest* tc)
 {
@@ -349,7 +356,7 @@ TestFIA_CorrelateFFTTest(CuTest* tc)
 
     return;
 }
-
+*/
 
 static FIBITMAP* GetRandomImageRect(FIBITMAP *src, FIARECT *rect)
 {
@@ -439,6 +446,7 @@ TestFIA_CorrelateFFTLetterTest(CuTest* tc)
     return;
 }
 
+/*
 static void
 TestFIA_CorrelateFFTAlongRightEdge(CuTest* tc)
 {
@@ -489,7 +497,7 @@ TestFIA_CorrelateFFTAlongRightEdge(CuTest* tc)
 
     return;
 }
-
+*/
 
 
 static FIBITMAP* LoadTissueFile(const char *filepath)
@@ -512,6 +520,7 @@ typedef struct
 
 } Tile;
 
+/*
 static void
 TestFIA_CorrelateBloodTissueImages(CuTest* tc)
 {
@@ -711,8 +720,9 @@ TestFIA_CorrelateSpiceSection(CuTest* tc)
 
     return;
 }
+*/
 
-
+/*
 static void
 TestFIA_CorrelateBloodTissueImagesTwoImages(CuTest* tc)
 {
@@ -968,6 +978,7 @@ static void HighlightCorners(FIBITMAP *fib)
 
 }
 
+/*
 static void
 TestFIA_CorrelateEdgeTest(CuTest* tc)
 {
@@ -1413,6 +1424,7 @@ TestFIA_GradientBlendPasteTest6(CuTest* tc)
     FreeImage_Unload(background);
     FreeImage_Unload(fib2);
 }
+ 
  */
 
 /*
@@ -1444,7 +1456,7 @@ TestFIA_GradientBlendFloatImagePasteTest(CuTest* tc)
 }
 */
 
-
+/*
 static void
 TestFIA_CorrelateSpiceSection1(CuTest* tc)
 {
@@ -1717,8 +1729,9 @@ TestFIA_CorrelateSpiceSection6(CuTest* tc)
 
     return;
 }
+*/
 
-
+/*
 static void
 TestFIA_SobelAdvancedTest(CuTest* tc)
 {
@@ -1762,6 +1775,7 @@ TestFIA_SobelAdvancedTest(CuTest* tc)
     if(mag_dib != NULL)
         FreeImage_Unload(mag_dib);
 }
+*/
 
 
 static void
@@ -1772,7 +1786,23 @@ TestFIA_BinningTest(CuTest* tc)
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	FIBITMAP *converted = NULL;
 
-	FIA_InPlaceConvertToGreyscaleFloatType(&dib1, FIT_FLOAT);
+	//FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(&dib1, FIT_FLOAT);
+
+
+	//FIBITMAP * dib2 = FreeImage_ConvertTo8Bits(dib1);
+
+	//BasicWin32Window("Float", 100, 100, 300, 300, dib1);
+
+	
+	//FIA_InPlaceConvertToGreyscaleFloatType(&dib1, FIT_FLOAT);
+
+	//FIBITMAP *dib4 = FIA_StretchImageToType(dib1, FreeImage_GetImageType(dib2), 0.0);
+
+
+	//BasicWin32Window("Float", 100, 100, 300, 300, dib1);
+
+	//BasicWin32Window("Float", 100, 100, 300, 300, dib4);
+
 
 	CuAssertTrue(tc, dib1 != NULL);
 
@@ -1826,7 +1856,7 @@ TestFIA_BinningTest(CuTest* tc)
             TEST_DATA_OUTPUT_DIR "/Convolution/binned_gaussian_3x3.tif");
 	}
 
-	converted = FIA_ConvertGreyscaleFloatImageToTypeNoScale(binned_dib, FIT_UINT16);
+	converted = FreeImage_ConvertToType(binned_dib, FIT_UINT16, 0);
 
 	if(converted != NULL) {
 	    FIA_SimpleSaveFIBToFile(converted,
@@ -1859,6 +1889,12 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
 	SUITE_ADD_TEST(suite, TestFIA_BinningTest);
 
+	//SUITE_ADD_TEST(suite, TestFIA_CorrelateEdgeTest);
+    //SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection);
+   
+	SUITE_ADD_TEST(suite, TestFIA_SobelTest);
+	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection3);

@@ -43,7 +43,7 @@ template < class Tsrc > class TemplateImageFunctionClass
     FIBITMAP * IntegerRescaleToHalf (FIBITMAP * src);
     FIBITMAP *ColourRescaleToHalf (FIBITMAP * src);
     FIBITMAP *FloatRescaleToHalf (FIBITMAP * src);
-	FIBITMAP *ConvertFloatTypeToTypeNoScale (FIBITMAP *src, FREE_IMAGE_TYPE type);
+	FIBITMAP *ConvertToGreyscaleFloatTypeWithUntouchedRange (FIBITMAP *src, FREE_IMAGE_TYPE type);
 
     // Composite function for all image types
     FIBITMAP *Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
@@ -1558,6 +1558,7 @@ FIA_ConvertToGreyscaleFloatType (FIBITMAP * src, FREE_IMAGE_TYPE type)
     if (gs_dib != NULL)
     {
         dst = FreeImage_ConvertToType (gs_dib, type, 0);
+		
         FreeImage_Unload (gs_dib);
         return dst;
     }
@@ -1570,6 +1571,101 @@ int DLL_CALLCONV
 FIA_InPlaceConvertToGreyscaleFloatType (FIBITMAP ** src, FREE_IMAGE_TYPE type)
 {
     FIBITMAP *dst = FIA_ConvertToGreyscaleFloatType (*src, type);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
+}
+
+
+template <class Tsrc> FIBITMAP*
+TemplateImageFunctionClass <Tsrc>::ConvertToGreyscaleFloatTypeWithUntouchedRange (FIBITMAP *src, FREE_IMAGE_TYPE type)
+{
+    if (src == NULL)
+        return NULL;
+
+	if (type != FIT_FLOAT && type != FIT_DOUBLE)
+    {
+        return NULL;
+    }
+
+	FIBITMAP *tmp = NULL;
+
+	if(!FIA_IsGreyScale(src))
+		tmp = FreeImage_ConvertTo8Bits(src);
+	else
+		tmp = FreeImage_Clone(src);
+
+    int width = FreeImage_GetWidth (tmp);
+    int height = FreeImage_GetHeight (tmp);
+
+	FIBITMAP *dst = NULL;
+    Tsrc *src_ptr;
+    
+	if(type == FIT_FLOAT)
+	{
+		float *dst_ptr;
+		dst = FreeImage_AllocateT(FIT_FLOAT, width, height, 32, 0, 0, 0);  
+
+		for(register int y = 0; y < height; y++)
+		{
+			src_ptr = (Tsrc*) FreeImage_GetScanLine (tmp, y);
+			dst_ptr = (float*) FreeImage_GetScanLine (dst, y);
+        
+			for(register int x = 0; x < width; x++)
+				dst_ptr[x] = (float) (src_ptr[x]);
+		}
+	}
+	else
+	{
+		double *dst_ptr;
+		dst = FreeImage_AllocateT(FIT_DOUBLE, width, height, 32, 0, 0, 0);  
+
+		for(register int y = 0; y < height; y++)
+		{
+			src_ptr = (Tsrc*) FreeImage_GetScanLine (tmp, y);
+			dst_ptr = (double*) FreeImage_GetScanLine (dst, y);
+        
+			for(register int x = 0; x < width; x++)
+				dst_ptr[x] = (double) (src_ptr[x]);
+		}
+	}
+
+	FreeImage_Unload(tmp);
+
+    return dst;
+}
+
+
+FIBITMAP *DLL_CALLCONV
+FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP *src, FREE_IMAGE_TYPE type)
+{
+	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+             return UCharImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
+        case FIT_UINT16:
+            return UShortImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
+        case FIT_INT16:
+            return ShortImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
+        case FIT_UINT32:
+            return ULongImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
+        case FIT_INT32:
+            return LongImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
+        default:
+            break;
+    }
+
+    return NULL;
+}
+
+int DLL_CALLCONV
+FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP **src, FREE_IMAGE_TYPE type)
+{
+	FIBITMAP *dst = FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange (*src, type);
 
     FreeImage_Unload (*src);
     *src = dst;
@@ -1804,101 +1900,6 @@ FIA_InPlaceConvertInt16ToUInt16 (FIBITMAP ** src)
     *src = dst;
 
     return FIA_SUCCESS;
-}
-
-
-template <class Tdst>
-FIBITMAP * TemplateImageFunctionClass<Tdst>::ConvertFloatTypeToTypeNoScale (FIBITMAP *src, FREE_IMAGE_TYPE type)
-{
-    // Make sure src is a double or float
-    FREE_IMAGE_TYPE float_type = FreeImage_GetImageType (src);
-
-    if (float_type != FIT_DOUBLE && float_type != FIT_FLOAT)
-    {
-        FreeImage_OutputMessageProc (FIF_UNKNOWN,
-                                     "Image source was not a FIT_FLOAT, FIT_DOUBLE or FIT_INT32");
-        return NULL;
-    }
-
-	if (type == FIT_DOUBLE || type == FIT_FLOAT)
-    {
-        return FreeImage_Clone(src);
-    }
-
-	int width = FreeImage_GetWidth(src);
-	int height = FreeImage_GetHeight(src);
-
-	FIBITMAP *dst = FreeImage_AllocateT(type, width, height, 8, 0, 0, 0);
-
-	Tdst *dst_ptr;
-
-	double min_possible, max_possible;
-
-	FIA_GetMinPosibleValueForGreyScaleType(type, &min_possible);
-	FIA_GetMaxPosibleValueForGreyScaleType(type, &max_possible);
-
-	if (float_type == FIT_DOUBLE)
-    {
-        double *src_ptr;
-
-        for(register int y = 0; y < height; y++)
-        {
-            src_ptr = (double *) FreeImage_GetScanLine (src, y);
-            dst_ptr = (Tdst *) FreeImage_GetScanLine (dst, y);
-
-            for(register int x = 0; x < width; x++) {
-				#ifdef WIN32
-				dst_ptr[x] = (Tdst) (min(max(min_possible, src_ptr[x]), max_possible));
-				#else
-				dst_ptr[x] = (Tdst) (std::min(std::max(min_possible, src_ptr[x]), max_possible));
-				#endif
-			}
-        }
-    }
-    else if (float_type == FIT_FLOAT)
-    {
-        float *src_ptr;
-
-        for(register int y = 0; y < height; y++)
-        {
-            src_ptr = (float *) FreeImage_GetScanLine (src, y);
-            dst_ptr = (Tdst *) FreeImage_GetScanLine (dst, y);
-
-            for(register int x = 0; x < width; x++) {
-				#ifdef WIN32
-				dst_ptr[x] = (Tdst) (min(max(min_possible, src_ptr[x]), max_possible));
-				#else
-				dst_ptr[x] = (Tdst) (std::min(std::max(min_possible, src_ptr[x]), max_possible));
-				#endif
-			}
-        }
-    }
-
-	return dst;
-}
-
-FIBITMAP *DLL_CALLCONV
-FIA_ConvertGreyscaleFloatImageToTypeNoScale(FIBITMAP *src, FREE_IMAGE_TYPE type)
-{
-    switch (type)
-    {
-        case FIT_BITMAP:
-            if (FreeImage_GetBPP (src) == 8)
-                return UCharImage.ConvertFloatTypeToTypeNoScale (src, type);
-        case FIT_UINT16:
-            return UShortImage.ConvertFloatTypeToTypeNoScale (src, type);
-        case FIT_INT16:
-            return ShortImage.ConvertFloatTypeToTypeNoScale (src, type);
-        case FIT_UINT32:
-            return ULongImage.ConvertFloatTypeToTypeNoScale (src, type);
-        case FIT_INT32:
-            return LongImage.ConvertFloatTypeToTypeNoScale (src, type);
-        default:
-            break;
-    }
-
-    return NULL;
-
 }
 
 FIBITMAP *DLL_CALLCONV
