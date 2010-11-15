@@ -73,8 +73,7 @@ FIA_Convolve(FIABITMAP * src, FilterKernel kernel)
         return NULL;
     }
 
-    //border_tmp.fib = FIA_ConvertToGreyscaleFloatType(src->fib, FIT_DOUBLE);
-	border_tmp.fib = FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(src->fib, FIT_DOUBLE);
+    border_tmp.fib = FIA_ConvertToGreyscaleFloatType(src->fib, FIT_DOUBLE);
 
     border_tmp.xborder = src->xborder;
     border_tmp.yborder = src->yborder;

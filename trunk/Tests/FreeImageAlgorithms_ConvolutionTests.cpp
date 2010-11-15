@@ -1874,6 +1874,14 @@ TestFIA_BinningTest(CuTest* tc)
 
 	FreeImage_Unload(binned_dib);
 
+	binned_dib = FIA_Binning (dib1, FIA_BINNING_GAUSSIAN, 11);
+
+    if(binned_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(binned_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/binned_gaussian_21x21.tif");
+	}
+
+	FreeImage_Unload(binned_dib);
 
 	FreeImage_Unload(dib1);
 }

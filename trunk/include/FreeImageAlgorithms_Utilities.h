@@ -563,13 +563,19 @@ FIA_CloneImageType(FIBITMAP *src, int width, int height);
  *  \return FIT_FLOAT image.
 */
 DLL_API FIBITMAP* DLL_CALLCONV
+FIA_ConvertToGreyscaleFloatTypeAndScaleToUnity(FIBITMAP *src, FREE_IMAGE_TYPE type);
+
+DLL_API int DLL_CALLCONV
+FIA_InPlaceConvertToGreyscaleFloatTypeAndScaleToUnity(FIBITMAP **src, FREE_IMAGE_TYPE type);
+
+DLL_API FIBITMAP *DLL_CALLCONV
 FIA_ConvertToGreyscaleFloatType(FIBITMAP *src, FREE_IMAGE_TYPE type);
 
 DLL_API int DLL_CALLCONV
-FIA_InPlaceConvertTo8Bit (FIBITMAP ** src);
+FIA_InPlaceConvertToGreyscaleFloatType(FIBITMAP **src, FREE_IMAGE_TYPE type);
 
 DLL_API int DLL_CALLCONV
-FIA_InPlaceConvertToGreyscaleFloatType(FIBITMAP **src, FREE_IMAGE_TYPE type);
+FIA_InPlaceConvertTo8Bit (FIBITMAP ** src);
 
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertTo32Bit (FIBITMAP ** src);
@@ -579,6 +585,9 @@ FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP *src, FREE_IMAGE_TYPE
 
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP **src, FREE_IMAGE_TYPE type);
+
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_ConvertToType(FIBITMAP *dib, FREE_IMAGE_TYPE type, BOOL scale_linear);
 
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertTo24Bit (FIBITMAP ** src);

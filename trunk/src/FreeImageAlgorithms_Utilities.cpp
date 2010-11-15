@@ -1530,55 +1530,6 @@ FIA_Unload (FIABITMAP * src)
     free (src);
 }
 
-FIBITMAP *DLL_CALLCONV
-FIA_ConvertToGreyscaleFloatType (FIBITMAP * src, FREE_IMAGE_TYPE type)
-{
-    if (src == NULL || (type != FIT_FLOAT && type != FIT_DOUBLE))
-    {
-        return NULL;
-    }
-
-    FIBITMAP *gs_dib = NULL, *dst = NULL;
-
-    int bpp = FreeImage_GetBPP (src);
-
-    if (bpp >= 24 && FreeImage_GetImageType (src) == FIT_BITMAP)
-    {                           // Colour
-        gs_dib = FreeImage_ConvertToGreyscale (src);
-    }
-    else if (bpp < 8)
-    {
-        gs_dib = FreeImage_ConvertTo8Bits (src);
-    }
-    else
-    {
-        gs_dib = FreeImage_Clone (src);
-    }
-
-    if (gs_dib != NULL)
-    {
-        dst = FreeImage_ConvertToType (gs_dib, type, 0);
-		
-        FreeImage_Unload (gs_dib);
-        return dst;
-    }
-
-    return NULL;
-}
-
-
-int DLL_CALLCONV
-FIA_InPlaceConvertToGreyscaleFloatType (FIBITMAP ** src, FREE_IMAGE_TYPE type)
-{
-    FIBITMAP *dst = FIA_ConvertToGreyscaleFloatType (*src, type);
-
-    FreeImage_Unload (*src);
-    *src = dst;
-
-    return FIA_SUCCESS;
-}
-
-
 template <class Tsrc> FIBITMAP*
 TemplateImageFunctionClass <Tsrc>::ConvertToGreyscaleFloatTypeWithUntouchedRange (FIBITMAP *src, FREE_IMAGE_TYPE type)
 {
@@ -1639,7 +1590,7 @@ TemplateImageFunctionClass <Tsrc>::ConvertToGreyscaleFloatTypeWithUntouchedRange
 
 
 FIBITMAP *DLL_CALLCONV
-FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP *src, FREE_IMAGE_TYPE type)
+FIA_ConvertToGreyscaleFloatType(FIBITMAP *src, FREE_IMAGE_TYPE type)
 {
 	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
 
@@ -1663,9 +1614,58 @@ FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP *src, FREE_IMAGE_TYPE
 }
 
 int DLL_CALLCONV
-FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP **src, FREE_IMAGE_TYPE type)
+FIA_InPlaceConvertToGreyscaleFloatType(FIBITMAP **src, FREE_IMAGE_TYPE type)
 {
-	FIBITMAP *dst = FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange (*src, type);
+	FIBITMAP *dst = FIA_ConvertToGreyscaleFloatType (*src, type);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
+}
+
+
+FIBITMAP *DLL_CALLCONV
+FIA_ConvertToGreyscaleFloatTypeAndScaleToUnity (FIBITMAP * src, FREE_IMAGE_TYPE type)
+{
+    if (src == NULL || (type != FIT_FLOAT && type != FIT_DOUBLE))
+    {
+        return NULL;
+    }
+
+    FIBITMAP *gs_dib = NULL, *dst = NULL;
+
+    int bpp = FreeImage_GetBPP (src);
+
+    if (bpp >= 24 && FreeImage_GetImageType (src) == FIT_BITMAP)
+    {                           // Colour
+        gs_dib = FreeImage_ConvertToGreyscale (src);
+    }
+    else if (bpp < 8)
+    {
+        gs_dib = FreeImage_ConvertTo8Bits (src);
+    }
+    else
+    {
+        gs_dib = FreeImage_Clone (src);
+    }
+
+    if (gs_dib != NULL)
+    {
+        dst = FreeImage_ConvertToType (gs_dib, type, 0);
+		
+        FreeImage_Unload (gs_dib);
+        return dst;
+    }
+
+    return NULL;
+}
+
+
+int DLL_CALLCONV
+FIA_InPlaceConvertToGreyscaleFloatTypeAndScaleToUnity (FIBITMAP ** src, FREE_IMAGE_TYPE type)
+{
+    FIBITMAP *dst = FIA_ConvertToGreyscaleFloatType (*src, type);
 
     FreeImage_Unload (*src);
     *src = dst;
@@ -1844,7 +1844,6 @@ FIA_ConvertFloatTo16Bit (FIBITMAP * src, int sign)
 
     FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
     
-    // Mask has to be 8 bit 
     if (type != FIT_FLOAT)
         return NULL;
 
@@ -1978,6 +1977,14 @@ FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
     }
 
     return dst;
+}
+
+FIBITMAP* DLL_CALLCONV
+FIA_ConvertToType(FIBITMAP *dib, FREE_IMAGE_TYPE type, BOOL scale_linear)
+{
+  //FreeImage_ConvertToType(binned_dib, FIT_UINT16, 0);
+
+	return NULL;
 }
 
 template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <

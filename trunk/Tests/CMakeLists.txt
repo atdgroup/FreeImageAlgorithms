@@ -18,13 +18,16 @@ SET(FIA_TEST_SRCS AllTests.cpp
                   FreeImageAlgorithms_PaletteTests.cpp
 )
 
+INCLUDE_DIRECTORIES("C://Devel/ATD/ATD_Libraries/ImageViewer/trunk")
+
+ADD_DEFINITIONS(-D IMAGEVIEWER_IMPORTS -D IMAGEVIEWER_STDCALL)
+
+# Make sure the linker can find the Hello library once it is built.
+LINK_DIRECTORIES (${FREEIMAGEALGORITHMS_BINARY_DIR} "C://dlls")
 
 ADD_EXECUTABLE (FreeImageAlgorithmsTests ${FIA_TEST_SRCS})
 
-# Make sure the linker can find the Hello library once it is built.
-LINK_DIRECTORIES (${FREEIMAGEALGORITHMS_BINARY_DIR})
-
 # Link the executable to the Hello library.
-TARGET_LINK_LIBRARIES (FreeImageAlgorithmsTests freeimagealgorithms)
+TARGET_LINK_LIBRARIES (FreeImageAlgorithmsTests freeimagealgorithms ImageViewer)
 
 #COPY_TARGET(FreeImageAlgorithmsTests)
