@@ -72,14 +72,13 @@ TestFIA_ConvolutionTest(CuTest* tc)
 
 	PROFILE_STOP("FreeImageAlgorithms_Convolve");
 
-	FIA_SaveFIBToFile(dib4, TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee-convolved.bmp", BIT24);
+	FIA_SimpleSaveFIBToFile(dib4, TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee-convolved.tif");
 
 	FreeImage_Unload(dib1);
 	FIA_Unload(dib2);
 	FreeImage_Unload(dib3);
     FreeImage_Unload(dib4);
 }
-
 
 static void
 TestFIA_SobelTest(CuTest* tc)
@@ -102,7 +101,7 @@ TestFIA_SobelTest(CuTest* tc)
 	//FIA_SetTernaryPalettePalette(dib2, FIA_RGBQUAD(0,0,0),
 	//		1, FIA_RGBQUAD(255,0,0), 2, FIA_RGBQUAD(0,255,0));
 
-	FIA_SaveFIBToFile(bit8_dib, TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_sobel.bmp", BIT24);
+	FIA_SimpleSaveFIBToFile(bit8_dib, TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_sobel.tif");
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib2);
@@ -129,19 +128,17 @@ TestFIA_SobelAdvancedTest(CuTest* tc)
 
 	PROFILE_STOP("FreeImageAlgorithms_SobelAdvanced");
 
-    FIBITMAP* bit8_dib = FreeImage_ConvertToStandardType(horizontal_dib, 0);
-
     if(vertical_dib != NULL)
-	    FIA_SaveFIBToFile(vertical_dib,
-            TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_vertical.bmp", BIT8);
+	    FIA_SimpleSaveFIBToFile(vertical_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_vertical.tif");
 
     if(horizontal_dib != NULL)
-        FIA_SaveFIBToFile(bit8_dib,
-            TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_sobel_horizontal_dib.bmp", BIT8);
+        FIA_SimpleSaveFIBToFile(horizontal_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_sobel_horizontal.tif");
 
     if(mag_dib != NULL)
-        FIA_SaveFIBToFile(mag_dib,
-            TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_sobel_magnitude_dib.bmp", BIT8);
+        FIA_SimpleSaveFIBToFile(mag_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/drone-bee_sobel_magnitude.tif");
 
     if(vertical_dib != NULL)
 	    FreeImage_Unload(vertical_dib);
@@ -191,7 +188,7 @@ TestFIA_MedianFilterTest(CuTest* tc)
 
 	CuAssertTrue(tc, dib2 != NULL);
 
-	FIBITMAP *dib3 = FreeImage_ConvertToType(dib2, FIT_FLOAT, 1);
+	FIBITMAP *dib3 = FIA_ConvertToGreyscaleFloatType(dib2, FIT_FLOAT);
 
 	CuAssertTrue(tc, dib3 != NULL);
 
@@ -206,7 +203,7 @@ TestFIA_MedianFilterTest(CuTest* tc)
 
 	PROFILE_STOP("MedianFilter");
 
-	FIA_SaveFIBToFile(dib5, TEST_DATA_OUTPUT_DIR  "/Convolution/drone-bee-median_filtered.jpg", BIT8);
+	FIA_SimpleSaveFIBToFile(dib5, TEST_DATA_OUTPUT_DIR  "/Convolution/drone-bee-median_filtered.tif");
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib2);
@@ -1894,15 +1891,13 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Convolution");
 
-	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
-	SUITE_ADD_TEST(suite, TestFIA_BinningTest);
-
-	//SUITE_ADD_TEST(suite, TestFIA_CorrelateEdgeTest);
-    //SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection);
-   
+	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	//SUITE_ADD_TEST(suite, TestFIA_BinningTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelTest);
-	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
-	
+	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	SUITE_ADD_TEST(suite, TestFIA_ConvolutionTest);
+	SUITE_ADD_TEST(suite, TestFIA_MedianFilterTest);
+
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection3);
@@ -1942,8 +1937,6 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateRegionsTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
-	//SUITE_ADD_TEST(suite, TestFIA_ConvolutionTest);
-	//SUITE_ADD_TEST(suite, TestFIA_MedianFilterTest);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateFilterTest);
 */
 

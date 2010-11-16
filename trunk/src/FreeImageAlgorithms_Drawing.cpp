@@ -901,7 +901,7 @@ DrawRectangle (FIBITMAP * src, FIARECT rect, ValueType value, RGBQUAD color_valu
 
 template<typename ValueType>
 static int
-DrawSolidRectangle (FIBITMAP * src, FIARECT rect, ValueType value, RGBQUAD colour)
+DrawSolidRectangle (FIBITMAP *src, FIARECT rect, ValueType value, RGBQUAD colour)
 {
     // Seems that Anti grain method is to slow probably  because it is too advanced
     // Does accurate drawing etc with anti aliasing.

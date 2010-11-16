@@ -83,6 +83,7 @@ static void TestFIA_ParticleInfoTest(CuTest* tc)
 		centre.bottom = blobinfo.center_y + 2;
 
 		FIA_DrawColourSolidRect(dst, centre, FIA_RGBQUAD(0,255,0));
+		FIA_SetPixelColourFromTopLeft(dst, blobinfo.center_x, blobinfo.center_y, FIA_RGBQUAD(0,0,255));
 
 		myfile << "left  "
 			<< blobinfo.rect.left << "  top  "  << blobinfo.rect.top
@@ -97,7 +98,7 @@ static void TestFIA_ParticleInfoTest(CuTest* tc)
 
 	myfile.close();
 
-	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Particle/particle_found.jpg", BIT24);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Particle/particle_found.bmp", BIT24);
 
 	FIA_FreeParticleInfo(info);
 
@@ -111,16 +112,12 @@ static void TestFIA_ParticleInfoTest(CuTest* tc)
 static void
 TestFIA_FindImageMaximaTest(CuTest* tc)
 {
-	const char *file = "C:\\FIA_FindImageMaximaInput.tif";
+	const char *file = TEST_DATA_DIR "maxima.tif";
 	
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
 	CuAssertTrue(tc, dib1 != NULL);
 
-	//FIBITMAP *dib2 = FreeImage_ConvertTo8Bits(dib1);
-	
-	//CuAssertTrue(tc, dib2 != NULL);
- 
 	PROFILE_START("FindImageMaxima");
 
 	FIAPeak *peaks = NULL;
@@ -131,11 +128,9 @@ TestFIA_FindImageMaximaTest(CuTest* tc)
 
 	PROFILE_STOP("FindImageMaxima");
 
-	//FIA_SetGreyLevelPalette(dib3);
 	FIA_SetTemperaturePalette(dib3);
-	//FIA_SetRainBowPalette(dib3);
 
-	FIA_SaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "\\find_image_maxima.bmp", BIT24); 
+	FIA_SimpleSaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "/Particle/find_image_maxima.tif"); 
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib3);
@@ -226,12 +221,12 @@ CuGetFreeImageAlgorithmsParticleSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Particle");
 
-	//SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
-	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
+	SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
+	SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
 	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest2);
 
-	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
+	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
     //SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest2);
 
 	return suite;

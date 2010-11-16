@@ -1608,6 +1608,9 @@ FIA_ConvertToGreyscaleFloatType(FIBITMAP *src, FREE_IMAGE_TYPE type)
             return ULongImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
         case FIT_INT32:
             return LongImage.ConvertToGreyscaleFloatTypeWithUntouchedRange (src, type);
+		case FIT_FLOAT:
+		case FIT_DOUBLE:
+			return FreeImage_ConvertToType(src, type, 0);    
         default:
             break;
     }
@@ -1765,7 +1768,21 @@ FIA_GetPixelColour (FIBITMAP * src, int x, int y, RGBQUAD *val)
 }
 
 int DLL_CALLCONV
-FIA_GetPixelColourFromTopLeft (FIBITMAP * src, int x, int y, RGBQUAD *val)
+FIA_SetPixelColour (FIBITMAP *src, int x, int y, RGBQUAD val)
+{
+	return FreeImage_SetPixelColor(src, x, y, &val);
+}
+
+int DLL_CALLCONV
+FIA_SetPixelColourFromTopLeft (FIBITMAP *src, int x, int y, RGBQUAD val)
+{
+	y = FreeImage_GetHeight(src) - y - 1;
+
+	return FIA_SetPixelColour(src, x, y, val);
+}
+
+int DLL_CALLCONV
+FIA_GetPixelColourFromTopLeft (FIBITMAP *src, int x, int y, RGBQUAD *val)
 {
 	y = FreeImage_GetHeight(src) - y - 1;
 
