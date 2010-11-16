@@ -40,10 +40,12 @@ template < class Tsrc > class TemplateImageFunctionClass
     void find_max_xy (FIBITMAP * src, double *max, FIAPOINT * pt);
 
     // FastSimpleResample
-    FIBITMAP * IntegerRescaleToHalf (FIBITMAP * src);
-    FIBITMAP *ColourRescaleToHalf (FIBITMAP * src);
-    FIBITMAP *FloatRescaleToHalf (FIBITMAP * src);
-	FIBITMAP *ConvertToGreyscaleFloatTypeWithUntouchedRange (FIBITMAP *src, FREE_IMAGE_TYPE type);
+    FIBITMAP* IntegerRescaleToHalf (FIBITMAP * src);
+    FIBITMAP* ColourRescaleToHalf (FIBITMAP * src);
+    FIBITMAP* FloatRescaleToHalf (FIBITMAP * src);
+	FIBITMAP* ConvertToGreyscaleFloatTypeWithUntouchedRange (FIBITMAP *src, FREE_IMAGE_TYPE type);
+	FIBITMAP* FIA_ConvertToImageType (FIABITMAP *src, FREE_IMAGE_TYPE type, BOOL scale_linear);
+	FIBITMAP* FIA_ConvertFloatTypeToImageType (FIBITMAP *src, FREE_IMAGE_TYPE float_type, FREE_IMAGE_TYPE type, BOOL scale_linear);
 
     // Composite function for all image types
     FIBITMAP *Composite(FIBITMAP * fg, FIBITMAP * bg, FIBITMAP * normalised_alpha_values, FIBITMAP *mask);
@@ -1979,13 +1981,140 @@ FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
     return dst;
 }
 
-FIBITMAP* DLL_CALLCONV
-FIA_ConvertToType(FIBITMAP *dib, FREE_IMAGE_TYPE type, BOOL scale_linear)
-{
-  //FreeImage_ConvertToType(binned_dib, FIT_UINT16, 0);
 
-	return NULL;
+template <class Tsrc> FIBITMAP*
+TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *src, FREE_IMAGE_TYPE float_type, FREE_IMAGE_TYPE type, BOOL scale_linear)
+{
+	if(float_type != FIT_FLOAT && float_type != FIT_DOUBLE) 
+		return NULL;
+
+    double src_min_found;
+    double src_max_found;
+	double min_possible_for_type;
+	double max_possible_for_type;
+
+	int width = FreeImage_GetWidth(src);
+	int height = FreeImage_GetHeight(src);
+
+	//unsigned int src_pitch_in_pixels = FIA_GetPitchInPixels(src);
+	//unsigned int dst_pitch_in_pixels = FIA_GetPitchInPixels(src);
+
+	FIA_GetMinPosibleValueForGreyScaleType (type, &min_possible_for_type);
+	FIA_GetMaxPosibleValueForGreyScaleType (type, &max_possible_for_type);
+
+	FIBITMAP *dst = FreeImage_AllocateT(type, width, height, 32, 0, 0, 0);  
+	Tsrc *dst_ptr = NULL;
+
+	if(float_type == FIT_FLOAT)
+	{
+		float *src_ptr = NULL;
+
+		if(scale_linear)
+		{
+			FIA_FindMinMax (src, &src_min_found, &src_max_found);
+			double src_range = src_max_found - src_min_found;
+			double dst_range = max_possible_for_type - min_possible_for_type;
+			double factor = dst_range / src_range;
+
+			for(register int y = 0; y < height; y++)
+			{
+				src_ptr = (float*) FreeImage_GetScanLine (src, y);
+				dst_ptr = (Tsrc*) FreeImage_GetScanLine (dst, y);
+        
+				for(register int x = 0; x < width; x++) {
+					 dst_ptr[x] = static_cast <Tsrc> ((src_ptr[x] - src_min_found) * factor + min_possible_for_type);
+				}
+			}
+		}
+		else
+		{
+			for(register int y = 0; y < height; y++)
+			{
+				src_ptr = (float*) FreeImage_GetScanLine (src, y);
+				dst_ptr = (Tsrc*) FreeImage_GetScanLine (dst, y);
+        
+				for(register int x = 0; x < width; x++) {
+					#ifdef WIN32
+					dst_ptr[x] = static_cast <Tsrc> (max(min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
+					#else
+					dst_ptr[x] = static_cast <Tsrc> ( std::max(std::min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
+					#endif
+				}
+			}
+		}
+	}
+	else if(float_type == FIT_DOUBLE)
+	{ 
+		double *src_ptr = NULL;
+
+		if(scale_linear)
+		{
+			FIA_FindMinMax (src, &src_min_found, &src_max_found);
+			double src_range = src_max_found - src_min_found;
+			double dst_range = max_possible_for_type - min_possible_for_type;
+			double factor = dst_range / src_range;
+
+			for(register int y = 0; y < height; y++)
+			{
+				src_ptr = (double*) FreeImage_GetScanLine (src, y);
+				dst_ptr = (Tsrc*) FreeImage_GetScanLine (dst, y);
+        
+				for(register int x = 0; x < width; x++) {
+					 dst_ptr[x] = static_cast <Tsrc> ((src_ptr[x] - src_min_found) * factor + min_possible_for_type);
+				}
+			}
+		}
+		else
+		{
+			for(register int y = 0; y < height; y++)
+			{
+				src_ptr = (double*) FreeImage_GetScanLine (src, y);
+				dst_ptr = (Tsrc*) FreeImage_GetScanLine (dst, y);
+        
+				for(register int x = 0; x < width; x++) {
+					#ifdef WIN32
+					dst_ptr[x] = static_cast <Tsrc> (max(min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
+					#else
+					dst_ptr[x] = static_cast <Tsrc> (std::max(std::min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
+					#endif
+				}
+			}
+		}
+	}
+
+    return dst;
 }
+
+
+
+FIBITMAP *DLL_CALLCONV
+FIA_ConvertFloatTypeToType(FIBITMAP *src, FREE_IMAGE_TYPE type, BOOL scale_linear)
+{
+	FREE_IMAGE_TYPE src_type = FreeImage_GetImageType(src);
+	int bpp = FreeImage_GetBPP(src);
+
+    switch (type)
+    {
+        case FIT_BITMAP:
+			if(bpp = 8)
+				return UCharImage.FIA_ConvertFloatTypeToImageType (src, src_type, type, scale_linear);
+        case FIT_UINT16:
+            return UShortImage.FIA_ConvertFloatTypeToImageType (src, src_type, type, scale_linear);
+        case FIT_INT16:
+            return ShortImage.FIA_ConvertFloatTypeToImageType (src, src_type, type, scale_linear);
+        case FIT_UINT32:
+            return ULongImage.FIA_ConvertFloatTypeToImageType (src, src_type, type, scale_linear);
+        case FIT_INT32:
+            return LongImage.FIA_ConvertFloatTypeToImageType (src, src_type, type, scale_linear);
+        default:
+            break;
+    }
+
+    return NULL;
+}
+
+
+
 
 template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
     Tsrc >::IntegerRescaleToHalf (FIBITMAP * src)

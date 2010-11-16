@@ -6,6 +6,7 @@
 #include "FreeImageAlgorithms_Drawing.h"
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
+#include "FreeImageAlgorithms_Arithmetic.h"
 #include "profile.h"
 
 #include "CuTest.h"
@@ -202,6 +203,63 @@ static void PasteTest(CuTest* tc)
 	FreeImage_Unload(dst);
 }
 
+static void ConvertFloatToTypeTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "drone-bee-greyscale.jpg";
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
+	FIBITMAP *dst;
+
+	FIA_InPlaceConvertToGreyscaleFloatType(&src, FIT_FLOAT);
+
+	FIA_AddGreyLevelImageConstant(src, 20000);
+	
+
+	FIA_SimpleSaveFIBToFile(src, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_float.tif");
+	
+	dst = FIA_ConvertFloatTypeToType(src, FIT_INT16, 0);
+	FREE_IMAGE_TYPE type = FreeImage_GetImageType(dst);
+	CuAssertTrue(tc, type == FIT_INT16);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_int16.tif");
+	FreeImage_Unload(dst);
+
+	///////////////////////////////
+	dst = FIA_ConvertFloatTypeToType(src, FIT_INT16, 1);
+	type = FreeImage_GetImageType(dst);
+	CuAssertTrue(tc, type == FIT_INT16);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_int16_scaled.tif");
+	FreeImage_Unload(dst);
+
+	////////////////////////////////////
+	dst = FIA_ConvertFloatTypeToType(src, FIT_UINT16, 0);
+	type = FreeImage_GetImageType(dst);
+	CuAssertTrue(tc, type == FIT_UINT16);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_uint16.tif");
+	FreeImage_Unload(dst);
+
+	//////////////////////////////////////
+	dst = FIA_ConvertFloatTypeToType(src, FIT_UINT16, 1);
+	type = FreeImage_GetImageType(dst);
+	CuAssertTrue(tc, type == FIT_UINT16);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_uint16_scaled.tif");
+	FreeImage_Unload(dst);
+
+	dst = FIA_ConvertFloatTypeToType(src, FIT_INT32, 0);
+	type = FreeImage_GetImageType(dst);
+	CuAssertTrue(tc, type == FIT_INT32);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_int32.tif");
+	FreeImage_Unload(dst);
+
+	dst = FIA_ConvertFloatTypeToType(src, FIT_INT32, 1);
+	type = FreeImage_GetImageType(dst);
+	CuAssertTrue(tc, type == FIT_INT32);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_int32_scaled.tif");
+	FreeImage_Unload(dst);
+
+
+	FreeImage_Unload(src);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
@@ -209,11 +267,13 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
+	SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
+
     //SUITE_ADD_TEST(suite, BorderTest);
 	//SUITE_ADD_TEST(suite, BorderTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);
-	SUITE_ADD_TEST(suite, LineTest);
+	//SUITE_ADD_TEST(suite, LineTest);
 	//SUITE_ADD_TEST(suite, TestFIA_DistanceTransformTest2);
 	//SUITE_ADD_TEST(suite, PasteTest);
 
