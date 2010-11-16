@@ -174,12 +174,6 @@ template < class Tsrc > FIBITMAP * LINEAR_SCALE < Tsrc >::convert (FIBITMAP * sr
     // compute the scaling factor
     double scale = 255.0 / (double) (max_found - min_found);
 
-    // Scale is 1.0
-    if (scale == 1.0)
-    {
-        return FreeImage_ConvertToStandardType (src, 0);
-    }
-
     // allocate a 8-bit dib
     if ((dst = FreeImage_AllocateT (FIT_BITMAP, width, height, 8, 0, 0, 0)) == NULL)
     {

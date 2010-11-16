@@ -7,6 +7,7 @@
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include "FreeImageAlgorithms_Arithmetic.h"
+#include "FreeImageAlgorithms_LinearScale.h"
 #include "profile.h"
 
 #include "CuTest.h"
@@ -248,7 +249,12 @@ static void ConvertFloatToTypeTest(CuTest* tc)
 	type = FreeImage_GetImageType(dst);
 	CuAssertTrue(tc, type == FIT_INT32);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_int32.tif");
+
+	double min_within_image, max_within_image;
+	FIA_InplaceLinearScaleToStandardType (&dst, 0.0, 0.0, &min_within_image, &max_within_image);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/LinearScaleToStandardType.tif");
 	FreeImage_Unload(dst);
+
 
 	dst = FIA_ConvertFloatTypeToType(src, FIT_INT32, 1);
 	type = FreeImage_GetImageType(dst);

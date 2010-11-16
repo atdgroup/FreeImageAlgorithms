@@ -1781,7 +1781,7 @@ TestFIA_SobelAdvancedTest(CuTest* tc)
 static void
 TestFIA_BinningTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "Adele.jpg";
+	const char *file = "c:\\lena.jpg";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	FIBITMAP *converted = NULL;
@@ -1900,8 +1900,8 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateEdgeTest);
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection);
    
-	SUITE_ADD_TEST(suite, TestFIA_SobelTest);
-	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	//SUITE_ADD_TEST(suite, TestFIA_SobelTest);
+	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
 	
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);

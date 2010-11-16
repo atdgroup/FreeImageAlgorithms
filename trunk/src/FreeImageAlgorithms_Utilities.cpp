@@ -1729,6 +1729,10 @@ FIA_GetPixelValue (FIBITMAP * src, int x, int y, double *val)
         {
             if (type == FIT_FLOAT)
                 *val = *((float *) line_ptr + x);
+			else if(type == FIT_INT32)
+				*val = *((int *) line_ptr + x);
+			else if(type == FIT_UINT32)
+				*val = *((unsigned int *) line_ptr + x);
 
             return FIA_SUCCESS;
         }
