@@ -266,6 +266,20 @@ static void ConvertFloatToTypeTest(CuTest* tc)
 	FreeImage_Unload(src);
 }
 
+static void CopyTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "CopyTest.tif";
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
+
+	FIBITMAP *dst = FIA_FastCopy(src, 1, 1, FreeImage_GetWidth(src) - 1, FreeImage_GetHeight(src) - 1);
+
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/fastcopy_result.tif");
+	
+	FreeImage_Unload(src);
+	FreeImage_Unload(dst);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
@@ -273,7 +287,8 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
-	SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
+	SUITE_ADD_TEST(suite, CopyTest);
+	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
 
     //SUITE_ADD_TEST(suite, BorderTest);
 	//SUITE_ADD_TEST(suite, BorderTest2);

@@ -519,6 +519,9 @@ FIA_PasteFromTopLeft (FIBITMAP *dst, FIBITMAP * src, int left, int top);
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_Copy (FIBITMAP * src, int left, int top, int right, int bottom);
 
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_FastCopy ( FIBITMAP * src, int left, int top, int right, int bottom);
+
 DLL_API void DLL_CALLCONV
 FIA_RectChangeWidthHeight (FIARECT *rect, int width, int height);
 

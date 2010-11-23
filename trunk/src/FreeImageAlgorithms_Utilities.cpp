@@ -1402,6 +1402,7 @@ FIA_Paste (FIBITMAP * dst, FIBITMAP * src, int left, int bottom)
         FreeImage_GetHeight(dst) - bottom - FreeImage_GetHeight(src));
 }
 
+
 FIBITMAP* DLL_CALLCONV
 FIA_Copy ( FIBITMAP * src, int left, int top, int right, int bottom)
 {
@@ -1427,6 +1428,51 @@ FIA_Copy ( FIBITMAP * src, int left, int top, int right, int bottom)
         bottom = max_bottom;
 
     return FreeImage_Copy(src, left, top, right, bottom);
+}
+
+
+// I have called this FastCopy for now for backwood compatibilty.
+// I will change this though
+FIBITMAP* DLL_CALLCONV
+FIA_FastCopy ( FIBITMAP * src, int left, int top, int right, int bottom)
+{
+    int max_right = FreeImage_GetWidth(src);
+    int max_bottom = FreeImage_GetHeight(src);
+
+    if(left < 0)
+        left = 0;
+
+    if(top < 0)
+        top = 0;
+
+    if(right > max_right)
+        right = max_right;
+
+    if(bottom > max_bottom)
+        bottom = max_bottom;
+
+	int width = right - left;
+	int height = bottom - top;
+
+	int bpp = FreeImage_GetBPP(src);
+	int bytes_per_pixel = bpp / 8;
+	int left_offset = bytes_per_pixel * left;
+	int width_in_bytes = width * bytes_per_pixel;
+
+	FIBITMAP *tmp = FIA_CloneImageType(src, width, height);
+
+	BYTE *dst_ptr;
+	BYTE *src_ptr;
+
+	for(register int y = 0; y < height; y++)
+	{
+		src_ptr = (BYTE*) FIA_GetScanLineFromTop (src, y + top);
+		dst_ptr = (BYTE*) FIA_GetScanLineFromTop (tmp, y);
+        
+		memcpy(dst_ptr, src_ptr + left_offset, width_in_bytes);
+	}
+
+	return tmp;
 }
 
 void DLL_CALLCONV
