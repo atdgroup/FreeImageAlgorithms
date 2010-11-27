@@ -2024,24 +2024,24 @@ FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
     double factor = 255.0 / 65535.0;
 
     unsigned short *src_pixel_ptr = NULL;
-    byte *dst_pixel_ptr = NULL;
+    BYTE *dst_pixel_ptr = NULL;
 
     for(register int y = 0; y < height; y++)
     {
         unsigned short *src_ptr = (unsigned short *) FreeImage_GetScanLine (src, y);
-        byte *dst_ptr = (byte *) FreeImage_GetScanLine (dst, y);
+        BYTE *dst_ptr = (BYTE *) FreeImage_GetScanLine (dst, y);
 
         for(register int x = 0; x < width; x++) {
 
             src_pixel_ptr = &src_ptr[channels * x];
             dst_pixel_ptr = &dst_ptr[3 * x];
 
-            dst_pixel_ptr[FI_RGBA_RED] = (byte) (src_pixel_ptr[FI_RGBA_BLUE] * factor);
-            dst_pixel_ptr[FI_RGBA_GREEN] = (byte) (src_pixel_ptr[FI_RGBA_GREEN] * factor);
-            dst_pixel_ptr[FI_RGBA_BLUE] = (byte) (src_pixel_ptr[FI_RGBA_RED] * factor);
+            dst_pixel_ptr[FI_RGBA_RED] = (BYTE) (src_pixel_ptr[FI_RGBA_BLUE] * factor);
+            dst_pixel_ptr[FI_RGBA_GREEN] = (BYTE) (src_pixel_ptr[FI_RGBA_GREEN] * factor);
+            dst_pixel_ptr[FI_RGBA_BLUE] = (BYTE) (src_pixel_ptr[FI_RGBA_RED] * factor);
 
             if (channels == 4)
-                dst_pixel_ptr[FI_RGBA_ALPHA] = (byte) (src_pixel_ptr[FI_RGBA_ALPHA] * factor);
+                dst_pixel_ptr[FI_RGBA_ALPHA] = (BYTE) (src_pixel_ptr[FI_RGBA_ALPHA] * factor);
         }
     }
 
@@ -2075,6 +2075,7 @@ TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *sr
 	if(float_type == FIT_FLOAT)
 	{
 		float *src_ptr = NULL;
+		float min_possible_for_type, max_possible_for_type;
 
 		if(scale_linear)
 		{
@@ -2104,7 +2105,7 @@ TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *sr
 					#ifdef WIN32
 					dst_ptr[x] = static_cast <Tsrc> (max(min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
 					#else
-					dst_ptr[x] = static_cast <Tsrc> ( std::max(std::min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
+					dst_ptr[x] = static_cast <Tsrc> (std::max(std::min(max_possible_for_type, src_ptr[x]), min_possible_for_type));
 					#endif
 				}
 			}
@@ -2113,6 +2114,7 @@ TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *sr
 	else if(float_type == FIT_DOUBLE)
 	{ 
 		double *src_ptr = NULL;
+		double min_possible_for_type, max_possible_for_type;
 
 		if(scale_linear)
 		{
@@ -2152,8 +2154,6 @@ TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *sr
     return dst;
 }
 
-
-
 FIBITMAP *DLL_CALLCONV
 FIA_ConvertFloatTypeToType(FIBITMAP *src, FREE_IMAGE_TYPE type, BOOL scale_linear)
 {
@@ -2179,9 +2179,6 @@ FIA_ConvertFloatTypeToType(FIBITMAP *src, FREE_IMAGE_TYPE type, BOOL scale_linea
 
     return NULL;
 }
-
-
-
 
 template < typename Tsrc > FIBITMAP * TemplateImageFunctionClass <
     Tsrc >::IntegerRescaleToHalf (FIBITMAP * src)

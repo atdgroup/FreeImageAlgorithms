@@ -165,7 +165,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
         for(register int y = 0; y < height; y++)
         {
             bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-            byte *mask_ptr = (byte *) FreeImage_GetScanLine (mask, y);
+            BYTE *mask_ptr = (BYTE *) FreeImage_GetScanLine (mask, y);
 
             for(register int x = 0; x < width; x++)
             {
@@ -241,7 +241,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
         for(register int y = 0; y < height; y++)
         {
             bits = (Tsrc *) FreeImage_GetScanLine (src, y);
-            byte *mask_ptr = (byte *) FreeImage_GetScanLine (mask, y);
+            BYTE *mask_ptr = (BYTE *) FreeImage_GetScanLine (mask, y);
 
             for(register int x = 0; x < width; x++)
             {

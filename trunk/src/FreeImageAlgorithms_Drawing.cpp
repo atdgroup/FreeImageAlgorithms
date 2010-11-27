@@ -58,7 +58,7 @@
 #ifdef WIN32
 #include "agg_font_win32_tt.h"
 #else
-#include "agg_font_freetype.h"
+//#include "agg_font_freetype.h"
 #endif
 
 typedef struct _FIA_Matrix 

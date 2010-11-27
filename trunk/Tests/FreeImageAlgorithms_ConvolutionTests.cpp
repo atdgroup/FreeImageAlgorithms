@@ -15,9 +15,6 @@
 
 #include "FreeImageAlgorithms_LinearScale.h"
 
-#include "ImageViewer.h"
-#include "BasicWin32Window.h"
-
 #include <iostream>
 
 static const double kernel[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -758,6 +755,7 @@ TestFIA_CorrelateBloodTissueImagesTwoImages(CuTest* tc)
     }
 
     FIA_SaveFIBToFile(joined_image,  TEST_DATA_OUTPUT_DIR  "/Convolution/blood-vessel-two-image-join.png", BIT24);
+
 
     FreeImage_Unload(fib1);
     FreeImage_Unload(fib2);

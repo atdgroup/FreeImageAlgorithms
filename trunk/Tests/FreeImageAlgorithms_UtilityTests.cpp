@@ -266,7 +266,7 @@ static void ConvertFloatToTypeTest(CuTest* tc)
 	FreeImage_Unload(src);
 }
 
-static void CopyTest(CuTest* tc)
+static void CopyTest1(CuTest* tc)
 {
 	const char *file = TEST_DATA_DIR "CopyTest.tif";
 
@@ -280,6 +280,54 @@ static void CopyTest(CuTest* tc)
 	FreeImage_Unload(dst);
 }
 
+static void CopyTest(CuTest* tc)
+{
+        const char *file = TEST_DATA_DIR "fedora.jpg";
+
+        FIBITMAP *src = FIA_LoadFIBFromFile(file);
+
+        FIBITMAP *src2 = NULL; 
+
+	int width =  FreeImage_GetWidth(src);
+	int height = FreeImage_GetHeight(src);
+	int i;
+
+	PROFILE_START("FreeImage_Copy");
+
+	for(i=0; i < 100; i++) {
+		src2 = FreeImage_Copy(src, 1, 1, width - 1, height - 1);
+		FreeImage_Unload(src2);
+	}
+
+	PROFILE_STOP("FreeImage_Copy");
+
+        FreeImage_Unload(src);
+}
+
+static void FastCopyTest(CuTest* tc)
+{
+        const char *file = TEST_DATA_DIR "fedora.jpg";
+
+        FIBITMAP *src = FIA_LoadFIBFromFile(file);
+
+        FIBITMAP *src2 = NULL;
+
+        int width =  FreeImage_GetWidth(src);
+        int height = FreeImage_GetHeight(src);
+        int i;
+
+        PROFILE_START("FIA_FastCopy");
+
+        for(i=0; i < 100; i++) {
+                src2 = FIA_FastCopy(src, 1, 1, width - 1, height - 1);
+                FreeImage_Unload(src2);
+        }
+
+        PROFILE_STOP("FIA_FastCopy");
+
+        FreeImage_Unload(src);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
@@ -291,6 +339,8 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
 
     //SUITE_ADD_TEST(suite, BorderTest);
+	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
+    	//SUITE_ADD_TEST(suite, BorderTest);
 	//SUITE_ADD_TEST(suite, BorderTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);

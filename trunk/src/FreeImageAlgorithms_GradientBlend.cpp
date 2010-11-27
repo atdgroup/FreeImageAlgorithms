@@ -258,19 +258,19 @@ static FIARECT SetRectRelativeToPoint(FIARECT rect, FIAPOINT pt)
 template < typename Tsrc > int TemplateImageFunctionClass <
     Tsrc >::GradientBlendMosaicPaste(FIBITMAP* dst, FIBITMAP* src, int x, int y)
 {
-	int xc=0, yc=0, x1=0, y1=0; 
-	FIBITMAP *dstRegion=NULL, *dstRegionMask=NULL, *dstRegionMaskInverted=NULL, *maskedSrc=NULL, *invertedMaskedSrc=NULL, *blended_section=NULL;
-	double val;
-	BYTE *pCentre=NULL, *pLeft=NULL, *pTop=NULL, *pTopLeft=NULL, *pTopRight=NULL;
-	float *pCentreFM=NULL, *pLeftFM=NULL, *pTopFM=NULL, *pTopLeftFM=NULL, *pTopRightFM=NULL;
-	BYTE *pCentreF;
+	int xc=0, yc=0, x1=0, y1=0, intersect_width, intersect_height, bytespp; 
+	FIBITMAP *dstRegion=NULL, *dstRegionMask=NULL, *dstRegionMaskInverted=NULL;
+    FIBITMAP *maskedSrc=NULL, *invertedMaskedSrc=NULL, *blended_section=NULL, *distMapEdges = NULL, *srcRegion = NULL;
+    float *pCentreFM=NULL, *pLeftFM=NULL, *pTopFM=NULL, *pTopLeftFM=NULL;
+    float **pTopRightFM=NULL,*distMapEdgesBits = NULL, *pMatrix = NULL;
+    double val, max_possoble_value; 
+	BYTE *pCentre=NULL, *pLeft=NULL, *pTop=NULL, *pTopLeft=NULL, *pTopRight=NULL, *pCentreF = NULL;
 	FIARECT dstRect, srcRect;
+    bool greyscale_image = true;
 
 	if(dst == NULL || src == NULL)
 	    goto CLEANUP;
 	    
-	bool greyscale_image = true;
-
     if(FreeImage_GetImageType(src) == FIT_BITMAP && FreeImage_GetBPP(src) > 8) {
 	    greyscale_image = false;
     }
@@ -296,13 +296,13 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 
     src_intersection_rect = SetRectRelativeToPoint(intersect_rect, MakeFIAPoint(x, y));
 
-    int intersect_width = intersect_rect.right - intersect_rect.left + 1;
-    int intersect_height = intersect_rect.bottom - intersect_rect.top + 1;
+    intersect_width = intersect_rect.right - intersect_rect.left + 1;
+    intersect_height = intersect_rect.bottom - intersect_rect.top + 1;
 	
     // Copy the part of dst out that corresponds to the placement of the src image. 
 	dstRegion = FIA_CopyLeftTopWidthHeight (dst, intersect_rect.left, intersect_rect.top, intersect_width, intersect_height);
 	
-	FIBITMAP *srcRegion = FIA_CopyLeftTopWidthHeight (src, src_intersection_rect.left, src_intersection_rect.top,
+	srcRegion = FIA_CopyLeftTopWidthHeight (src, src_intersection_rect.left, src_intersection_rect.top,
 	                                        intersect_width, intersect_height);
 	
 	// Check that the width & height is what was specified
@@ -330,11 +330,9 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	
 	blended_section = FIA_CloneImageType(srcRegion, intersect_width, intersect_height);	
 	
-	double max_pssoble_value;
+	FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(dst), &max_possoble_value);
 
-	FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(dst), &max_pssoble_value);
-
-	dstRegionMask = FIA_Threshold(dstRegion, 1.0, max_pssoble_value, 1.0);
+	dstRegionMask = FIA_Threshold(dstRegion, 1.0, max_possoble_value, 1.0);
 	FIA_InPlaceConvertToStandardType(&dstRegionMask, 0);	
 	FIA_InPlaceConvertTo8Bit(&dstRegionMask);
 		
@@ -349,13 +347,13 @@ template < typename Tsrc > int TemplateImageFunctionClass <
         
 	PROFILE_START("FIA_GradientBlendMosaicPaste - DistanceMap");
 		
-	FIBITMAP *distMapEdges = FIA_DistanceMap (intersect_width, intersect_height);
+	distMapEdges = FIA_DistanceMap (intersect_width, intersect_height);
 
 	PROFILE_STOP("FIA_GradientBlendMosaicPaste - DistanceMap");
 		
 	PROFILE_START("FIA_GradientBlendMosaicPaste - PMap");
 		
-	float *pMatrix = FIA_GeneratePMap(dstRegionMask);
+	pMatrix = FIA_GeneratePMap(dstRegionMask);
 	
 	PROFILE_STOP("FIA_GradientBlendMosaicPaste - PMap");
 	
@@ -363,8 +361,8 @@ template < typename Tsrc > int TemplateImageFunctionClass <
 	
 	PROFILE_START("FIA_GradientBlendMosaicPaste - Blend");
 	
-	int bytespp = FreeImage_GetLine (srcRegion) / FreeImage_GetWidth (srcRegion);
-    float* distMapEdgesBits = NULL;
+	bytespp = FreeImage_GetLine (srcRegion) / FreeImage_GetWidth (srcRegion);
+    distMapEdgesBits = NULL;
     	
     if(  greyscale_image) {
       

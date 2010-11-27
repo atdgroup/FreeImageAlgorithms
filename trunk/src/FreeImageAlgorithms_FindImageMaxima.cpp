@@ -204,11 +204,11 @@ FindMaxima::SetNeighbours (unsigned char *ptr)
 void
 FindMaxima::SetNeigbourPixels ()
 {
-    register byte *src_ptr;
+    register BYTE *src_ptr;
 
     for(register int y = 1; y < height - 1; y++)
     {
-        src_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
+        src_ptr = (BYTE *) FreeImage_GetScanLine(this->processing_image, y);
     
         for(register int x = 1; x < width - 1; x++)
         {
@@ -320,13 +320,13 @@ FindMaxima::RegionGrow (int x, int y)
         return;
 
     double *original_ptr_ptr = (double *) FreeImage_GetScanLine(this->original_image_double, y) + x;
-    byte *processing_image_ptr = FreeImage_GetScanLine(this->processing_image, y) + x;
+    BYTE *processing_image_ptr = FreeImage_GetScanLine(this->processing_image, y) + x;
 
     *processing_image_ptr = 3;	// Mark as done
 
     // Top left of 3x3 kernel
     double *kernel_original_ptr = original_ptr_ptr + FIA_GetPitchInPixels(this->original_image_double) - 1;
-    byte *kernel_processing_ptr = processing_image_ptr + FIA_GetPitchInPixels(this->processing_image) - 1;
+    BYTE *kernel_processing_ptr = processing_image_ptr + FIA_GetPitchInPixels(this->processing_image) - 1;
 
     if(kernel_processing_ptr[0] != 3 && CheckToGrowDownHill(original_ptr_ptr[0], kernel_original_ptr[0]))
          RegionGrow (x-1, y+1);
@@ -362,11 +362,11 @@ FindMaxima::RegionGrow (int x, int y)
 void
 FindMaxima::PerformRegionGrow ()
 {
-    register byte *processing_ptr;
+    register BYTE *processing_ptr;
 
     for(register int y = 1; y < height - 1; y++)
     {
-        processing_ptr = (byte *) FreeImage_GetScanLine(this->processing_image, y);
+        processing_ptr = (BYTE *) FreeImage_GetScanLine(this->processing_image, y);
 
         for(register int x = 1; x < width - 1; x++)
         {
@@ -395,7 +395,7 @@ FindMaxima::DrawMaxima (int size)
 
     FIA_SetGreyLevelPalette (this->peek_image);
 
-    register byte *src_ptr, *dst_ptr;
+    register BYTE *src_ptr, *dst_ptr;
     FIARECT rect;
 
     //int pitch_in_pixels = FIA_GetPitchInPixels(this->processing_image);
@@ -403,8 +403,8 @@ FindMaxima::DrawMaxima (int size)
     for(register int y = 1; y < height - 1; y++)
     {
         //src_ptr = this->processing_first_pixel_address_ptr + y * pitch_in_pixels;
-        src_ptr = (byte *) FIA_GetScanLineFromTop(this->processing_image, y);
-        dst_ptr = (byte *) FIA_GetScanLineFromTop (this->peek_image, y);
+        src_ptr = (BYTE *) FIA_GetScanLineFromTop(this->processing_image, y);
+        dst_ptr = (BYTE *) FIA_GetScanLineFromTop (this->peek_image, y);
 
         for(register int x = 1; x < width - 1; x++)
         {

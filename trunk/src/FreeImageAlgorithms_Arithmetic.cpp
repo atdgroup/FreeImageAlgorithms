@@ -21,6 +21,8 @@
 #include "FreeImageAlgorithms_Arithmetic.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include "FreeImageAlgorithms_Palettes.h"
+
+#include <iostream>
 #include <limits>
 #include <float.h>
 #include <math.h>

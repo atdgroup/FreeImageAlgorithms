@@ -28,6 +28,6 @@ LINK_DIRECTORIES (${FREEIMAGEALGORITHMS_BINARY_DIR} "C://dlls")
 ADD_EXECUTABLE (FreeImageAlgorithmsTests ${FIA_TEST_SRCS})
 
 # Link the executable to the Hello library.
-TARGET_LINK_LIBRARIES (FreeImageAlgorithmsTests freeimagealgorithms ImageViewer)
+TARGET_LINK_LIBRARIES (FreeImageAlgorithmsTests freeimagealgorithms)
 
 #COPY_TARGET(FreeImageAlgorithmsTests)

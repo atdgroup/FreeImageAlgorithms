@@ -77,7 +77,9 @@ static void OnError(FREE_IMAGE_FORMAT fif, const char *msg)
 
 int __cdecl main(void)
 {
+    #ifdef WIN32
 	MSG			msg;
+    #endif
 
     FreeImage_SetOutputMessage(OnError);
 
