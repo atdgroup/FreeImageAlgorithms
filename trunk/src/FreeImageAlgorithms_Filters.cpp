@@ -99,8 +99,9 @@ FIA_SobelAdvanced (FIBITMAP * src,
 
             for(register int x = 0; x < dst_width; x++)
             {
-                *dst_ptr++ = sqrt ((*dib1_ptr * *dib1_ptr) + (*dib2_ptr * *dib2_ptr));
-                ++dib1_ptr;
+                *dst_ptr = sqrt ((*dib1_ptr * *dib1_ptr) + (*dib2_ptr * *dib2_ptr));
+                ++dst_ptr;
+				++dib1_ptr;
                 ++dib2_ptr;
             }
         }
