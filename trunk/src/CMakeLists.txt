@@ -26,6 +26,9 @@ SET(FIA_SRCS 	FreeImageAlgorithms_Arithmetic.cpp
 	     	kiss_fft.c
 	     	kiss_fftnd.c
 	     	profile.c
+)
+
+SET(FIA_HEADERS 	
 		 
 		 # Make the headers appear in visual studio 
 		 ${FreeImageAlgorithms_SOURCE_DIR}/include/FreeImageAlgorithms.h
@@ -45,7 +48,6 @@ SET(FIA_SRCS 	FreeImageAlgorithms_Arithmetic.cpp
 		 ${FreeImageAlgorithms_SOURCE_DIR}/include/FreeImageAlgorithms_Statistics.h
 		 ${FreeImageAlgorithms_SOURCE_DIR}/include/FreeImageAlgorithms_Utilities.h
 )
-
 
 SET(AGG_SRCS 
 
@@ -212,10 +214,21 @@ SOURCE_GROUP("AntiGrain" FILES ${AGG_SRCS})
 
 ADD_DEFINITIONS(-DFREEIMAGE_EXPORTS)
 
-ADD_LIBRARY (freeimagealgorithms SHARED ${FIA_SRCS} ${AGG_SRCS})
+ADD_LIBRARY (freeimagealgorithms SHARED ${FIA_SRCS} ${FIA_HEADERS} ${AGG_SRCS})
 
 IF (UNIX)
   INSTALL(TARGETS freeimagealgorithms RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+
+  SET(CMAKE_INSTALL_PREFIX /usr/local                               CACHE PATH "Install prefix")
+  SET(BIN_INSTALL_DIR      ${CMAKE_INSTALL_PREFIX}/bin              CACHE PATH "Binary install dir")
+  SET(LIB_INSTALL_DIR      ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX} CACHE PATH "Library install dir")
+  SET(LIBEXEC_INSTALL_DIR  ${CMAKE_INSTALL_PREFIX}/libexec          CACHE PATH "Private executable install dir")
+  SET(INCLUDE_INSTALL_DIR  ${CMAKE_INSTALL_PREFIX}/include/FreeImageAlgorithms          CACHE PATH "Include install dir")
+  SET(SYSCONF_INSTALL_DIR  ${CMAKE_INSTALL_PREFIX}/etc              CACHE PATH "Configuration install dir")
+  SET(SHARE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/share            CACHE PATH "Data install dir")
+
+  INSTALL (FILES ${FIA_HEADERS} DESTINATION ${INCLUDE_INSTALL_DIR})
+
 ENDIF (UNIX)
 
 # Link the executable to the FreeImage library.

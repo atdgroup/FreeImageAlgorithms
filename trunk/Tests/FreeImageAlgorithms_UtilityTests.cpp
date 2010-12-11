@@ -336,6 +336,7 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
 	SUITE_ADD_TEST(suite, CopyTest);
+	SUITE_ADD_TEST(suite, FastCopyTest);
 	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
 
     //SUITE_ADD_TEST(suite, BorderTest);
