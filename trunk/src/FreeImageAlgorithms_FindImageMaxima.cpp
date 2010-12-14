@@ -412,15 +412,17 @@ FindMaxima::DrawMaxima (int size)
             {
                 rect.left = x - half_size;
                 rect.top = y - half_size;
-                rect.right = rect.left + size;
-                rect.bottom = rect.top + size;
+				// FIA Rect specify left - right
+				// If size = 1 we want a width of 1 pixel to we subtract 1 from right
+                rect.right = rect.left + size - 1; 
+                rect.bottom = rect.top + size - 1;
 
                 // FIBITMAP Bottom starts at zero so we must correct.
                 //rect.bottom = this->height - rect.bottom - 1;
                 // rect.top = this->height - rect.top - 1;
 
-                //FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
-                FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 1);
+                FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
+                //FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 0);
 
                 dst_ptr[x] = 255;
             }
@@ -532,6 +534,8 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
     SetNeigbourPixels ();
 
     PerformRegionGrow ();
+
+	FIA_SimpleSaveFIBToFile(this->processing_image, "C:\\grow_new.bmp");
 
     DrawMaxima (min_separation);
 
