@@ -137,6 +137,33 @@ TestFIA_FindImageMaximaTest(CuTest* tc)
 }
 
 
+static void
+TestFIA_FindImageMaximaTest2(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "AccImage.tif";
+	
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+	CuAssertTrue(tc, dib1 != NULL);
+
+	PROFILE_START("FindImageMaxima");
+
+	FIAPeak *peaks = NULL;
+	int number_of_peaks;
+
+	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 4.08, 0.0, &peaks, 0, &number_of_peaks);
+
+	PROFILE_STOP("FindImageMaxima");
+
+	FIA_SetTemperaturePalette(dib3);
+
+	FIA_SimpleSaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "/Particle/TestFIA_FindImageMaximaTest2.tif"); 
+
+	FreeImage_Unload(dib1);
+	FreeImage_Unload(dib3);
+}
+
+
 static void TestFIA_ParticleInfoTest2(CuTest* tc)
 {
 	const char *file = TEST_DATA_DIR "AccImageResult.bmp";
@@ -221,12 +248,13 @@ CuGetFreeImageAlgorithmsParticleSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Particle");
 
-	SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
-	SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
-	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
+	//SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
+	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
+	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
+	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest2);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest2);
 
-	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
+	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
     //SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest2);
 
 	return suite;

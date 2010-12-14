@@ -366,10 +366,10 @@ TestFIA_SolidGSRectTest(CuTest* tc)
     CuAssertTrue(tc, gs_src != NULL);
 
     FIARECT rect;
-    rect.left = 10;
-    rect.top = 10;
-    rect.bottom = 200;
-    rect.right = 200;
+    rect.left = 32;
+    rect.top = 25;
+    rect.bottom = 27;
+    rect.right = 34;
 
     FIA_DrawSolidGreyscaleRect (gs_src, rect, 100);
 
@@ -1284,14 +1284,14 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 
     MkDir(TEST_DATA_OUTPUT_DIR "/Drawing");
 
-    SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
-    SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
-	SUITE_ADD_TEST(suite, TestFIA_ColourElipseTest);
-	SUITE_ADD_TEST(suite, TestFIA_Rect24bitTest);
-    SUITE_ADD_TEST(suite, TestFIA_Rect32bitTest);
-    SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
+    //SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
+    //SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
+	//SUITE_ADD_TEST(suite, TestFIA_ColourElipseTest);
+	//SUITE_ADD_TEST(suite, TestFIA_Rect24bitTest);
+   // SUITE_ADD_TEST(suite, TestFIA_Rect32bitTest);
+    //SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
     SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
-    SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
+    //SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
 
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);
