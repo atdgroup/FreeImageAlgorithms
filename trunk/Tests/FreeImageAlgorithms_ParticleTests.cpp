@@ -155,7 +155,19 @@ TestFIA_FindImageMaximaTest2(CuTest* tc)
 
 	PROFILE_STOP("FindImageMaxima");
 
+	FIA_DrawSolidGreyscaleEllipse(dib3 , MakeFIARect(10,10,16,16), 255, 0);
+	FIA_DrawSolidGreyscaleEllipse(dib3 , MakeFIARect(20,20,30,30), 255, 0);
+
 	FIA_SetTemperaturePalette(dib3);
+
+	FIBITMAP *dib4 = FreeImage_Allocate(100,100,8,0,0,0);
+ 
+	FIA_DrawSolidGreyscaleRect(dib4 , MakeFIARect(10,10,20,20), 255);
+	FIA_DrawSolidGreyscaleEllipse (dib4 , MakeFIARect(30,30,40,40), 255, 0);
+
+	FIA_SetTemperaturePalette(dib4);
+
+	FIA_SimpleSaveFIBToFile(dib4, TEST_DATA_OUTPUT_DIR "/Particle/Draw.tif"); 
 
 	FIA_SimpleSaveFIBToFile(dib3, TEST_DATA_OUTPUT_DIR "/Particle/TestFIA_FindImageMaximaTest2.tif"); 
 

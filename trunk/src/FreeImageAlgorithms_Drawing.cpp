@@ -457,7 +457,7 @@ DrawEllipse (RendererType& renderer, FIBITMAP * src, FIARECT rect, const ColorT&
     double center_x = (int) (tmp_rect.left + w / 2.0);
     double center_y = (int) (tmp_rect.top + h / 2.0);
 
-    ellipse.init(center_x, center_y, w / 2, h / 2, 360);
+    ellipse.init(center_x, center_y + 1, w / 2, h / 2, 360);
     
     if(solid) {
         ras.add_path(ellipse, 0);
@@ -938,7 +938,7 @@ DrawSolidRectangle (FIBITMAP *src, FIARECT rect, ValueType value, RGBQUAD colour
 
     // FreeImages are flipped
     tmp_rect.top = height - rect.top - 1;
-    tmp_rect.bottom = height - rect.bottom - 1;
+    tmp_rect.bottom = height - rect.bottom;
 
     int right = tmp_rect.left + (tmp_rect.right - tmp_rect.left);
 
@@ -957,7 +957,7 @@ DrawSolidRectangle (FIBITMAP *src, FIARECT rect, ValueType value, RGBQUAD colour
         {
             buf = (ValueType*) FreeImage_GetScanLine (src, y);
 
-            for(register int x = tmp_rect.left; x <= right; x++)
+            for(register int x = tmp_rect.left; x < right; x++)
                 buf[x] = value;
         }
     }
