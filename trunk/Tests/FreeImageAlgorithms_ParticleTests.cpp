@@ -124,7 +124,7 @@ TestFIA_FindImageMaximaTest(CuTest* tc)
 	int number_of_peaks;
 
 	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 30.0,
-        4, &peaks, 0, &number_of_peaks);
+        4, 1, &peaks, 0, &number_of_peaks);
 
 	PROFILE_STOP("FindImageMaxima");
 
@@ -151,7 +151,7 @@ TestFIA_FindImageMaximaTest2(CuTest* tc)
 	FIAPeak *peaks = NULL;
 	int number_of_peaks;
 
-	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 4.08, 0.0, &peaks, 0, &number_of_peaks);
+	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 4.08, 0.0, 1, &peaks, 0, &number_of_peaks);
 
 	PROFILE_STOP("FindImageMaxima");
 

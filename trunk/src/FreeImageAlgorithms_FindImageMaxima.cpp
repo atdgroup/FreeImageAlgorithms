@@ -42,7 +42,7 @@ class FindMaxima
   public:
 
     FIBITMAP * FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
-                                int min_separation, FIAPeak ** peaks, int number, int *peaks_found);
+                                int min_separation, int oval_draw, FIAPeak ** peaks, int number, int *peaks_found);
 
   private:
 
@@ -58,6 +58,7 @@ class FindMaxima
     unsigned char min_separation;
     double threshold;
 
+	int oval_draw;
     int width;
     int height;
     int regionGrowCount;
@@ -421,8 +422,10 @@ FindMaxima::DrawMaxima (int size)
                 //rect.bottom = this->height - rect.bottom - 1;
                 // rect.top = this->height - rect.top - 1;
 
-                FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
-                //FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 0);
+				if(this->oval_draw)
+					FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 0);
+				else
+					FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
 
                 dst_ptr[x] = 255;
             }
@@ -506,7 +509,7 @@ FindMaxima::StoreBrightestPeaks (int number, FIAPeak ** peaks_ref)
 
 FIBITMAP *
 FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
-                             int min_separation, FIAPeak ** peaks, int number, int *peaks_found)
+                             int min_separation, int oval_draw, FIAPeak ** peaks, int number, int *peaks_found)
 {
     *peaks_found = 0;
 
@@ -517,6 +520,7 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
     this->original_image = src;
     this->peek_image = NULL;
 
+	this->oval_draw = oval_draw;
     this->width = FreeImage_GetWidth (this->original_image);
     this->height = FreeImage_GetHeight (this->original_image);
 
@@ -535,8 +539,6 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
 
     PerformRegionGrow ();
 
-	FIA_SimpleSaveFIBToFile(this->processing_image, "C:\\grow_new.bmp");
-
     DrawMaxima (min_separation);
 
     // allow for masking of the image
@@ -554,7 +556,7 @@ FindMaxima::FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold,
 }
 
 FIBITMAP *DLL_CALLCONV
-FIA_FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold, int min_separation,
+FIA_FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold, int min_separation, int oval_draw,
                      FIAPeak ** peaks, int number, int *peaks_found)
 {
     FindMaxima maxima;
@@ -565,7 +567,7 @@ FIA_FindImageMaxima (FIBITMAP * src, FIBITMAP * mask, double threshold, int min_
         return NULL;
     }
 
-    return maxima.FindImageMaxima (src, mask, threshold, min_separation, peaks, number,
+    return maxima.FindImageMaxima (src, mask, threshold, min_separation, oval_draw, peaks, number,
                                    peaks_found);
 }
 
