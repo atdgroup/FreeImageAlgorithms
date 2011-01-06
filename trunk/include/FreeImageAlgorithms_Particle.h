@@ -61,6 +61,10 @@ typedef struct
 } PARTICLEINFO;
 
 
+DLL_API void DLL_CALLCONV
+FIA_EnableOldBrokenCodeCompatibility(void);
+
+
 /** \brief Find information about particles or blobs in an image.
  *
  *  \param src FIBITMAP Image with blobs must be a binary 8bit image.

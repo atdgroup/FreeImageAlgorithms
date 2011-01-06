@@ -380,6 +380,14 @@ FindMaxima::PerformRegionGrow ()
     }
 }
 
+static int COMPAT_WITH_OLD_BROKEN_CODE = 0;
+
+void DLL_CALLCONV
+FIA_EnableOldBrokenCodeCompatibility(void)
+{
+	COMPAT_WITH_OLD_BROKEN_CODE = 1;
+}
+
 void
 FindMaxima::DrawMaxima (int size)
 {
@@ -400,19 +408,26 @@ FindMaxima::DrawMaxima (int size)
     FIARECT rect;
 
     //int pitch_in_pixels = FIA_GetPitchInPixels(this->processing_image);
+	//FIA_SimpleSaveFIBToFile (this->processing_image, "C:\\NewBeforeDrawMaxima.bmp");
 
-    for(register int y = 1; y < height - 1; y++)
+    for(register int y = 0; y < height; y++)
     {
         //src_ptr = this->processing_first_pixel_address_ptr + y * pitch_in_pixels;
         src_ptr = (BYTE *) FIA_GetScanLineFromTop(this->processing_image, y);
         dst_ptr = (BYTE *) FIA_GetScanLineFromTop (this->peek_image, y);
 
-        for(register int x = 1; x < width - 1; x++)
+        for(register int x = 0; x < width; x++)
         {
             if (src_ptr[x] == 1)
-            {
+            {		
                 rect.left = x - half_size;
-                rect.top = y - half_size;
+				rect.top = y - half_size;
+
+				if(COMPAT_WITH_OLD_BROKEN_CODE  > 0) {
+					rect.left++;
+					rect.top++;
+				}
+        
 				// FIA Rect specify left - right
 				// If size = 1 we want a width of 1 pixel to we subtract 1 from right
                 rect.right = rect.left + size - 1; 
@@ -426,8 +441,6 @@ FindMaxima::DrawMaxima (int size)
 					FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 0);
 				else
 					FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
-
-                dst_ptr[x] = 255;
             }
         }
     }
