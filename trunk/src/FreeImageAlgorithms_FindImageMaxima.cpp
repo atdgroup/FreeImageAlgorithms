@@ -437,10 +437,15 @@ FindMaxima::DrawMaxima (int size)
                 //rect.bottom = this->height - rect.bottom - 1;
                 // rect.top = this->height - rect.top - 1;
 
-				if(this->oval_draw)
-					FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 0);
-				else
-					FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
+				if (size==1){
+					FIA_SetPixelIndexFromTopLeft (this->peek_image, rect.left, rect.top, 255);
+				}
+				else {
+					if(this->oval_draw || size>1)
+						FIA_DrawSolidGreyscaleEllipse (this->peek_image, rect, 255, 0);
+					else
+						FIA_DrawSolidGreyscaleRect (this->peek_image, rect, 255);
+				}
             }
         }
     }

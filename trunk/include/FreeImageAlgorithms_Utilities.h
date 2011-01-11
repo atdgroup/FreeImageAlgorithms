@@ -660,6 +660,9 @@ DLL_API int DLL_CALLCONV
 FIA_GetPixelValueFromTopLeft(FIBITMAP *src, int x, int y, double* val);
 
 DLL_API int DLL_CALLCONV
+FIA_SetPixelIndexFromTopLeft (FIBITMAP *src, int x, int y, BYTE val);
+
+DLL_API int DLL_CALLCONV
 FIA_GetPixelColour (FIBITMAP * src, int x, int y, RGBQUAD *val);
 
 DLL_API int DLL_CALLCONV

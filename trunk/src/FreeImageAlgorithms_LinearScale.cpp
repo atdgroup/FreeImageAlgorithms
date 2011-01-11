@@ -145,8 +145,10 @@ template < class Tsrc > FIBITMAP * LINEAR_SCALE < Tsrc >::convert (FIBITMAP * sr
 
     double min_found = min, max_found = max;
 
-    *min_within_image = 0.0;
-    *max_within_image = 0.0;
+    if (min_within_image != NULL)
+	   *min_within_image = 0.0;
+    if (max_within_image != NULL)
+	    *max_within_image = 0.0;
 
     // If the user has not specifed min & max use the min and max pixels in the image.
     // Ie convert to standard type while scaling the range
@@ -162,14 +164,10 @@ template < class Tsrc > FIBITMAP * LINEAR_SCALE < Tsrc >::convert (FIBITMAP * sr
     }
 
     if (min_within_image != NULL)
-    {
         *min_within_image = min_found;
-    }
 
     if (max_within_image != NULL)
-    {
         *max_within_image = max_found;
-    }
 
     // compute the scaling factor
     double scale = 255.0 / (double) (max_found - min_found);

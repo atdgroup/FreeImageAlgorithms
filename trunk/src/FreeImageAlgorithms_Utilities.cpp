@@ -1808,6 +1808,14 @@ FIA_GetPixelValueFromTopLeft (FIBITMAP *src, int x, int y, double *val)
 }
 
 int DLL_CALLCONV
+FIA_SetPixelIndexFromTopLeft (FIBITMAP *src, int x, int y, BYTE val)
+{
+    y = FreeImage_GetHeight(src) - y - 1;
+
+	return FreeImage_SetPixelIndex(src, x, y, &val);
+}
+
+int DLL_CALLCONV
 FIA_GetPixelColour (FIBITMAP * src, int x, int y, RGBQUAD *val)
 {
 	return FreeImage_GetPixelColor(src, x, y, val);
