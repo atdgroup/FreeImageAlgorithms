@@ -1151,6 +1151,117 @@ FIA_DrawGreyscaleLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, double value,
 }
 
 int DLL_CALLCONV
+FIA_DrawOnePixelIndexLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, BYTE value)
+{
+    int swapped = 0, dx, dy, abs_dy, incrN, incrE, incrNE, d, x, y, slope, tmp_y, len = 0;
+	BYTE *bits = NULL;
+
+    // If necessary, switch the points so we're 
+    // always drawing from left to right. 
+    if (p2.x < p1.x)
+    {
+        swapped = 1;
+        SWAP (p1, p2);
+    }
+
+    dx = p2.x - p1.x;
+    dy = p2.y - p1.y;
+    abs_dy = abs(dy);
+
+    if (dy < 0)
+    {
+        slope = -1;
+        dy = -dy;
+    }
+    else
+    {
+        slope = 1;
+    }
+
+    x = p1.x;
+    y = p1.y;
+
+    if (abs_dy <= dx)
+    {
+        d = 2 * dy - dx;
+        incrE = 2 * dy;         // E
+        incrNE = 2 * (dy - dx); // NE
+
+        bits = (BYTE*) FreeImage_GetScanLine (src, y);
+
+        bits[x] = value;
+
+        while (x <= p2.x)
+        {
+            if (d <= 0)
+            {
+                d += incrE;     // Going to E
+                x++;
+            }
+            else
+            {
+                d += incrNE;    // Going to NE
+                x++;
+                y += slope;
+            }
+
+            bits = (BYTE*) FreeImage_GetScanLine (src, y);
+
+            bits[x] = value;
+            len++;
+        }
+    }
+    else
+    {
+        len = 1;
+        d = dy - 2 * dx;
+        incrN = 2 * -dx;        // N
+        incrNE = 2 * (dy - dx); // NE
+
+        tmp_y = 0;
+
+        bits = (BYTE*) FreeImage_GetScanLine (src, y);
+
+        bits[x] = value;
+
+        for(tmp_y = 0; tmp_y < abs_dy; tmp_y++)
+        {
+            if (d > 0)
+            {
+
+                d += incrN;     // Going to N
+                y += slope;
+            }
+            else
+            {
+                d += incrNE;    // Going to NE
+                y += slope;
+                x++;
+            }
+
+            bits = (BYTE*) FreeImage_GetScanLine (src, y);
+
+            bits[x] = value;
+
+            len++;
+        }
+    }
+
+    return len;
+}
+
+int DLL_CALLCONV
+FIA_DrawOnePixelIndexLineFromTopLeft (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, BYTE value)
+{
+	int height = FreeImage_GetHeight(src);
+
+	p1.y = height - p1.y - 1;
+	p2.y = height - p2.y - 1;
+
+	return FIA_DrawOnePixelIndexLine (src, p1, p2, value);
+}
+
+int DLL_CALLCONV
 FIA_DrawColourRect (FIBITMAP * src, FIARECT rect, RGBQUAD colour, int line_width)
 {
     int height = FreeImage_GetHeight (src);

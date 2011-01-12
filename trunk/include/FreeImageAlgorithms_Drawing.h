@@ -130,6 +130,21 @@ DLL_API int DLL_CALLCONV
 FIA_DrawGreyscaleLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double value,
                                        int line_width, int antialiased);
 
+
+/** \brief Draw a line on an image on an 8bit image of width 1 pixel.
+ *
+ *  \param src Image to draw on.
+ *  \param p1 FIAPOINT point to start the line
+ *  \param p2 FIAPOINT point to end the line.
+ *  \param value greyscale intensity of the line.
+ *  \return int len of line drawn.
+*/
+DLL_API int DLL_CALLCONV
+FIA_DrawOnePixelIndexLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, BYTE value);
+
+DLL_API int DLL_CALLCONV
+FIA_DrawOnePixelIndexLineFromTopLeft (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, BYTE value);
+
 /** \brief Floodfills part of a greyscale image.
  *
  *	Works on integer type images not colour or floating point.

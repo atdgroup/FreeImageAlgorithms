@@ -1277,6 +1277,27 @@ TestFIA_DrawImageDstRectTest4(CuTest* tc)
   FreeImage_Unload(dst);
 }
 
+static void
+TestFIA_Index1PixelLineTest(CuTest* tc)
+{
+        FIBITMAP *src = FreeImage_Allocate(500,500, 8, 0, 0, 0);
+
+        CuAssertTrue(tc, src != NULL);
+
+        FIAPOINT p1, p2, p3;
+
+        p1.x = 10;
+        p1.y = 10;
+        p2.x = 200;
+        p2.y = 300;
+
+		FIA_DrawOnePixelIndexLineFromTopLeft (src, p1, p2, 255);
+
+        FIA_SimpleSaveFIBToFile(src, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_Index1PixelLineTest.bmp");
+
+        FreeImage_Unload(src);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsDrawingSuite(void)
 {
@@ -1284,13 +1305,15 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
 
     MkDir(TEST_DATA_OUTPUT_DIR "/Drawing");
 
+	SUITE_ADD_TEST(suite, TestFIA_Index1PixelLineTest);
+
     //SUITE_ADD_TEST(suite, TestFIA_ColourTextTest);
     //SUITE_ADD_TEST(suite, TestFIA_GreyscaleTextTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ColourElipseTest);
 	//SUITE_ADD_TEST(suite, TestFIA_Rect24bitTest);
    // SUITE_ADD_TEST(suite, TestFIA_Rect32bitTest);
     //SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
-    SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
+    //SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
 
 /*
