@@ -196,6 +196,7 @@ FIA_DrawColourSolidPolygon (FIBITMAP * src, FIAPOINT * points,
 */
 DLL_API FIBITMAP* DLL_CALLCONV
 FreeImage_ConvexHull(FIBITMAP *src);
+#define FIA_ConvexHull FreeImage_ConvexHull
 
 DLL_API int DLL_CALLCONV
 FIA_DrawGreyscaleRect (FIBITMAP *src, FIARECT rect, double colour, int line_width);

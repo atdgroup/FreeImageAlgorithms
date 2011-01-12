@@ -609,7 +609,7 @@ DrawPolygon (RendererType& renderer, FIBITMAP * src, FIAPOINT * points, int numb
 
     for(int i = 1; i < number_of_points; i++)
     {
-        ps.line_to (points[i].x, points[i].y);
+        ps.line_to (points[i].x+0.5, points[i].y+0.5);
     }
 
     if(solid) {

@@ -22,7 +22,7 @@ static double kernel_values[] = {1.0, 1.0, 1.0, 1.0, 1.0,
 static void
 TestFIA_DilationTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "\\morpholology_test.bmp";
+	const char *file = TEST_DATA_DIR "\\morphology_test.bmp";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	
@@ -49,7 +49,11 @@ TestFIA_DilationTest(CuTest* tc)
 
 	PROFILE_STOP("DilationFilter");
 
-	FIA_SaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "\\dilation_result.jpg", BIT24);
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/dilation_result.bmp");
+
+	result_dib = FIA_BinaryOuterBorder(threshold_8bit_dib);
+
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/outer_border_result.bmp");
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(threshold_dib);
@@ -61,7 +65,7 @@ TestFIA_DilationTest(CuTest* tc)
 static void
 TestFIA_ErosionTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "\\morpholology_test.bmp";
+	const char *file = TEST_DATA_DIR "\\morphology_test.bmp";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	
@@ -88,7 +92,11 @@ TestFIA_ErosionTest(CuTest* tc)
 
 	PROFILE_STOP("ErosionFilter");
 
-	FIA_SaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "\\erosion_result.jpg", BIT24);
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/erosion_result.bmp");
+
+	result_dib = FIA_BinaryInnerBorder(threshold_8bit_dib);
+
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/inner_border_result.bmp");
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(threshold_dib);
@@ -100,7 +108,7 @@ TestFIA_ErosionTest(CuTest* tc)
 static void
 TestFIA_OpeningTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "\\morpholology_test.bmp";
+	const char *file = TEST_DATA_DIR "\\morphology_test.bmp";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	
@@ -123,7 +131,12 @@ TestFIA_OpeningTest(CuTest* tc)
 
 	CuAssertTrue(tc, result_dib != NULL);
 
-	FIA_SaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "\\opening_result.jpg", BIT24);
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/opening_result.bmp");
+
+	// Test of convinience 3x3 function
+	result_dib = FIA_Binary3x3Opening(threshold_8bit_dib);
+
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/opening3x3_result.bmp");
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(threshold_dib);
@@ -135,7 +148,7 @@ TestFIA_OpeningTest(CuTest* tc)
 static void
 TestFIA_ClosingTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "\\morpholology_test.bmp";
+	const char *file = TEST_DATA_DIR "\\morphology_test.bmp";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	
@@ -158,7 +171,12 @@ TestFIA_ClosingTest(CuTest* tc)
 
 	CuAssertTrue(tc, result_dib != NULL);
 
-	FIA_SaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "\\closing_result.jpg", BIT24);
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/closing_result.bmp");
+
+	// Test of convinience 3x3 function
+	result_dib = FIA_Binary3x3Closing(threshold_8bit_dib);
+
+	FIA_SimpleSaveFIBToFile(result_dib, TEST_DATA_OUTPUT_DIR "morphology/closing3x3_result.bmp");
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(threshold_dib);
@@ -173,6 +191,8 @@ CuGetFreeImageAlgorithmsMorphologySuite(void)
 {
 	CuSuite* suite = CuSuiteNew();
 
+    MkDir(TEST_DATA_OUTPUT_DIR "/Morphology");
+	
 	SUITE_ADD_TEST(suite, TestFIA_DilationTest);
 	SUITE_ADD_TEST(suite, TestFIA_ErosionTest);
 	SUITE_ADD_TEST(suite, TestFIA_OpeningTest);

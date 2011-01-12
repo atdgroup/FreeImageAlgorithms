@@ -5,6 +5,9 @@
 #include "FreeImageAlgorithms_Drawing.h"
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
+#include "FreeImageAlgorithms_Arithmetic.h"
+#include "FreeImageAlgorithms_LinearScale.h"
+#include "FreeImageAlgorithms_Morphology.h"
 
 #include "FreeImageAlgorithms_Testing.h"
 
@@ -100,16 +103,30 @@ TestFIA_ColourElipseTest(CuTest* tc)
 static void
 TestFIA_ConvexHullTest(CuTest* tc)
 {
-    const char *file = TEST_DATA_DIR "particle.bmp";
+    const char *file = TEST_DATA_DIR "concave_shape.bmp";
 
     FIBITMAP *src = FIA_LoadFIBFromFile(file);
     CuAssertTrue(tc, src != NULL);
     
-    FIBITMAP *hull_dib = FreeImage_ConvexHull (src);
+    FIBITMAP *hull_dib = FIA_ConvexHull (src);
 
     CuAssertTrue(tc, hull_dib != NULL);
 
     FIA_SaveFIBToFile(hull_dib, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_ConvexHullTest.bmp", BIT8);
+
+	FIA_InPlaceConvertToGreyscaleFloatType(&hull_dib, FIT_FLOAT); 
+	FIA_InPlaceConvertToGreyscaleFloatType(&src, FIT_FLOAT); 
+
+	FIA_SubtractGreyLevelImages(hull_dib, src);
+
+	FIA_LinearScaleToStandardType(hull_dib, 0, 0, NULL, NULL); 
+
+	// The following tests removing the single pixel artifacts from the convex hull routine
+	// around the edge of the shape that should not be effected. (comment the linear scale above)
+//	FIA_InPlaceConvertToStandardType(&hull_dib, 0);
+//	hull_dib = FIA_Binary3x3Opening(hull_dib);
+
+	FIA_SaveFIBToFile(hull_dib, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_ConvexHullDifference.bmp", BIT8);
 
     FreeImage_Unload(src);
     FreeImage_Unload(hull_dib);
@@ -1315,6 +1332,7 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     //SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
+    SUITE_ADD_TEST(suite, TestFIA_ConvexHullTest);
 
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);

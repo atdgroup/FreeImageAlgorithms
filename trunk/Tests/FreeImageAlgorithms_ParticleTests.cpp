@@ -48,7 +48,7 @@ TestFIA_FillholeTest(CuTest* tc)
 
 static void TestFIA_ParticleInfoTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "particle.bmp";
+	const char *file = TEST_DATA_DIR "particle_charm.bmp";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
@@ -123,8 +123,8 @@ TestFIA_FindImageMaximaTest(CuTest* tc)
 	FIAPeak *peaks = NULL;
 	int number_of_peaks;
 
-	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 30.0,
-        4, 1, &peaks, 0, &number_of_peaks);
+	//FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 30.0, 4, 1, &peaks, 0, &number_of_peaks);
+	FIBITMAP *dib3 = FIA_FindImageMaxima(dib1, NULL, 20.0, 1, 1, &peaks, 0, &number_of_peaks);
 
 	PROFILE_STOP("FindImageMaxima");
 
@@ -270,8 +270,8 @@ CuGetFreeImageAlgorithmsParticleSuite(void)
 
 	//SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
-	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
-	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest2);
+	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
+//	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest2);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
