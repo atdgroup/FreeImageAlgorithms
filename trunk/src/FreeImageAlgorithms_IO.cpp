@@ -283,7 +283,18 @@ FIA_LoadFIBFromFile (const char *pathname)
     if ((fif != FIF_UNKNOWN) && FreeImage_FIFSupportsReading (fif))
     {
         // load the file
-        return FreeImage_Load (fif, pathname, 0);
+        FIBITMAP *dib = FreeImage_Load (fif, pathname, 0);
+
+		if(dib == NULL)
+			return NULL;
+
+		if(FreeImage_GetBPP(dib) < 8) {
+			
+			// FIA doesn't deal with images less than 8bit
+			FIA_InPlaceConvertTo8Bit(&dib);
+		}
+
+		return dib;
     }
 
     return NULL;

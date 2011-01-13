@@ -343,6 +343,23 @@ TestFIA_IOLoadColourArrayData(CuTest* tc)
 }
 
 
+static void
+TestFIA_LoadBinaryTest(CuTest* tc)
+{
+	int err;
+	char filepath[500];
+	FIBITMAP *dib = NULL;
+
+	const char *file = TEST_DATA_DIR "binary.bmp";
+	dib = FIA_LoadFIBFromFile(file);
+
+	CuAssertTrue(tc, dib != NULL);
+
+	FIA_SimpleSaveFIBToFile(dib, TEST_DATA_OUTPUT_DIR "/IO/TestFIA_LoadBinaryTest.bmp");
+
+	FreeImage_Unload(dib);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsIOSuite(void)
 {
@@ -352,7 +369,8 @@ CuGetFreeImageAlgorithmsIOSuite(void)
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO/SimpleSave");
 	MkDir(TEST_DATA_OUTPUT_DIR "/IO/ForcedSave");
 
-	SUITE_ADD_TEST(suite, TestFIA_IOSave8BitJpegTest);
+	SUITE_ADD_TEST(suite, TestFIA_LoadBinaryTest);
+	//SUITE_ADD_TEST(suite, TestFIA_IOSave8BitJpegTest);
 
 	/*
 	SUITE_ADD_TEST(suite, TestFIA_IOSave8BitPngTest);
