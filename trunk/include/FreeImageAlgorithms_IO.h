@@ -62,6 +62,8 @@ FIA_SimpleSaveFIBToFile (FIBITMAP * dib, const char *filepath);
  *  \param src FreeImage Bitmap to copy bytes to.
  *  \param data bytes to copy.
  *  \param padded Is the data padded to 32 bit boundaries.
+ *  \param vertical_flip Fip the image upside down if 1
+ *  \param order Specify COLOUR_ORDER_RGB or COLOUR_ORDER_BGR
 */
 DLL_API void DLL_CALLCONV
 FIA_CopyBytesToFBitmap (FIBITMAP * src, BYTE * data, int padded, int vertical_flip,
@@ -72,6 +74,8 @@ FIA_CopyBytesToFBitmap (FIBITMAP * src, BYTE * data, int padded, int vertical_fl
  *  \param src FreeImage Bitmap to copy bytes to.
  *  \param data bytes to copy.
  *  \param padded Is the data padded to 32 bit boundaries.
+ *  \param vertical_flip Fip the image upside down if 1
+ *  \param order Specify COLOUR_ORDER_RGB or COLOUR_ORDER_BGR
 */
 DLL_API void DLL_CALLCONV
 FIA_CopyColourBytesToFIBitmap (FIBITMAP * src, BYTE * data, int padded, int vertical_flip,
@@ -80,7 +84,7 @@ FIA_CopyColourBytesToFIBitmap (FIBITMAP * src, BYTE * data, int padded, int vert
 DLL_API int DLL_CALLCONV
 FIA_CopyColourBytesTo8BitFIBitmap (FIBITMAP * src, BYTE * data, int data_bpp, int channel, int padded, int vertical_flip);
 
-/** \brief Load a greyscale FIBITMAP from an array of bytes
+/** \brief Load a greyscale FIBITMAP from a 8-bit (bbp=8), INT16, UINT16 (bbp=16) or FLOAT (bbp=32) array
  *	
  *  \param data bytes to copy.
  *  \param bpp of resulting image.
@@ -103,6 +107,7 @@ FIA_LoadGreyScaleFIBFromArrayData (BYTE *data, int bpp, int width, int height,
  *  \param height of resulting image.
  *  \param padded Is the data padded to 32 bit boundaries.
  *  \param vertical_flip int Should the image be vertically flipped.
+ *  \param order Specify COLOUR_ORDER_RGB or COLOUR_ORDER_BGR
  *  \return FIBITMAP* on success and NULL on error.
 */
 DLL_API FIBITMAP* DLL_CALLCONV

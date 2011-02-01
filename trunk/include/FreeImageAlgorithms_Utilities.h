@@ -33,7 +33,6 @@ extern "C" {
 
 /** \brief Make a FIAPOINT structure.
  *
- *  \param data Array of char data.
  *  \param x x point of point.
  *  \param y y point of point.
  *  \return FIAPOINT point.
@@ -43,7 +42,6 @@ MakeFIAPoint(int x, int y);
 
 /** \brief Make a FIARECT structure.
  *
- *  \param data Array of char data.
  *  \param left left point of rect.
  *  \param top top point of rect.
  *  \param right right point of rect.
@@ -61,18 +59,17 @@ FIARectIsEmpty (FIARECT rect);
 
 /** \brief Make a FIARECT structure from an image.
  *
- *  \param data Array of char data.
  *  \param src Image to construct FIARECT from.
  *  \return FIARECT rectangle.
 */
 DLL_API FIARECT DLL_CALLCONV
 FIAImageRect(FIBITMAP *src);
 
-/** \brief Checks the dimesions of two images are the same.
+/** \brief Checks the dimensions of two images are the same.
  *
- *  \param src1 First image to compare.
- *  \param src2 Second image to compare.
- *  \return FIARECT rectangle.
+ *  \param fib1 First image to compare.
+ *  \param fib2 Second image to compare.
+ *  \return int, 1 if equal, 0 if not
 */
 DLL_API int DLL_CALLCONV
 FIA_CheckSizesAreSame(FIBITMAP *fib1, FIBITMAP *fib2);
