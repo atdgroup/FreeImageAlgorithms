@@ -627,7 +627,7 @@ FIA_InPlaceThreshold(FIBITMAP *src, double min, double max, double new_value);
 /** \brief Find if an image is 8bit.
  *
  *  \param src Image to check.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int 1 if image is 8 bit, 0 if not.
 */
 DLL_API int DLL_CALLCONV
 FIA_Is8Bit(FIBITMAP *src);
