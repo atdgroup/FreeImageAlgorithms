@@ -79,7 +79,7 @@ typedef enum {
  *  \param colour RGBQUAD colour of the line.
  *  \param line_width pixel width of the line.
  *  \param antialiased Whether the polygon is antialiased.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_DrawColourLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, RGBQUAD colour,
@@ -91,7 +91,7 @@ FIA_DrawColourLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, RGBQUAD colour,
  *  \param rect Rectangle to draw.
  *  \param colour RGBQUAD colour of the rectangle.
  *  \param line_width pixel width of the outline.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_DrawColourRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour, int line_width);
@@ -101,7 +101,7 @@ FIA_DrawColourRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour, int line_width)
  *  \param src Image to draw on.
  *  \param rect Rectangle to draw.
  *  \param colour RGBQUAD colour of the rectangle.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_DrawColourSolidRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour);
@@ -111,7 +111,7 @@ FIA_DrawColourSolidRect (FIBITMAP *src, FIARECT rect, RGBQUAD colour);
  *  \param src Image to draw on.
  *  \param rect Rectangle to draw.
  *  \param value greyscale intensity of the rectangle.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_DrawSolidGreyscaleRect (FIBITMAP *src, FIARECT rect, double value);
@@ -124,7 +124,7 @@ FIA_DrawSolidGreyscaleRect (FIBITMAP *src, FIARECT rect, double value);
  *  \param value greyscale intensity of the line.
  *  \param line_width pixel width of the line.
  *  \param antialiased Whether the polygon is antialiased.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_DrawGreyscaleLine (FIBITMAP *src, FIAPOINT p1, FIAPOINT p2, double value,
@@ -166,7 +166,7 @@ FIA_FloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
  *  \param seed_x x position to start from.
  *  \param seed_y y position to start from.
  *  \param fill_colour greyscale intensity of the fill.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_InPlaceFloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
@@ -179,7 +179,7 @@ FIA_InPlaceFloodFill(FIBITMAP* src, int seed_x, int seed_y, int fill_colour);
  *  \param number_of_points int number of points.
  *  \param value intensity of the fill.
  *  \param antialiased Whether the polygon is antialiased.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_DrawSolidGreyscalePolygon (FIBITMAP *src, FIAPOINT *points, int number_of_points,

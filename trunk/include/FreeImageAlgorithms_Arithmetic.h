@@ -62,7 +62,7 @@ FIA_Log(FIBITMAP *src);
  *
  *  \param dst FIBITMAP first bitmap to perform the multiply this also serves as the output.
  *  \param src FIBITMAP second bitmap to perform the multiply operation on.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_MultiplyGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
@@ -71,7 +71,7 @@ FIA_MultiplyGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *
  *  \param dst FIBITMAP first bitmap to perform the divide this also serves as the output.
  *  \param src FIBITMAP second bitmap to perform the divide operation on.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_DivideGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
@@ -80,7 +80,7 @@ FIA_DivideGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *
  *  \param dst FIBITMAP first bitmap to perform the add this also serves as the output.
  *  \param src FIBITMAP second bitmap to perform the add operation on.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_AddGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
@@ -89,7 +89,7 @@ FIA_AddGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *
  *  \param dst FIBITMAP first bitmap to perform the subtract this also serves as the output.
  *  \param src FIBITMAP second bitmap to perform the subtract operation on.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_SubtractGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
@@ -98,7 +98,7 @@ FIA_SubtractGreyLevelImages(FIBITMAP* dst, FIBITMAP* src);
  *
  *  \param dst FIBITMAP bitmap to perform the multiply this also serves as the output.
  *  \param constant Constant used to perform the multiply.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_MultiplyGreyLevelImageConstant(FIBITMAP* dst, double constant);
@@ -107,7 +107,7 @@ FIA_MultiplyGreyLevelImageConstant(FIBITMAP* dst, double constant);
  *
  *  \param dst FIBITMAP bitmap to perform the divide this also serves as the output.
  *  \param constant Constant used to perform the divide.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_DivideGreyLevelImageConstant(FIBITMAP* dst, double constant);
@@ -116,7 +116,7 @@ FIA_DivideGreyLevelImageConstant(FIBITMAP* dst, double constant);
  *
  *  \param dst FIBITMAP bitmap to perform the add this also serves as the output.
  *  \param constant Constant used to perform the add.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_AddGreyLevelImageConstant(FIBITMAP* dst, double constant);
@@ -125,7 +125,7 @@ FIA_AddGreyLevelImageConstant(FIBITMAP* dst, double constant);
  *
  *  \param dst FIBITMAP bitmap to perform the subtract this also serves as the output.
  *  \param constant Constant used to perform the subtract.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_SubtractGreyLevelImageConstant(FIBITMAP* dst, double constant);
@@ -133,7 +133,7 @@ FIA_SubtractGreyLevelImageConstant(FIBITMAP* dst, double constant);
 /** \brief Calculate the complex conjugate of a complex image.
  *
  *  \param src FIBITMAP bitmap must be of type complex.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_ComplexConjugate(FIBITMAP* src);
@@ -142,7 +142,7 @@ FIA_ComplexConjugate(FIBITMAP* src);
  *
  *  \param dst FIBITMAP first bitmap to perform the multiply this also serves as the output.
  *  \param src FIBITMAP second bitmap to perform the multiply operation on.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_MultiplyComplexImages(FIBITMAP* dst, FIBITMAP* src);
@@ -151,7 +151,7 @@ FIA_MultiplyComplexImages(FIBITMAP* dst, FIBITMAP* src);
  *
  *  \param dst FIBITMAP bitmap containing pixels to sum.
  *  \param src FIBITMAP mask bitmap to specify with pixels to sum.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_SumOfAllPixels(FIBITMAP* src, FIBITMAP* mask, double *sum);
@@ -160,7 +160,7 @@ FIA_SumOfAllPixels(FIBITMAP* src, FIBITMAP* mask, double *sum);
  *
  *  \param dst FIBITMAP bitmap containing the max pixels (serves as output).
  *  \param src FIBITMAP bitmap Source bitmap.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_GetMaxIntensityFromImages(FIBITMAP* dst, FIBITMAP* src);

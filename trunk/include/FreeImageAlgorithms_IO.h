@@ -48,7 +48,7 @@ FIA_LoadFIBFromFile(const char *filepath);
  *  \param dib FreeImage Bitmap to be saved.
  *  \param filepath OS Path to the file to be saved.
  *  \param bit_depth The bit depth which is either BIT8 or BIT24
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_SaveFIBToFile (FIBITMAP *dib, const char *filepath, FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH bit_depth);

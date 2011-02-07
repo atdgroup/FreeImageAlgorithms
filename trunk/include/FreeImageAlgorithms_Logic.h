@@ -47,7 +47,7 @@ FIA_MaskImage(FIBITMAP* src, FIBITMAP* mask);
  *
  *  \param mask FIBITMAP Mask bitmap to mask.
  *  \param foreground_val int new value for the foreground pixel.
- *  \return int FREEIMAGE_ALGORITHMS_SUCCESS on success or FREEIMAGE_ALGORITHMS_ERROR on error.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV 
 FIA_ReverseMaskImage(FIBITMAP* mask, unsigned char foreground_val);
