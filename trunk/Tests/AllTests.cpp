@@ -47,7 +47,7 @@ void RunAllTests(void)
 
 	current_function_helper();
 
-	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsPaletteSuite());
+	CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsPaletteSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsColourSuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsUtilitySuite());
 	//CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsStatisticSuite());
@@ -58,7 +58,7 @@ void RunAllTests(void)
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsLinearScaleSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsDrawingSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsFFTSuite());
-    CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
+    //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsArithmaticSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsConvolutionSuite());
     //CuSuiteAddSuite(suite, CuGetFreeImageAlgorithmsGradientBlendSuite());
 
