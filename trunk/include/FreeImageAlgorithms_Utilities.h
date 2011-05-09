@@ -792,7 +792,7 @@ FIA_GradientBlendMosaicPaste (FIBITMAP* dst, FIBITMAP* src, int x, int y);
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API FIBITMAP *DLL_CALLCONV
-FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing)
+FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing);
 
 
 #ifdef __cplusplus

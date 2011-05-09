@@ -2835,42 +2835,42 @@ FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing)
 	switch (hatchType)
 		{
 		case 1: // horiz lines
-			for (j=0; j<info.height; j+=spacing)
+			for (j=0; j<height; j+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), 1.0);
 
 			break;
 		case 2: // vert lines
-			for (i=0; i<info.width; i+=spacing)
+			for (i=0; i<width; i+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(i, 0), MakeFIAPoint(i, height), 1.0);
 			
 			break;
 		case 3: // horiz and vert lines
-			for (j=0; j<info.height; j+=spacing)
+			for (j=0; j<height; j+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), 1.0);
-			for (i=0; i<info.width; i+=spacing)
+			for (i=0; i<width; i+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(i, 0), MakeFIAPoint(i, height), 1.0);
 			
 			break;
 		case 4:  // diag lines
-			for (j=0; (j<(info.height+info.width)); j+=spacing)
+			for (j=0; (j<(height+width)); j+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(j, 0), MakeFIAPoint(0, j), 1.0);
 			
 			break;
 		case 5:  // other diag lines
-			for (j=0; j<(info.height+info.width); j+=spacing)
+			for (j=0; j<(height+width); j+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j-width), MakeFIAPoint(width, j), 1.0);
 			
 			break;
 		case 6:  // cross hatched
-			for (j=0; (j<(info.height+info.width)); j+=spacing)
+			for (j=0; (j<(height+width)); j+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(j, 0), MakeFIAPoint(0, j), 1.0);
-			for (j=0; j<(info.height+info.width); j+=spacing)
+			for (j=0; j<(height+width); j+=spacing)
 				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j-width), MakeFIAPoint(width, j), 1.0);
 			
 			break;
 		case 7:   // dots
-			for (j=0; j<info.height; j+=spacing)
-				for (i=0; i<info.width; i+=spacing)
+			for (j=0; j<height; j+=spacing)
+				for (i=0; i<width; i+=spacing)
 					FreeImage_SetPixelIndex (out, i, j, &val);
 
 			break;
