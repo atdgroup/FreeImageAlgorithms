@@ -1332,8 +1332,9 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     //SUITE_ADD_TEST(suite, TestFIA_GsRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
-    SUITE_ADD_TEST(suite, TestFIA_ConvexHullTest);
+    //SUITE_ADD_TEST(suite, TestFIA_ConvexHullTest);
 
+    SUITE_ADD_TEST(suite, TestFIA_GSLineTest);
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);
     SUITE_ADD_TEST(suite, TestFIA_Colour32bitLineTest);

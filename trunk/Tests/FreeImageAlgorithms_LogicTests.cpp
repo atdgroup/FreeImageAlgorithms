@@ -50,11 +50,24 @@ TestFIA_LogicTest(CuTest* tc)
 	CuAssertTrue(tc, src1 != NULL);
 	CuAssertTrue(tc, src2 != NULL);
 
+	FIA_SaveFIBToFile(src1, TEST_DATA_OUTPUT_DIR "Logic/src1.bmp", BIT8);
+	FIA_SaveFIBToFile(src2, TEST_DATA_OUTPUT_DIR "Logic/src2.bmp", BIT8);
+
 	dst = FIA_BinaryOr (src1, src2, 0);
-
 	CuAssertTrue(tc, dst != NULL);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Logic/Or.bmp", BIT8);
 
-	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Logic/Ored.bmp", BIT8);
+	dst = FIA_BinaryOr (src1, src2, 1);
+	CuAssertTrue(tc, dst != NULL);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Logic/Nor.bmp", BIT8);
+
+	dst = FIA_BinaryAnd (src1, src2, 0);
+	CuAssertTrue(tc, dst != NULL);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Logic/And.bmp", BIT8);
+
+	dst = FIA_BinaryAnd (src1, src2, 1);
+	CuAssertTrue(tc, dst != NULL);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Logic/Nand.bmp", BIT8);
 
 	FreeImage_Unload(src1);
 	FreeImage_Unload(src2);

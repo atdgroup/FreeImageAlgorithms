@@ -58,11 +58,23 @@ FIA_ReverseMaskImage(FIBITMAP* mask, unsigned char foreground_val);
  *
  *  \param src1 FIBITMAP First source image.
  *  \param src1 FIBITMAP Second source image.
- *  \param Nor int Set to 1 or TRUE to perform Nor instead of Or.
+ *  \param Not int Set to 1 or TRUE to perform Nor instead of Or.
  *  \return FIBITMAP* destination image.
 */
 DLL_API FIBITMAP *DLL_CALLCONV
-FIA_BinaryOr (FIBITMAP *src1, FIBITMAP *src2, int Nor);
+FIA_BinaryOr (FIBITMAP *src1, FIBITMAP *src2, int Not);
+
+/** \brief Logical And or Intersection
+ *
+ *  Calculate the logical And (intersection) or Nand.
+ *
+ *  \param src1 FIBITMAP First source image.
+ *  \param src1 FIBITMAP Second source image.
+ *  \param Not int Set to 1 or TRUE to perform Nand instead of And.
+ *  \return FIBITMAP* destination image.
+*/
+DLL_API FIBITMAP *DLL_CALLCONV
+FIA_BinaryAnd (FIBITMAP *src1, FIBITMAP *src2, int Not);
 
 
 #ifdef __cplusplus
