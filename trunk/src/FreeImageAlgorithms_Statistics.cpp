@@ -30,7 +30,7 @@
 template < class Tsrc > class Statistic
 {
   public:
-    int CalculateHistogram (FIBITMAP * src, double min, double max, int number_of_bins,
+    int CalculateHistogram (FIBITMAP * src,  FIBITMAP * mask, double min, double max, int number_of_bins,
                             unsigned long *hist);
 
     int CalculateStatisticReport (FIBITMAP * src,  FIBITMAP * mask, StatisticReport * report);
@@ -40,13 +40,31 @@ template < class Tsrc > class Statistic
     double CalculateGreyLevelAverage (FIBITMAP * src);
 };
 
-template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * src, double min,
+template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * src, FIBITMAP * mask, double min,
                                                                     double max, int number_of_bins,
                                                                     unsigned long *hist)
 {
     if (hist == NULL)
     {
         return FIA_ERROR;
+    }
+
+    if (mask != NULL)
+    {
+        // Mask has to be the same size
+        if (FIA_CheckDimensions (src, mask) == FIA_ERROR)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "Image source and mask have different dimensions");
+            return FIA_ERROR;
+        }
+
+        // Mask has to be 8 bit 
+        if (FreeImage_GetBPP (mask) != 8 || FreeImage_GetImageType (mask) != FIT_BITMAP)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask must be an 8bit FIT_BITMAP");
+            return FIA_ERROR;
+        }
     }
 
     // We need to find the min and max in the image.
@@ -71,9 +89,12 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * s
     // Clear histogram array
     memset (hist, 0, number_of_bins * sizeof (unsigned long));
 
-    Tsrc tmp_min = (Tsrc) min;
-    Tsrc tmp_max = (Tsrc) max;
-    Tsrc range = tmp_max - tmp_min;
+//    Tsrc tmp_min = (Tsrc) min;
+//    Tsrc tmp_max = (Tsrc) max;
+//    Tsrc range = tmp_max - tmp_min;
+    double tmp_min = min;
+    double tmp_max = max;
+    double range = tmp_max - tmp_min;
 
     // bins-1 as we need the histogram range to exceed the image range
     // by one extra bin to accomodate the pixels with max intensity
@@ -86,32 +107,65 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * s
     Tsrc pixel;
     unsigned int bin;
 
-    for(register int y = 0; y < height; y++)
+    if (mask != NULL)
     {
+		for(register int y = 0; y < height; y++)
+		{
 
-        bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+			bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+            BYTE *mask_ptr = (BYTE *) FreeImage_GetScanLine (mask, y);
 
-        for(register int x = 0; x < width; x++)
-        {
-            pixel = bits[x];
-
-            if (pixel >= tmp_min && pixel <= tmp_max)
+            for(register int x = 0; x < width; x++)
             {
-                // If range_per_bin == 1 with dont need the divide. The divide is very slow.
-                if (range_per_bin == 1)
-                {
-                    bin = (int) (pixel - tmp_min);
-                }
-                else
-                {
-                    bin = (int) ((pixel - tmp_min) / range_per_bin);
-                }
+                if(mask_ptr[x] == 0)
+                    continue;
 
-                hist[bin]++;
-            }
-        }
-    }
+				pixel = bits[x];
 
+				if (pixel >= tmp_min && pixel <= tmp_max)
+				{
+					// If range_per_bin == 1 with dont need the divide. The divide is very slow.
+					if (range_per_bin == 1)
+					{
+						bin = (int) (pixel - tmp_min);
+					}
+					else
+					{
+						bin = (int) ((pixel - tmp_min) / range_per_bin);
+					}
+
+					hist[bin]++;
+				}
+			}
+		}
+	} 
+	else {
+		for(register int y = 0; y < height; y++)
+		{
+
+			bits = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+			for(register int x = 0; x < width; x++)
+			{
+				pixel = bits[x];
+
+				if (pixel >= tmp_min && pixel <= tmp_max)
+				{
+					// If range_per_bin == 1 with dont need the divide. The divide is very slow.
+					if (range_per_bin == 1)
+					{
+						bin = (int) (pixel - tmp_min);
+					}
+					else
+					{
+						bin = (int) ((pixel - tmp_min) / range_per_bin);
+					}
+
+					hist[bin]++;
+				}
+			}
+		}
+	}
     return FIA_SUCCESS;
 }
 
@@ -351,33 +405,83 @@ FIA_Histogram (FIBITMAP * src, double min, double max, int number_of_bins, unsig
         {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
             if (FreeImage_GetBPP (src) == 8)
             {
-                return statisticUCharImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+                return statisticUCharImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
             }
             break;
         }
         case FIT_UINT16:
         {                       // array of unsigned short: unsigned 16-bit
-            return statisticUShortImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+            return statisticUShortImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
         }
         case FIT_INT16:
         {                       // array of short: signed 16-bit
-            return statisticShortImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+            return statisticShortImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
         }
         case FIT_UINT32:
         {                       // array of unsigned long: unsigned 32-bit
-            return statisticULongImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+            return statisticULongImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
         }
         case FIT_INT32:
         {                       // array of long: signed 32-bit
-            return statisticLongImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+            return statisticLongImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
         }
         case FIT_FLOAT:
         {                       // array of float: 32-bit
-            return statisticFloatImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+            return statisticFloatImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
         }
         case FIT_DOUBLE:
         {                       // array of double: 64-bit
-            return statisticDoubleImage.CalculateHistogram (src, min, max, number_of_bins, hist);
+            return statisticDoubleImage.CalculateHistogram (src, NULL, min, max, number_of_bins, hist);
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
+int DLL_CALLCONV
+FIA_HistogramWithMask (FIBITMAP * src, FIBITMAP * mask, double min, double max, int number_of_bins, unsigned long *hist)
+{
+    if (!src)
+        return FIA_ERROR;
+
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src) == 8)
+            {
+                return statisticUCharImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
+            }
+            break;
+        }
+        case FIT_UINT16:
+        {                       // array of unsigned short: unsigned 16-bit
+            return statisticUShortImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
+        }
+        case FIT_INT16:
+        {                       // array of short: signed 16-bit
+            return statisticShortImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
+        }
+        case FIT_UINT32:
+        {                       // array of unsigned long: unsigned 32-bit
+            return statisticULongImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
+        }
+        case FIT_INT32:
+        {                       // array of long: signed 32-bit
+            return statisticLongImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
+        }
+        case FIT_FLOAT:
+        {                       // array of float: 32-bit
+            return statisticFloatImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
+        }
+        case FIT_DOUBLE:
+        {                       // array of double: 64-bit
+            return statisticDoubleImage.CalculateHistogram (src, mask, min, max, number_of_bins, hist);
         }
         default:
         {

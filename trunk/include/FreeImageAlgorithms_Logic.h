@@ -52,6 +52,19 @@ FIA_MaskImage(FIBITMAP* src, FIBITMAP* mask);
 DLL_API int DLL_CALLCONV 
 FIA_ReverseMaskImage(FIBITMAP* mask, unsigned char foreground_val);
 
+/** \brief Logical Or or Union.
+ *
+ *  Calculate the logical Or (union) or Nor.
+ *
+ *  \param src1 FIBITMAP First source image.
+ *  \param src1 FIBITMAP Second source image.
+ *  \param Nor int Set to 1 or TRUE to perform Nor instead of Or.
+ *  \return FIBITMAP* destination image.
+*/
+DLL_API FIBITMAP *DLL_CALLCONV
+FIA_BinaryOr (FIBITMAP *src1, FIBITMAP *src2, int Nor);
+
+
 #ifdef __cplusplus
 }
 #endif

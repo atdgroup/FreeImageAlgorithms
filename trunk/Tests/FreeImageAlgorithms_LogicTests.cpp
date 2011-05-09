@@ -37,6 +37,30 @@ TestFIA_MaskTest(CuTest* tc)
 	FreeImage_Unload(mask_8bit);
 }
 
+static void
+TestFIA_LogicTest(CuTest* tc)
+{
+	const char *file1 = TEST_DATA_DIR "binary.bmp";
+	const char *file2 = TEST_DATA_DIR "morphology_test.bmp";
+
+	FIBITMAP *src1 = FIA_LoadFIBFromFile(file1);
+	FIBITMAP *src2 = FIA_LoadFIBFromFile(file2);
+	FIBITMAP *dst = NULL;
+
+	CuAssertTrue(tc, src1 != NULL);
+	CuAssertTrue(tc, src2 != NULL);
+
+	dst = FIA_BinaryOr (src1, src2, 0);
+
+	CuAssertTrue(tc, dst != NULL);
+
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Logic/Ored.bmp", BIT8);
+
+	FreeImage_Unload(src1);
+	FreeImage_Unload(src2);
+	FreeImage_Unload(dst);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsLogicSuite(void)
 {
@@ -44,7 +68,8 @@ CuGetFreeImageAlgorithmsLogicSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Logic");
 
-	SUITE_ADD_TEST(suite, TestFIA_MaskTest);
+	//SUITE_ADD_TEST(suite, TestFIA_MaskTest);
+	SUITE_ADD_TEST(suite, TestFIA_LogicTest);
 
 	return suite;
 }

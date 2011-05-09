@@ -12,7 +12,8 @@
 
 static void TestFIA_HistogramTest(CuTest* tc)
 {
-    const char *file= TEST_DATA_DIR "drone-bee-greyscale.jpg";
+//    const char *file= TEST_DATA_DIR "drone-bee-greyscale.jpg";
+    const char *file= TEST_DATA_DIR "test.bmp";
     
     FIBITMAP *dib = FIA_LoadFIBFromFile(file);
     
@@ -22,7 +23,8 @@ static void TestFIA_HistogramTest(CuTest* tc)
     
     PROFILE_START("FreeImageAlgorithms_Histogram");
     
-    if (FIA_Histogram(dib, 0, 255, 2, hist) == FIA_ERROR) {
+//    if (FIA_Histogram(dib, 0, 255, 2, hist) == FIA_ERROR) {
+    if (FIA_Histogram(dib, -10.999, 255.0, 256, hist) == FIA_ERROR) {
         CuFail(tc, "Failed");
     }
     
@@ -139,8 +141,8 @@ CuGetFreeImageAlgorithmsStatisticSuite(void)
     //SUITE_ADD_TEST(suite, TestFIA_MonoAreaTest);
     //SUITE_ADD_TEST(suite, TestFIA_MonoComparisonTest);
     SUITE_ADD_TEST(suite, TestFIA_HistogramTest);
-    SUITE_ADD_TEST(suite, TestFIA_StatisticsTest);
-    SUITE_ADD_TEST(suite, TestFIA_CentroidTest);
+    //SUITE_ADD_TEST(suite, TestFIA_StatisticsTest);
+    //SUITE_ADD_TEST(suite, TestFIA_CentroidTest);
 
     return suite;
 }

@@ -1889,12 +1889,12 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Convolution");
 
-	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
 	//SUITE_ADD_TEST(suite, TestFIA_BinningTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelTest);
-	SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
+	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
 	SUITE_ADD_TEST(suite, TestFIA_ConvolutionTest);
-	SUITE_ADD_TEST(suite, TestFIA_MedianFilterTest);
+	//SUITE_ADD_TEST(suite, TestFIA_MedianFilterTest);
 
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection2);
@@ -1927,7 +1927,7 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
     SUITE_ADD_TEST(suite, TestFIA_GetGradientBlendAlphaImageTest5);
 	SUITE_ADD_TEST(suite, TestFIA_GetGradientBlendAlphaImageListerHistologyTest);
 	SUITE_ADD_TEST(suite, TestFIA_GradientBlendPasteTest5);
-
+*/
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateEdgeTest);
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection);
     //SUITE_ADD_TEST(suite, TestFIA_CorrelateFFTTest);
@@ -1936,7 +1936,6 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 	//SUITE_ADD_TEST(suite, TestFIA_SobelTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateFilterTest);
-*/
 
 	return suite;
 }

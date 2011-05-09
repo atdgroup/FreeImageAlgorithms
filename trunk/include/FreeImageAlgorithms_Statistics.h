@@ -83,6 +83,9 @@ FIA_GetGreyLevelAverage(FIBITMAP *src);
 DLL_API int DLL_CALLCONV
 FIA_Histogram(FIBITMAP *src, double min, double max,
 							  int number_of_bins, unsigned long *hist);
+DLL_API int DLL_CALLCONV
+FIA_HistogramWithMask(FIBITMAP *src, FIBITMAP * mask, double min, double max,
+							  int number_of_bins, unsigned long *hist);
 
 /** \brief Return the histogram for a rgb image.
  *
