@@ -58,6 +58,60 @@ FIA_Transpose(FIBITMAP *src);
 DLL_API FIBITMAP* DLL_CALLCONV
 FIA_Log(FIBITMAP *src);
 
+/** \brief Add 2 images, dst + src
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param src FIBITMAP second bitmap to perform the operation on.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_Add (FIBITMAP * dst, FIBITMAP * src);
+
+/** \brief Subtract an image from another, dst - src
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param src FIBITMAP second bitmap to perform the operation on.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_Subtract (FIBITMAP * dst, FIBITMAP * src);
+
+/** \brief Multiply 2 images, dst * src
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param src FIBITMAP second bitmap to perform the operation on.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_Multiply (FIBITMAP * dst, FIBITMAP * src);
+
+/** \brief Add image to a constant
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param constant double the constant to use
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_AddConst (FIBITMAP * dst, double constant);
+
+/** \brief Subtract constant from an image
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param constant double the constant to use
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_SubtractConst (FIBITMAP * dst, double constant);
+
+/** \brief Multiply image by a constant
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param constant double the constant to use
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_MultiplyConst (FIBITMAP * dst, double constant);
+
 /** \brief Multiply two greylevel images.
  *
  *  \param dst FIBITMAP first bitmap to perform the multiply this also serves as the output.

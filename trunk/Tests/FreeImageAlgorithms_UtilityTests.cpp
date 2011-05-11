@@ -8,6 +8,8 @@
 #include "FreeImageAlgorithms_Utilities.h"
 #include "FreeImageAlgorithms_Arithmetic.h"
 #include "FreeImageAlgorithms_LinearScale.h"
+#include "FreeImageAlgorithms_Logic.h"
+#include "FreeImageAlgorithms_Morphology.h"
 #include "profile.h"
 
 #include "CuTest.h"
@@ -280,6 +282,51 @@ static void CopyTest1(CuTest* tc)
 	FreeImage_Unload(dst);
 }
 
+static void HatchImageTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "test.bmp";
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
+
+	FIBITMAP *dst = FIA_MakeHatchedImage (src, 1, 10);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch1.bmp");
+	FreeImage_Unload(dst);
+
+	dst = FIA_MakeHatchedImage (src, 2, 10);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch2.bmp");
+	FreeImage_Unload(dst);
+
+	dst = FIA_MakeHatchedImage (src, 3, 50);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch3.bmp");
+	FreeImage_Unload(dst);
+
+	dst = FIA_MakeHatchedImage (src, 4, 20);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch4.bmp");
+	FreeImage_Unload(dst);
+
+	dst = FIA_MakeHatchedImage (src, 5, 15);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch5.bmp");
+	FreeImage_Unload(dst);
+
+	dst = FIA_MakeHatchedImage (src, 6, 13);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch6.bmp");
+	FreeImage_Unload(dst);
+
+	dst = FIA_MakeHatchedImage (src, 7, 5);
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch7.bmp");
+	FreeImage_Unload(dst);
+	
+	FreeImage_Unload(src);
+}
+
+
 static void CopyTest(CuTest* tc)
 {
         const char *file = TEST_DATA_DIR "fedora.jpg";
@@ -328,6 +375,41 @@ static void FastCopyTest(CuTest* tc)
         FreeImage_Unload(src);
 }
 
+static void AlphaCombineTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "test.bmp";
+	const char *file2 = TEST_DATA_DIR "test_mask.bmp";
+
+	double opacity = 0.5;
+	int hatchType = 7;
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
+	FIBITMAP *mask = FIA_LoadFIBFromFile(file2);
+	FIBITMAP *hatch = FIA_MakeHatchedImage (src, hatchType, 5);
+	FIBITMAP *revhatch = NULL;
+	FIBITMAP *border = FIA_BinaryInnerBorder(mask);
+
+	// bg to show through where alpha is low
+	FIA_Add(hatch, border);
+	FIA_MultiplyConst(hatch, 255);
+
+	// alpha channel
+	revhatch = FreeImage_Clone(hatch);
+	FIA_ReverseMaskImage(revhatch, 255);
+	FIBITMAP *imfloat = FreeImage_ConvertToType(revhatch, FIT_FLOAT, 0);  // convert to float normalises 0-255 to 0.0-1.0
+	FIA_MultiplyConst(imfloat, (1.0-opacity));
+
+	FIBITMAP *dst = FIA_Composite(src, hatch, imfloat, mask);
+
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/composite.bmp");
+
+	FreeImage_Unload(hatch);
+	FreeImage_Unload(mask);
+	FreeImage_Unload(src);
+	FreeImage_Unload(revhatch);
+	FreeImage_Unload(border);
+}
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
@@ -335,8 +417,10 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
-	SUITE_ADD_TEST(suite, CopyTest);
-	SUITE_ADD_TEST(suite, FastCopyTest);
+	//SUITE_ADD_TEST(suite, CopyTest);
+	//SUITE_ADD_TEST(suite, FastCopyTest);
+	//SUITE_ADD_TEST(suite, HatchImageTest);
+	SUITE_ADD_TEST(suite, AlphaCombineTest);
 	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
 
     //SUITE_ADD_TEST(suite, BorderTest);

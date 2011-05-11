@@ -177,6 +177,34 @@ FIA_SetTernaryPalette(FIBITMAP *src, RGBQUAD background_colour,
 DLL_API int DLL_CALLCONV
 FIA_SetSeismicColourPalette(FIBITMAP *src);
 
+
+/** \brief Set the pallete of a FIBITMAP image to something suitable for binary image.
+ *
+ *  \param src Image to set palette to binary.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_SetBinaryPalette (FIBITMAP * src);
+
+/** \brief Set the alpha channel (transparency) for an image. alpha = 0 to 255.
+ *
+ *  \param src Image to set palette to binary.
+ *  \param  alpha alpha value 0 (transparent) - 255 (opaque).
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_SetPaletteAlpha (FIBITMAP * src, int alpha);
+
+/** \brief Set the transparency (alpha value) for the colour index 0 to 0.
+ *
+ *  \param  palette RGBQUAD* array.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_SetPaletteBackgroundTransparent (FIBITMAP * src);
+
+
+
 /** \brief Get a greyscale pallete into a RGBQUAD array.
  *
  *  \param  palette RGBQUAD* array.
@@ -268,6 +296,14 @@ FIA_GetTemperaturePalette(RGBQUAD *palette);
 */
 DLL_API int DLL_CALLCONV
 FIA_GetSeismicColourPalette(RGBQUAD *palette);
+
+/** \brief Get a pallete for binary images into a RGBQUAD array.
+ *
+ *  \param  palette RGBQUAD* array.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_GetBinaryPalette (RGBQUAD * palette);
 
 /** \brief Get a ileup palette into a RGBQUAD array.
  *

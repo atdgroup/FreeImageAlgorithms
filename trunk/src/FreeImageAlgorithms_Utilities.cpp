@@ -2824,48 +2824,53 @@ FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing)
 {
 	FIBITMAP *out;
 	BYTE val=1;
+	int antialias_diagonals=0;  // antialias with a value of 1 prints nothing
 	int i, j, width, height;
+
+	if (in == NULL)
+		return NULL;
 	
 	width  = FreeImage_GetWidth(in);
 	height = FreeImage_GetHeight(in);
 
-	out = FreeImage_ConvertToStandardType(in, 0);
+	out = FreeImage_ConvertToType(in, FIT_BITMAP, 0);
 	FIA_DrawSolidGreyscaleRect(out, MakeFIARect(0,0,width-1,height-1), 0.0);
 
 	switch (hatchType)
 		{
 		case 1: // horiz lines
 			for (j=0; j<height; j+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), 1.0);
+				//FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), (double)val, 1, 0);
 
 			break;
 		case 2: // vert lines
 			for (i=0; i<width; i+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(i, 0), MakeFIAPoint(i, height), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(i, 0), MakeFIAPoint(i, height), (double)val, 1, 0);
 			
 			break;
 		case 3: // horiz and vert lines
 			for (j=0; j<height; j+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(0, j), MakeFIAPoint(width, j), (double)val, 1, 0);
 			for (i=0; i<width; i+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(i, 0), MakeFIAPoint(i, height), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(i, 0), MakeFIAPoint(i, height), (double)val, 1, 0);
 			
 			break;
 		case 4:  // diag lines
 			for (j=0; (j<(height+width)); j+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(j, 0), MakeFIAPoint(0, j), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(j, 0), MakeFIAPoint(0, j), (double)val, 1, antialias_diagonals);
 			
 			break;
 		case 5:  // other diag lines
 			for (j=0; j<(height+width); j+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j-width), MakeFIAPoint(width, j), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(0, j-width), MakeFIAPoint(width, j), (double)val, 1, antialias_diagonals);
 			
 			break;
 		case 6:  // cross hatched
 			for (j=0; (j<(height+width)); j+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(j, 0), MakeFIAPoint(0, j), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(j, 0), MakeFIAPoint(0, j), (double)val, 1, antialias_diagonals);
 			for (j=0; j<(height+width); j+=spacing)
-				FIA_DrawOnePixelIndexLineFromTopLeft (out, MakeFIAPoint(0, j-width), MakeFIAPoint(width, j), 1.0);
+				FIA_DrawGreyscaleLine (out, MakeFIAPoint(0, j-width), MakeFIAPoint(width, j), (double)val, 1, antialias_diagonals);
 			
 			break;
 		case 7:   // dots
@@ -2879,5 +2884,5 @@ FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing)
 			break;
 		}
 
-	return(0);
+	return out;
 }

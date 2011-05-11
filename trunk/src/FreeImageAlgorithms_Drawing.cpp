@@ -1156,6 +1156,9 @@ FIA_DrawOnePixelIndexLine (FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, BYTE value)
     int swapped = 0, dx, dy, abs_dy, incrN, incrE, incrNE, d, x, y, slope, tmp_y, len = 0;
 	BYTE *bits = NULL;
 
+	if (src==NULL)
+		return -1;
+		
     // If necessary, switch the points so we're 
     // always drawing from left to right. 
     if (p2.x < p1.x)

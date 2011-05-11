@@ -307,6 +307,52 @@ FIA_SetSeismicColourPalette (FIBITMAP * src)
 }
 
 int DLL_CALLCONV
+FIA_SetBinaryPalette (FIBITMAP * src)
+{
+    RGBQUAD *palette;
+
+    if ((palette = FreeImage_GetPalette (src)) == NULL)
+    {
+        return -1;
+    }
+
+    FIA_GetBinaryPalette (palette);
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_SetPaletteAlpha (FIBITMAP * src, int alpha)
+{  // alpha 0-255;
+    RGBQUAD *palette;
+
+    if ((palette = FreeImage_GetPalette (src)) == NULL)
+    {
+        return -1;
+    }
+
+	for (int i=0; i<256; i++)
+		palette[i].rgbReserved = alpha;
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_SetPaletteBackgroundTransparent (FIBITMAP * src)
+{  // alpha 0-255;
+    RGBQUAD *palette;
+
+    if ((palette = FreeImage_GetPalette (src)) == NULL)
+    {
+        return -1;
+    }
+
+	palette[0].rgbReserved = 0;
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
 FIA_GetGreyLevelPalette (RGBQUAD * palette)
 {
     if (palette == NULL)
@@ -749,6 +795,51 @@ FIA_GetSeismicColourPalette (RGBQUAD * palette)
     palette[255].rgbRed = 255;
     palette[255].rgbGreen = 255;
     palette[255].rgbBlue = 255;
+
+    return 0;
+}
+
+int DLL_CALLCONV
+FIA_GetBinaryPalette (RGBQUAD * palette)
+{
+    if (palette == NULL)
+    {
+        return FIA_ERROR;
+    }
+
+	// start with usual grey scale
+	FIA_GetGreyLevelPalette(palette);
+
+	// add some custom entries low down
+	int i=1;
+	palette[i].rgbRed = 255;
+    palette[i].rgbGreen = 0;
+    palette[i].rgbBlue = 0;
+
+	i++;
+	palette[i].rgbRed = 0;
+    palette[i].rgbGreen = 255;
+    palette[i].rgbBlue = 0;
+
+	i++;
+	palette[i].rgbRed = 0;
+    palette[i].rgbGreen = 0;
+    palette[i].rgbBlue = 255;
+
+	i++;
+	palette[i].rgbRed = 255;
+    palette[i].rgbGreen = 255;
+    palette[i].rgbBlue = 0;
+
+	i++;
+	palette[i].rgbRed = 0;
+    palette[i].rgbGreen = 255;
+    palette[i].rgbBlue = 255;
+
+	i++;
+	palette[i].rgbRed = 255;
+    palette[i].rgbGreen = 0;
+    palette[i].rgbBlue = 255;
 
     return 0;
 }

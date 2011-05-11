@@ -31,6 +31,12 @@ template < class Tsrc > class ARITHMATIC
 {
   public:
     int MaxOfTwoImages (FIBITMAP * dst, FIBITMAP * src);
+    int Add (FIBITMAP * dst, FIBITMAP * src);
+    int Subtract (FIBITMAP * dst, FIBITMAP * src);
+    int Multiply (FIBITMAP * dst, FIBITMAP * src);
+    int AddConst (FIBITMAP * dst, double constant);
+    int SubtractConst (FIBITMAP * dst, double constant);
+    int MultiplyConst (FIBITMAP * dst, double constant);
     int AddImages (FIBITMAP * dst, FIBITMAP * src);
     int SubtractImages (FIBITMAP * dst, FIBITMAP * src);
     int DivideImages (FIBITMAP * dst, FIBITMAP * src);
@@ -507,6 +513,159 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractImages (FIBITMAP * dst,
         }
     }
 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::Add (FIBITMAP * dst, FIBITMAP * src)
+{
+    if (dst == NULL || src == NULL)
+        return FIA_ERROR;
+
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Image destination and source have different dimensions");
+        return FIA_ERROR;
+    }
+
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    Tsrc *src_ptr;
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+        src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = dst_ptr[x] + src_ptr[x];
+    }
+ 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::Subtract (FIBITMAP * dst, FIBITMAP * src)
+{
+    if (dst == NULL || src == NULL)
+        return FIA_ERROR;
+
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Image destination and source have different dimensions");
+        return FIA_ERROR;
+    }
+
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    Tsrc *src_ptr;
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+        src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = dst_ptr[x] - src_ptr[x];
+    }
+ 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::Multiply (FIBITMAP * dst, FIBITMAP * src)
+{
+    if (dst == NULL || src == NULL)
+        return FIA_ERROR;
+
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Image destination and source have different dimensions");
+        return FIA_ERROR;
+    }
+
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    Tsrc *src_ptr;
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+        src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = dst_ptr[x] * src_ptr[x];
+    }
+ 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::AddConst (FIBITMAP * dst, double constant)
+{
+    if (dst == NULL)
+        return FIA_ERROR;
+
+    int width = FreeImage_GetWidth (dst);
+    int height = FreeImage_GetHeight (dst);
+
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = dst_ptr[x] + (Tsrc) constant;
+    }
+ 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractConst (FIBITMAP * dst, double constant)
+{
+    if (dst == NULL)
+        return FIA_ERROR;
+
+    int width = FreeImage_GetWidth (dst);
+    int height = FreeImage_GetHeight (dst);
+
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = dst_ptr[x] - (Tsrc) constant;
+    }
+ 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::MultiplyConst (FIBITMAP * dst, double constant)
+{
+    if (dst == NULL)
+        return FIA_ERROR;
+
+    int width = FreeImage_GetWidth (dst);
+    int height = FreeImage_GetHeight (dst);
+
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = dst_ptr[x] * (Tsrc) constant;
+    }
+ 
     return FIA_SUCCESS;
 }
 
@@ -1010,6 +1169,180 @@ FIA_SubtractGreyLevelImages (FIBITMAP * dst, FIBITMAP * src)
             return arithmaticFloatImage.SubtractImages (dst, src);
         case FIT_DOUBLE:
             return arithmaticDoubleImage.SubtractImages (dst, src);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_Subtract (FIBITMAP * dst, FIBITMAP * src)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (src) == 8)
+                return arithmaticUCharImage.Subtract (dst, src);
+        case FIT_UINT16:
+            return arithmaticUShortImage.Subtract (dst, src);
+        case FIT_INT16:
+            return arithmaticShortImage.Subtract (dst, src);
+        case FIT_UINT32:
+            return arithmaticULongImage.Subtract (dst, src);
+        case FIT_INT32:
+            return arithmaticLongImage.Subtract (dst, src);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.Subtract (dst, src);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.Subtract (dst, src);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_Add (FIBITMAP * dst, FIBITMAP * src)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (src) == 8)
+                return arithmaticUCharImage.Add (dst, src);
+        case FIT_UINT16:
+            return arithmaticUShortImage.Add (dst, src);
+        case FIT_INT16:
+            return arithmaticShortImage.Add (dst, src);
+        case FIT_UINT32:
+            return arithmaticULongImage.Add (dst, src);
+        case FIT_INT32:
+            return arithmaticLongImage.Add (dst, src);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.Add (dst, src);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.Add (dst, src);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_Multiply (FIBITMAP * dst, FIBITMAP * src)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (src) == 8)
+                return arithmaticUCharImage.Multiply (dst, src);
+        case FIT_UINT16:
+            return arithmaticUShortImage.Multiply (dst, src);
+        case FIT_INT16:
+            return arithmaticShortImage.Multiply (dst, src);
+        case FIT_UINT32:
+            return arithmaticULongImage.Multiply (dst, src);
+        case FIT_INT32:
+            return arithmaticLongImage.Multiply (dst, src);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.Multiply (dst, src);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.Multiply (dst, src);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_AddConst (FIBITMAP * dst, double constant)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (dst);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (dst) == 8)
+                return arithmaticUCharImage.AddConst (dst, constant);
+        case FIT_UINT16:
+            return arithmaticUShortImage.AddConst (dst, constant);
+        case FIT_INT16:
+            return arithmaticShortImage.AddConst (dst, constant);
+        case FIT_UINT32:
+            return arithmaticULongImage.AddConst (dst, constant);
+        case FIT_INT32:
+            return arithmaticLongImage.AddConst (dst, constant);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.AddConst (dst, constant);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.AddConst (dst, constant);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_SubtractConst (FIBITMAP * dst, double constant)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (dst);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (dst) == 8)
+                return arithmaticUCharImage.SubtractConst (dst, constant);
+        case FIT_UINT16:
+            return arithmaticUShortImage.SubtractConst (dst, constant);
+        case FIT_INT16:
+            return arithmaticShortImage.SubtractConst (dst, constant);
+        case FIT_UINT32:
+            return arithmaticULongImage.SubtractConst (dst, constant);
+        case FIT_INT32:
+            return arithmaticLongImage.SubtractConst (dst, constant);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.SubtractConst (dst, constant);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.SubtractConst (dst, constant);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_MultiplyConst (FIBITMAP * dst, double constant)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (dst);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (dst) == 8)
+                return arithmaticUCharImage.MultiplyConst (dst, constant);
+        case FIT_UINT16:
+            return arithmaticUShortImage.MultiplyConst (dst, constant);
+        case FIT_INT16:
+            return arithmaticShortImage.MultiplyConst (dst, constant);
+        case FIT_UINT32:
+            return arithmaticULongImage.MultiplyConst (dst, constant);
+        case FIT_INT32:
+            return arithmaticLongImage.MultiplyConst (dst, constant);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.MultiplyConst (dst, constant);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.MultiplyConst (dst, constant);
         default:
             break;
     }
