@@ -34,6 +34,7 @@ template < class Tsrc > class ARITHMATIC
     int Add (FIBITMAP * dst, FIBITMAP * src);
     int Subtract (FIBITMAP * dst, FIBITMAP * src);
     int Multiply (FIBITMAP * dst, FIBITMAP * src);
+    int Average (FIBITMAP * dst, FIBITMAP * src);
     int AddConst (FIBITMAP * dst, double constant);
     int SubtractConst (FIBITMAP * dst, double constant);
     int MultiplyConst (FIBITMAP * dst, double constant);
@@ -601,6 +602,36 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::Multiply (FIBITMAP * dst, FIBIT
 
         for(register int x = 0; x < width; x++)
             dst_ptr[x] = dst_ptr[x] * src_ptr[x];
+    }
+ 
+    return FIA_SUCCESS;
+}
+
+template < class Tsrc > int ARITHMATIC < Tsrc >::Average (FIBITMAP * dst, FIBITMAP * src)
+{
+    if (dst == NULL || src == NULL)
+        return FIA_ERROR;
+
+    if (FIA_CheckDimensions (dst, src) == FIA_ERROR)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Image destination and source have different dimensions");
+        return FIA_ERROR;
+    }
+
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    Tsrc *src_ptr;
+    Tsrc *dst_ptr;
+
+    for(register int y = 0; y < height; y++)
+    {
+        dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
+        src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+        for(register int x = 0; x < width; x++)
+            dst_ptr[x] = (Tsrc)((double)(dst_ptr[x] + src_ptr[x]) / 2.0);
     }
  
     return FIA_SUCCESS;
@@ -1256,6 +1287,34 @@ FIA_Multiply (FIBITMAP * dst, FIBITMAP * src)
             return arithmaticFloatImage.Multiply (dst, src);
         case FIT_DOUBLE:
             return arithmaticDoubleImage.Multiply (dst, src);
+        default:
+            break;
+    }
+
+    return FIA_ERROR;
+}
+int DLL_CALLCONV
+FIA_Average (FIBITMAP * dst, FIBITMAP * src)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (src) == 8)
+                return arithmaticUCharImage.Average (dst, src);
+        case FIT_UINT16:
+            return arithmaticUShortImage.Average (dst, src);
+        case FIT_INT16:
+            return arithmaticShortImage.Average (dst, src);
+        case FIT_UINT32:
+            return arithmaticULongImage.Average (dst, src);
+        case FIT_INT32:
+            return arithmaticLongImage.Average (dst, src);
+        case FIT_FLOAT:
+            return arithmaticFloatImage.Average (dst, src);
+        case FIT_DOUBLE:
+            return arithmaticDoubleImage.Average (dst, src);
         default:
             break;
     }

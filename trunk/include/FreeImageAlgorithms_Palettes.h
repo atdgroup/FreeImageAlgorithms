@@ -50,6 +50,15 @@ DLL_API RGBQUAD DLL_CALLCONV FIA_RGBQUAD(unsigned char red, unsigned char green,
 DLL_API int DLL_CALLCONV
 FIA_CopyPaletteToRGBQUAD(FIBITMAP *src, RGBQUAD *palette);
 
+/** \brief Imports the palette for an image from a colour table of ints (0xrrggbb)
+ *
+ *  \param dst Image
+ *  \param colTab Colour table of ints 
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_CopyPaletteFromColourTable (FIBITMAP * dst, int * colTab, int n);
+
 /** \brief Copies the palette from an array of RGBQUAD to a FIBITMAP.
  *
  *  \param dst Image to copy palette to.

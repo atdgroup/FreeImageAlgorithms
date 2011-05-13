@@ -24,6 +24,9 @@
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include "FreeImageAlgorithms_Utils.h"
+#include "FreeImageAlgorithms_Logic.h"
+#include "FreeImageAlgorithms_Arithmetic.h"
+#include "FreeImageAlgorithms_Morphology.h"
 
 #include <iostream>
 #include <math.h>
@@ -2820,20 +2823,15 @@ CleanUp:
 }
 
 FIBITMAP *DLL_CALLCONV
-FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing)
+FIA_MakeHatchedImage (int width, int height, int hatchType, int spacing)
 {
 	FIBITMAP *out;
 	BYTE val=1;
 	int antialias_diagonals=0;  // antialias with a value of 1 prints nothing
-	int i, j, width, height;
+	int i, j;
 
-	if (in == NULL)
-		return NULL;
-	
-	width  = FreeImage_GetWidth(in);
-	height = FreeImage_GetHeight(in);
+	out = FreeImage_Allocate(width, height, 8);
 
-	out = FreeImage_ConvertToType(in, FIT_BITMAP, 0);
 	FIA_DrawSolidGreyscaleRect(out, MakeFIARect(0,0,width-1,height-1), 0.0);
 
 	switch (hatchType)
@@ -2886,3 +2884,209 @@ FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing)
 
 	return out;
 }
+
+
+FIBITMAP *DLL_CALLCONV
+FIA_BlendMaskWithImage(FIBITMAP *mask, FIBITMAP *src, RGBQUAD colour, int outline, int hatch, int opacity)
+{
+	// mask is expected to be a 8 bit image, vals 0 and 1 and is not changed by this function (except the border is set to 3)
+	// src can be greyscale, palettised or RGB, output will be 24 bit RGB
+	// colour is the required blend/overlay colour
+	// outline = 1 plots an outline around the mask, outline = 0 does not
+	// hatch is 10 (no hatch) to 7 (dots), see FIA_MakeHatchedImage
+	// opacity is 0 to 3
+	FIBITMAP *image=NULL, *maskedInner=NULL, *maskedOuter=NULL, *reversedMask=NULL, *r=NULL, *g=NULL, *b=NULL, *ri=NULL, *gi=NULL, *bi=NULL;
+
+	// Checks
+	if (!FreeImage_HasPixels(mask) || !FreeImage_HasPixels(src))
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask or image do not have any pixels");
+        return NULL;
+    }
+
+    if (FreeImage_GetImageType (mask)!=FIT_BITMAP || FreeImage_GetBPP(mask)!=8)
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask is not a 8-bit FIT_BITMAP image");
+        return NULL;
+    }
+
+    if(FIA_CheckSizesAreSame(mask, src) == 0) {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask and Image are not the same size");
+        return NULL;
+    }
+
+	if (FreeImage_GetImageType (src)!=FIT_BITMAP)	
+	{
+		FreeImage_OutputMessageProc (FIF_UNKNOWN, "Image is not a FIT_BITMAP image");
+		return NULL;
+	}
+
+	if (FreeImage_GetImageType (src)==FIT_BITMAP && FreeImage_GetBPP(src)>16)  // already RGB colour
+		image = FreeImage_Clone(src);
+	else
+		image = FreeImage_ConvertTo24Bits(src);
+
+	// colour planes of the RGB bits within the mask
+	maskedInner = FreeImage_Clone(image);
+	FIA_MaskImage (maskedInner, mask);
+	ri = FreeImage_GetChannel(maskedInner, FICC_RED);
+	gi = FreeImage_GetChannel(maskedInner, FICC_GREEN);
+	bi = FreeImage_GetChannel(maskedInner, FICC_BLUE);
+	FreeImage_Unload(maskedInner);
+
+	// average these colour planes to perform a blend, result goes into r g and b
+	if (opacity==0) // 
+	{
+		r = FreeImage_Clone (ri);
+		g = FreeImage_Clone (gi);
+		b = FreeImage_Clone (bi);
+	}
+	else			   // average once for high opacity
+	{
+
+		// calc the three colour planes of mask with the correct colour
+		r = FreeImage_Clone (mask);
+		g = FreeImage_Clone (mask);
+		b = FreeImage_Clone (mask);
+		FIA_MultiplyConst (r, colour.rgbRed);
+		FIA_MultiplyConst (g, colour.rgbGreen);
+		FIA_MultiplyConst (b, colour.rgbBlue);
+	
+		FIA_Average (r, ri);
+		FIA_Average (g, gi);
+		FIA_Average (b, bi);
+  		
+		if (opacity < 3)   // average again for med opacity
+		{
+			FIA_Average (r, ri);
+			FIA_Average (g, gi);
+			FIA_Average (b, bi);
+		}
+		if (opacity < 2)   // average again for low opacity
+		{
+			FIA_Average (r, ri);
+			FIA_Average (g, gi);
+			FIA_Average (b, bi);
+		}
+	}
+	FreeImage_Unload (ri);
+	FreeImage_Unload (gi);
+	FreeImage_Unload (bi);
+
+	// colour planes of the RGB bits _outside_ the mask
+	reversedMask = FreeImage_Clone (mask);
+	FIA_ReverseMaskImage (reversedMask, 1);
+	maskedOuter = FreeImage_Clone (image);
+	FIA_MaskImage (maskedOuter, reversedMask);
+	FreeImage_Unload (reversedMask);
+	ri = FreeImage_GetChannel(maskedOuter, FICC_RED);
+	gi = FreeImage_GetChannel(maskedOuter, FICC_GREEN);
+	bi = FreeImage_GetChannel(maskedOuter, FICC_BLUE);
+	FreeImage_Unload(maskedOuter);
+
+	// add these (containing data outside the mask) to the blend images (containing data inside the mask)
+	FIA_Add (r, ri);
+	FIA_Add (g, gi);
+	FIA_Add (b, bi);
+	FreeImage_Unload (ri);
+	FreeImage_Unload (gi);
+	FreeImage_Unload (bi);
+	
+	// make an RGB from these
+	maskedInner = FreeImage_Allocate(FreeImage_GetWidth(image), FreeImage_GetHeight(image), 24);
+
+	// r, g, b must not be palletised at this point (FREE_IMAGE_COLOR_TYPE FIC_PALETTE) as FreeImage_SetChannel will fail, must be FIC_MINISBLACK
+	// to be considered greyscale images in freeimage, it must have the greyscalwe palette
+	FIA_SetGreyLevelPalette (r);
+	FIA_SetGreyLevelPalette (g);
+	FIA_SetGreyLevelPalette (b);
+	FreeImage_SetChannel (maskedInner, r, FICC_RED);
+	FreeImage_SetChannel (maskedInner, g, FICC_GREEN);
+	FreeImage_SetChannel (maskedInner, b, FICC_BLUE);
+	FreeImage_Unload (r);
+	FreeImage_Unload (g);
+	FreeImage_Unload (b);
+
+	if (outline)  // do overlay of the outline in the required colour
+	{
+		// find the inside border to the mask
+		reversedMask = FIA_BinaryInnerBorder (mask);
+	
+		// calc the three colour planes of a new outline mask with the correct colour
+		r = FreeImage_Clone (reversedMask);
+		g = FreeImage_Clone (reversedMask);
+		b = FreeImage_Clone (reversedMask);
+		FIA_MultiplyConst (r, colour.rgbRed);
+		FIA_MultiplyConst (g, colour.rgbGreen);
+		FIA_MultiplyConst (b, colour.rgbBlue);
+
+		// reverse this outline mask and use it to get the image data from the blended image, extract these colour planes
+		FIA_ReverseMaskImage(reversedMask, 1);
+		FIA_MaskImage(maskedInner, reversedMask);
+		FreeImage_Unload (reversedMask);
+		ri = FreeImage_GetChannel(maskedInner, FICC_RED);
+		gi = FreeImage_GetChannel(maskedInner, FICC_GREEN);
+		bi = FreeImage_GetChannel(maskedInner, FICC_BLUE);
+
+		// add the new outline to the surrounding image data
+		FIA_Add (r, ri);
+		FIA_Add (g, gi);
+		FIA_Add (b, bi);
+		FreeImage_Unload (ri);
+		FreeImage_Unload (gi);
+		FreeImage_Unload (bi);
+
+		// make an RGB from these
+		FIA_SetGreyLevelPalette (r);
+		FIA_SetGreyLevelPalette (g);
+		FIA_SetGreyLevelPalette (b);
+		FreeImage_SetChannel (maskedInner, r, FICC_RED);
+		FreeImage_SetChannel (maskedInner, g, FICC_GREEN);
+		FreeImage_SetChannel (maskedInner, b, FICC_BLUE);
+		FreeImage_Unload (r);
+		FreeImage_Unload (g);
+		FreeImage_Unload (b);
+	}
+	
+	if (hatch)  // do overlay of the outline in the required colour
+	{
+		if (hatch==7) reversedMask = FIA_MakeHatchedImage(FreeImage_GetWidth(mask), FreeImage_GetHeight(mask), hatch, 3);   // dots
+		else reversedMask = reversedMask = FIA_MakeHatchedImage(FreeImage_GetWidth(mask), FreeImage_GetHeight(mask), hatch, 20);   // store in reversed mask temporarily 
+		FIA_MaskImage(reversedMask, mask);		// get just the bits of hatch inside the mask
+
+		// calc the three colour planes of a new outline mask with the correct colour
+		r = FreeImage_Clone (reversedMask);
+		g = FreeImage_Clone (reversedMask);
+		b = FreeImage_Clone (reversedMask);
+		FIA_MultiplyConst (r, colour.rgbRed);
+		FIA_MultiplyConst (g, colour.rgbGreen);
+		FIA_MultiplyConst (b, colour.rgbBlue);
+
+		// reverse this outline mask and use it to get the image data from the blended image, extract these colour planes
+		FIA_ReverseMaskImage(reversedMask, 1);
+		FIA_MaskImage(maskedInner, reversedMask);
+		FreeImage_Unload(reversedMask);
+		ri = FreeImage_GetChannel(maskedInner, FICC_RED);
+		gi = FreeImage_GetChannel(maskedInner, FICC_GREEN);
+		bi = FreeImage_GetChannel(maskedInner, FICC_BLUE);
+
+		// add the new outline to the surrounding image data
+		FIA_Add (r, ri);
+		FIA_Add (g, gi);
+		FIA_Add (b, bi);
+		FreeImage_Unload (ri);
+		FreeImage_Unload (gi);
+		FreeImage_Unload (bi);
+
+		// make an RGB from these
+		FreeImage_SetChannel (maskedInner, r, FICC_RED);
+		FreeImage_SetChannel (maskedInner, g, FICC_GREEN);
+		FreeImage_SetChannel (maskedInner, b, FICC_BLUE);
+		FreeImage_Unload (r);
+		FreeImage_Unload (g);
+		FreeImage_Unload (b);
+	}
+	
+	return (maskedInner);
+}
+

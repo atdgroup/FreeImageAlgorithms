@@ -29,12 +29,11 @@
 template < class Tsrc > class THRESHOLD
 {
   public:
-    int Threshold (FIBITMAP * src, Tsrc min, Tsrc max, Tsrc new_value);
+    int Threshold (FIBITMAP * src, double min, double max, double new_value);
 
 };
 
-template < class Tsrc > int THRESHOLD < Tsrc >::Threshold (FIBITMAP * src, Tsrc min, Tsrc max,
-                                                           Tsrc new_value)
+template < class Tsrc > int THRESHOLD < Tsrc >::Threshold (FIBITMAP * src, double min, double max, double new_value)
 {
     if (src == NULL)
     {
@@ -60,7 +59,7 @@ template < class Tsrc > int THRESHOLD < Tsrc >::Threshold (FIBITMAP * src, Tsrc 
         for(register int x = 0; x < width; x++)
         {
             if (src_ptr[x] >= min && src_ptr[x] <= max)
-                src_ptr[x] = new_value;
+                src_ptr[x] = (Tsrc) new_value;
 			else
 				src_ptr[x] = (Tsrc) 0;
         }
@@ -101,15 +100,13 @@ FIA_Threshold (FIBITMAP * src, double min, double max, double new_value)
         {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
             if (FreeImage_GetBPP (src) == 8)
             {
-                err = thresholdUCharImage.Threshold (dst, (unsigned char) min, (unsigned char) max,
-                                                   (unsigned char) new_value);
+                err = thresholdUCharImage.Threshold (dst, min, max, new_value);
             }
             else {
             
                   FIA_InPlaceConvertTo8Bit(&dst);
                   
-                  err = thresholdUCharImage.Threshold (dst, (unsigned char) min, (unsigned char) max,
-                                                   (unsigned char) new_value);        
+                  err = thresholdUCharImage.Threshold (dst,  min, max, new_value);       
             }
             
             break;
@@ -118,34 +115,32 @@ FIA_Threshold (FIBITMAP * src, double min, double max, double new_value)
         case FIT_UINT16:
         {                       // array of unsigned short: unsigned 16-bit
             err =
-                thresholdUShortImage.Threshold (dst, (unsigned short) min, (unsigned short) max,
-                                                (unsigned short) new_value);
+                thresholdUShortImage.Threshold (dst,  min, max, new_value);
             break;
         }
         
         case FIT_INT16:
         {                       // array of short: signed 16-bit
-            err = thresholdShortImage.Threshold (dst, (short) min, (short) max, (short) new_value);
+            err = thresholdShortImage.Threshold (dst, min, max, new_value);
             break;
         }
         
         case FIT_UINT32:
         {                       // array of unsigned long: unsigned 32-bit
             err =
-                thresholdULongImage.Threshold (dst, (unsigned long) min, (unsigned long) max,
-                                               (unsigned long) new_value);
+                thresholdULongImage.Threshold (dst,  min, max, new_value);
             break;
         }
         
         case FIT_INT32:
         {                       // array of long: signed 32-bit
-            err = thresholdLongImage.Threshold (dst, (long) min, (long) max, (long) new_value);
+            err = thresholdLongImage.Threshold (dst,  min, max, new_value);
             break;
         }
         
         case FIT_FLOAT:
         {                       // array of float: 32-bit
-            err = thresholdFloatImage.Threshold (dst, (float) min, (float) max, (float) new_value);
+            err = thresholdFloatImage.Threshold (dst,  min, max, new_value);
             break;
         }
         
@@ -191,38 +186,35 @@ FIA_InPlaceThreshold (FIBITMAP * src, double min, double max, double new_value)
             if (FreeImage_GetBPP (src) == 8)
             {
                 err =
-                    thresholdUCharImage.Threshold (src, (unsigned char) min, (unsigned char) max,
-                                                   (unsigned char) new_value);
+                    thresholdUCharImage.Threshold (src,  min, max, new_value);
             }
             break;
         }
         case FIT_UINT16:
         {                       // array of unsigned short: unsigned 16-bit
             err =
-                thresholdUShortImage.Threshold (src, (unsigned short) min, (unsigned short) max,
-                                                (unsigned short) new_value);
+                thresholdUShortImage.Threshold (src,  min, max, new_value);
             break;
         }
         case FIT_INT16:
         {                       // array of short: signed 16-bit
-            err = thresholdShortImage.Threshold (src, (short) min, (short) max, (short) new_value);
+            err = thresholdShortImage.Threshold (src,  min, max, new_value);
             break;
         }
         case FIT_UINT32:
         {                       // array of unsigned long: unsigned 32-bit
             err =
-                thresholdULongImage.Threshold (src, (unsigned long) min, (unsigned long) max,
-                                               (unsigned long) new_value);
+                thresholdULongImage.Threshold (src,  min, max, new_value);
             break;
         }
         case FIT_INT32:
         {                       // array of long: signed 32-bit
-            err = thresholdLongImage.Threshold (src, (long) min, (long) max, (long) new_value);
+            err = thresholdLongImage.Threshold (src,  min, max, new_value);
             break;
         }
         case FIT_FLOAT:
         {                       // array of float: 32-bit
-            err = thresholdFloatImage.Threshold (src, (float) min, (float) max, (float) new_value);
+            err = thresholdFloatImage.Threshold (src,  min, max, new_value);
             break;
         }
         case FIT_DOUBLE:

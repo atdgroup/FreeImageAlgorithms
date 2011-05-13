@@ -887,9 +887,11 @@ FIA_BinaryInnerBorder (FIBITMAP * src)
 	FIA_Unload (dst_FIA);
 
 	FIBITMAP *dst2 = FreeImage_Clone(src);
-	FIA_InPlaceConvertToInt32Type (&dst2, 0);
-	FIA_SubtractGreyLevelImages(dst2, dst);
-	FIA_InPlaceConvertToStandardType(&dst2, 0);
+
+//	FIA_InPlaceConvertToInt32Type (&dst2, 0);
+//	FIA_SubtractGreyLevelImages(dst2, dst);
+//	FIA_InPlaceConvertToStandardType(&dst2, 0);
+	FIA_Subtract(dst2, dst);
 
 	return dst2;
 }
@@ -904,9 +906,10 @@ FIA_BinaryOuterBorder (FIBITMAP * src)
 	FIBITMAP *dst = FIA_BinaryDilation(dst_FIA, kernel);
 	FIA_Unload (dst_FIA);
 
-	FIA_InPlaceConvertToInt32Type (&dst, 0);
-	FIA_SubtractGreyLevelImages(dst, src);
-	FIA_InPlaceConvertToStandardType(&dst, 0);
+//	FIA_InPlaceConvertToInt32Type (&dst, 0);
+//	FIA_SubtractGreyLevelImages(dst, src);
+//	FIA_InPlaceConvertToStandardType(&dst, 0);
+	FIA_Subtract(dst, src);
 
 	return dst;
 }

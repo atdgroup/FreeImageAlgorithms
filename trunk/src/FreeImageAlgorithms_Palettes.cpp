@@ -89,6 +89,39 @@ FIA_CopyPaletteFromRGBQUAD (FIBITMAP * dst, RGBQUAD * palette)
 }
 
 int DLL_CALLCONV
+FIA_CopyPaletteFromColourTable (FIBITMAP * dst, int * colTab, int n)
+{  // a colour table will be an int array of hex values 0xRRGGBB
+    RGBQUAD *dst_palette;
+
+    if (dst == NULL || colTab == NULL || FreeImage_GetBPP (dst) > 8 || n < 1)
+    {
+        return FIA_ERROR;
+    }
+
+    if ((dst_palette = FreeImage_GetPalette (dst)) == NULL)
+    {
+        return FIA_ERROR;
+    }
+
+	int i;
+    for(i = 0; i < n; i++)
+    {
+        dst_palette[i].rgbRed   = (colTab[i] & 0xff0000) >> 16;
+        dst_palette[i].rgbGreen = (colTab[i] & 0x00ff00) >> 8;
+        dst_palette[i].rgbBlue  = (colTab[i] & 0x0000ff);
+    }
+
+	for(; i < 256; i++)
+    {
+        dst_palette[i].rgbRed   = 0;
+        dst_palette[i].rgbGreen = 0;
+        dst_palette[i].rgbBlue  = 0;
+    }
+
+    return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
 FIA_CopyPalette (FIBITMAP * src, FIBITMAP * dst)
 {
     RGBQUAD *src_palette, *dst_palette;

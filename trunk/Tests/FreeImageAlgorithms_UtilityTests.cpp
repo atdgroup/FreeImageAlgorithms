@@ -284,46 +284,41 @@ static void CopyTest1(CuTest* tc)
 
 static void HatchImageTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "test.bmp";
-
-	FIBITMAP *src = FIA_LoadFIBFromFile(file);
-
-	FIBITMAP *dst = FIA_MakeHatchedImage (src, 1, 10);
+	FIBITMAP *dst = FIA_MakeHatchedImage (256, 256, 1, 10);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch1.bmp");
 	FreeImage_Unload(dst);
 
-	dst = FIA_MakeHatchedImage (src, 2, 10);
+	dst = FIA_MakeHatchedImage (256, 256, 2, 10);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch2.bmp");
 	FreeImage_Unload(dst);
 
-	dst = FIA_MakeHatchedImage (src, 3, 50);
+	dst = FIA_MakeHatchedImage (256, 256, 3, 50);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch3.bmp");
 	FreeImage_Unload(dst);
 
-	dst = FIA_MakeHatchedImage (src, 4, 20);
+	dst = FIA_MakeHatchedImage (256, 256, 4, 20);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch4.bmp");
 	FreeImage_Unload(dst);
 
-	dst = FIA_MakeHatchedImage (src, 5, 15);
+	dst = FIA_MakeHatchedImage (256, 256, 5, 15);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch5.bmp");
 	FreeImage_Unload(dst);
 
-	dst = FIA_MakeHatchedImage (src, 6, 13);
+	dst = FIA_MakeHatchedImage (256, 256, 6, 13);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch6.bmp");
 	FreeImage_Unload(dst);
 
-	dst = FIA_MakeHatchedImage (src, 7, 5);
+	dst = FIA_MakeHatchedImage (256, 256, 7, 5);
 	FIA_SetBinaryPalette(dst);
 	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/hatch7.bmp");
 	FreeImage_Unload(dst);
-	
-	FreeImage_Unload(src);
+
 }
 
 
@@ -385,7 +380,7 @@ static void AlphaCombineTest(CuTest* tc)
 
 	FIBITMAP *src = FIA_LoadFIBFromFile(file);
 	FIBITMAP *mask = FIA_LoadFIBFromFile(file2);
-	FIBITMAP *hatch = FIA_MakeHatchedImage (src, hatchType, 5);
+	FIBITMAP *hatch = FIA_MakeHatchedImage (FreeImage_GetWidth(src), FreeImage_GetHeight(src), hatchType, 5);
 	FIBITMAP *revhatch = NULL;
 	FIBITMAP *border = FIA_BinaryInnerBorder(mask);
 
@@ -410,6 +405,51 @@ static void AlphaCombineTest(CuTest* tc)
 	FreeImage_Unload(border);
 }
 
+static void BlendMaskWithImageTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "test.bmp";
+	const char *file2 = TEST_DATA_DIR "test_mask.bmp";
+
+	double opacity = 0.5;
+	int hatchType = 7;
+	RGBQUAD col;
+
+	FIBITMAP *src = FIA_LoadFIBFromFile(file);
+	FIBITMAP *mask = FIA_LoadFIBFromFile(file2);
+
+	col.rgbRed = 100;
+	col.rgbGreen = 2;
+	col.rgbBlue = 230;
+//	col.rgbRed = 0;
+//	col.rgbGreen = 255;
+//	col.rgbBlue = 0;
+
+//	FIA_InPlaceConvertTo24Bit(&src);  // colour image test
+	FIA_SetRainBowPalette(src);  // palette test
+
+	FIBITMAP *dst = FIA_BlendMaskWithImage(mask, src, col, 1, 5, 3);
+
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Utility/blendMask.bmp");
+
+	FreeImage_Unload(mask);
+	FreeImage_Unload(src);
+}
+
+static void
+TestFIA_ThresholdTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "test.bmp";
+
+	FIBITMAP *dib = FIA_LoadFIBFromFile(file);
+	FIBITMAP *dst = FIA_Threshold(dib, 3.7, 1000000.0, 128.5); 
+
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "Utility/threshold.bmp");
+
+	FreeImage_Unload(dib);
+	FreeImage_Unload(dst);
+}
+
+
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsUtilitySuite(void)
 {
@@ -420,8 +460,11 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 	//SUITE_ADD_TEST(suite, CopyTest);
 	//SUITE_ADD_TEST(suite, FastCopyTest);
 	//SUITE_ADD_TEST(suite, HatchImageTest);
-	SUITE_ADD_TEST(suite, AlphaCombineTest);
+	//SUITE_ADD_TEST(suite, AlphaCombineTest);
 	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
+	//SUITE_ADD_TEST(suite, BlendMaskWithImageTest);
+    SUITE_ADD_TEST(suite, TestFIA_ThresholdTest);
+
 
     //SUITE_ADD_TEST(suite, BorderTest);
 	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);

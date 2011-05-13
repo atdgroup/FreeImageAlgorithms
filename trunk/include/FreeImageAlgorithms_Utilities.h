@@ -786,13 +786,17 @@ FIA_GradientBlendMosaicPaste (FIBITMAP* dst, FIBITMAP* src, int x, int y);
  *		hatchType 6: // cross hatched
  *		hatchType 7:  // dots
  *
- *  \param dst Image to base the hatched image on (i.e. size)
+ *  \param width Width of new image
+ *  \param height Height of new image
  *  \param hatchType The type of hatch
  *  \param spacing Line spacing of the hatch in pixels
  *  \return FIBITMAP* Returns FIBITMAP* on success or NULL on error.
 */
 DLL_API FIBITMAP *DLL_CALLCONV
-FIA_MakeHatchedImage (FIBITMAP *in, int hatchType, int spacing);
+FIA_MakeHatchedImage (int width, int height, int hatchType, int spacing);
+
+DLL_API FIBITMAP *DLL_CALLCONV
+FIA_BlendMaskWithImage(FIBITMAP *mask, FIBITMAP *image, RGBQUAD colour, int outline, int hatch, int opacity);
 
 
 #ifdef __cplusplus

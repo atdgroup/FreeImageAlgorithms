@@ -85,6 +85,15 @@ FIA_Subtract (FIBITMAP * dst, FIBITMAP * src);
 DLL_API int DLL_CALLCONV 
 FIA_Multiply (FIBITMAP * dst, FIBITMAP * src);
 
+/** \brief Average (mean of) 2 images, dst and src
+ *
+ *  \param dst FIBITMAP first bitmap, this also serves as the output.
+ *  \param src FIBITMAP second bitmap to perform the operation on.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV 
+FIA_Average (FIBITMAP * dst, FIBITMAP * src);
+
 /** \brief Add image to a constant
  *
  *  \param dst FIBITMAP first bitmap, this also serves as the output.
