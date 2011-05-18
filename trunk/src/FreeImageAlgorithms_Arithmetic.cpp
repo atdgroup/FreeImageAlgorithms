@@ -652,7 +652,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::AddConst (FIBITMAP * dst, doubl
         dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
 
         for(register int x = 0; x < width; x++)
-            dst_ptr[x] = dst_ptr[x] + (Tsrc) constant;
+            dst_ptr[x] = dst_ptr[x] + constant;
     }
  
     return FIA_SUCCESS;
@@ -673,7 +673,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::SubtractConst (FIBITMAP * dst, 
         dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
 
         for(register int x = 0; x < width; x++)
-            dst_ptr[x] = dst_ptr[x] - (Tsrc) constant;
+            dst_ptr[x] = dst_ptr[x] - constant;
     }
  
     return FIA_SUCCESS;
@@ -694,7 +694,7 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::MultiplyConst (FIBITMAP * dst, 
         dst_ptr = (Tsrc *) FreeImage_GetScanLine (dst, y);
 
         for(register int x = 0; x < width; x++)
-            dst_ptr[x] = dst_ptr[x] * (Tsrc) constant;
+            dst_ptr[x] = dst_ptr[x] * constant;
     }
  
     return FIA_SUCCESS;

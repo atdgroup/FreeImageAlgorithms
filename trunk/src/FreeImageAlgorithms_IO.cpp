@@ -535,3 +535,100 @@ FIA_SaveFIBToFile (FIBITMAP *src, const char *filepath,
 
 	return err;
 }
+
+template < class Tsrc > class IO_ARRAY
+{
+  public:
+    int GreyImageToFloatArray (FIBITMAP * src, float *out_array, int *array_x_size, int *array_y_size, int vertical_flip);
+};
+
+
+template < typename Tsrc > int IO_ARRAY < Tsrc >::GreyImageToFloatArray (FIBITMAP * src, float *out_array, int *array_x_size, int *array_y_size, int vertical_flip)
+{
+	if (src == NULL || !FreeImage_HasPixels(src))
+	{
+         FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                           "Image source invalid or has no pixels.");
+		 return FIA_ERROR;
+	}
+
+	if (out_array==NULL)
+	{
+         FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                           "out_array must be allocated and big enough for all the image elements.");
+		 return FIA_ERROR;
+	}
+
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+	if (vertical_flip) {
+		for(register int y = 0; y < height; y++)
+		{
+			Tsrc *src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+			for(register int x = 0; x < width; x++)
+				out_array[(height-y-1)*width+x] = (float) src_ptr[x];
+		}
+	}
+	else {
+		for(register int y = 0; y < height; y++)
+		{
+			Tsrc *src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+			for(register int x = 0; x < width; x++)
+				out_array[y*width+x] = (float) src_ptr[x];
+		}
+	}
+
+
+	if (array_x_size != NULL)
+		*array_x_size = width;
+
+	if (array_y_size != NULL)
+		*array_y_size = height;
+
+    return FIA_SUCCESS;
+}
+
+IO_ARRAY < unsigned char >io_arrayUCharImage;
+IO_ARRAY < unsigned short >io_arrayUShortImage;
+IO_ARRAY < short >io_arrayShortImage;
+IO_ARRAY < unsigned long >io_arrayULongImage;
+IO_ARRAY < long >io_arrayLongImage;
+IO_ARRAY < float >io_arrayFloatImage;
+IO_ARRAY < double >io_arrayDoubleImage;
+IO_ARRAY < FICOMPLEX > io_arrayComplexImage;
+
+int DLL_CALLCONV
+FIA_GreyImageToFloatArray (FIBITMAP * src, float *out_array, int *array_x_size, int *array_y_size, int vertical_flip)
+{
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+            if (FreeImage_GetBPP (src) == 8)
+                return io_arrayUCharImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        case FIT_UINT16:
+            return io_arrayUShortImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        case FIT_INT16:
+            return io_arrayShortImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        case FIT_UINT32:
+            return io_arrayULongImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        case FIT_INT32:
+            return io_arrayLongImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        case FIT_FLOAT:
+            return io_arrayFloatImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        case FIT_DOUBLE:
+            return io_arrayDoubleImage.GreyImageToFloatArray (src, out_array, array_x_size, array_y_size, vertical_flip);
+        default:
+            break;
+    }
+
+    FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                           "Image source must be greyscale.");
+
+    return FIA_ERROR;
+}
+

@@ -114,6 +114,19 @@ DLL_API FIBITMAP* DLL_CALLCONV
 FIA_LoadColourFIBFromArrayData (BYTE *data, int bpp, int width, int height,
 												int padded, int vertical_flip, COLOUR_ORDER colour_order);
 
+/** \brief Copy the pixel values from a FIBITMAP image to an array of floats
+ *	
+ *  \param src The source image.
+ *  \param out_array float* The array to copy the data to. Must be allocated and big enough to hold all the elements
+ *  \param array_x_size int* The width of the image copied, if required (send NULL if not).
+ *  \param array_y_size int* The height of the image copied, if required (send NULL if not).
+ *  \param vertical_flip int Should the image be vertically flipped.
+ *  \return int FIA_SUCCESS or FIA_ERROR
+*/
+DLL_API int DLL_CALLCONV
+FIA_GreyImageToFloatArray (FIBITMAP * src, float *out_array, int *array_x_size, int *array_y_size, int vertical_flip);
+
+
 #ifdef __cplusplus
 }
 #endif
