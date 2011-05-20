@@ -217,7 +217,6 @@ static void ConvertFloatToTypeTest(CuTest* tc)
 
 	FIA_AddGreyLevelImageConstant(src, 20000);
 	
-
 	FIA_SimpleSaveFIBToFile(src, TEST_DATA_OUTPUT_DIR "/Utility/converted_original_float.tif");
 	
 	dst = FIA_ConvertFloatTypeToType(src, FIT_INT16, 0);
@@ -463,12 +462,12 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 	//SUITE_ADD_TEST(suite, AlphaCombineTest);
 	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
 	//SUITE_ADD_TEST(suite, BlendMaskWithImageTest);
-    SUITE_ADD_TEST(suite, TestFIA_ThresholdTest);
+    //SUITE_ADD_TEST(suite, TestFIA_ThresholdTest);
 
 
     //SUITE_ADD_TEST(suite, BorderTest);
-	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
-    	//SUITE_ADD_TEST(suite, BorderTest);
+	SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
+    //SUITE_ADD_TEST(suite, BorderTest);
 	//SUITE_ADD_TEST(suite, BorderTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_UtilityTest);

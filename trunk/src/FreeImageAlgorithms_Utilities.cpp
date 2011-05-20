@@ -208,6 +208,19 @@ MakeFIARect (int left, int top, int right, int bottom)
     return rect;
 }
 
+FIARECT DLL_CALLCONV
+MakeFIARectAlt (int left, int top, int width, int height)
+{
+    FIARECT rect;
+
+    rect.left = left;
+    rect.top = top;
+    rect.right = left+width;
+    rect.bottom = top+height;
+
+    return rect;
+}
+
 int DLL_CALLCONV
 FIARectIsEmpty (FIARECT rect)
 {
@@ -2118,7 +2131,6 @@ FIA_Convert48BitOr64BitRGBTo24BitColour(FIBITMAP * src)
     return dst;
 }
 
-
 template <class Tsrc> FIBITMAP*
 TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *src, FREE_IMAGE_TYPE float_type, FREE_IMAGE_TYPE type, BOOL scale_linear)
 {
@@ -2145,7 +2157,6 @@ TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *sr
 	if(float_type == FIT_FLOAT)
 	{
 		float *src_ptr = NULL;
-		float min_possible_for_type, max_possible_for_type;
 
 		if(scale_linear)
 		{
@@ -2184,7 +2195,6 @@ TemplateImageFunctionClass <Tsrc>::FIA_ConvertFloatTypeToImageType (FIBITMAP *sr
 	else if(float_type == FIT_DOUBLE)
 	{ 
 		double *src_ptr = NULL;
-		double min_possible_for_type, max_possible_for_type;
 
 		if(scale_linear)
 		{

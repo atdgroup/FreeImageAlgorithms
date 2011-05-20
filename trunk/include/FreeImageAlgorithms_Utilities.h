@@ -51,6 +51,18 @@ MakeFIAPoint(int x, int y);
 DLL_API FIARECT DLL_CALLCONV
 MakeFIARect(int left, int top, int right, int bottom);
 
+/** \brief Make a FIARECT structure.
+ *   Alternate version that uses width and height rather thatn right and bottom.
+ *
+ *  \param left left point of rect.
+ *  \param top top point of rect.
+ *  \param width width of rect.
+ *  \param height height point of rect.
+ *  \return FIARECT rectangle.
+*/
+DLL_API FIARECT DLL_CALLCONV
+MakeFIARectAlt(int left, int top, int width, int height);
+
 DLL_API int DLL_CALLCONV 
 FIA_CheckDimensions (FIBITMAP * dst, FIBITMAP * src);
 
