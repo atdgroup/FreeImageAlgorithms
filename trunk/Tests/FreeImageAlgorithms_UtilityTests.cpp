@@ -344,6 +344,29 @@ static void CopyTest(CuTest* tc)
 
         FreeImage_Unload(src);
 }
+static void CopyTestRect(CuTest* tc)
+{
+        const char *file = TEST_DATA_DIR "test.bmp";
+
+        FIBITMAP *src = FIA_LoadFIBFromFile(file);
+
+        FIBITMAP *src2 = NULL; 
+
+	int width =  FreeImage_GetWidth(src);
+	int height = FreeImage_GetHeight(src);
+	int i;
+
+	PROFILE_START("FreeImage_Copy");
+
+	src2 = FIA_CopyLeftTopWidthHeight (src, 64, 64, 128, 128);
+
+	PROFILE_STOP("FreeImage_Copy");
+
+	FIA_SimpleSaveFIBToFile(src2, TEST_DATA_OUTPUT_DIR "/Utility/CopyLeftTopWidthHeight.bmp");
+
+    FreeImage_Unload(src);
+    FreeImage_Unload(src2);
+}
 
 static void FastCopyTest(CuTest* tc)
 {
@@ -456,7 +479,8 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 	MkDir(TEST_DATA_OUTPUT_DIR "/Utility");
 
-	//SUITE_ADD_TEST(suite, CopyTest);
+//	SUITE_ADD_TEST(suite, CopyTest);
+	SUITE_ADD_TEST(suite, CopyTestRect);
 	//SUITE_ADD_TEST(suite, FastCopyTest);
 	//SUITE_ADD_TEST(suite, HatchImageTest);
 	//SUITE_ADD_TEST(suite, AlphaCombineTest);
@@ -466,7 +490,7 @@ CuGetFreeImageAlgorithmsUtilitySuite(void)
 
 
     //SUITE_ADD_TEST(suite, BorderTest);
-	SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
+	//SUITE_ADD_TEST(suite, ConvertFloatToTypeTest);
     //SUITE_ADD_TEST(suite, BorderTest);
 	//SUITE_ADD_TEST(suite, BorderTest2);
 

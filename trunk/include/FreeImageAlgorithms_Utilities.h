@@ -823,7 +823,6 @@ FIA_MakeHatchedImage (int width, int height, int hatchType, int spacing);
 DLL_API FIBITMAP *DLL_CALLCONV
 FIA_BlendMaskWithImage(FIBITMAP *mask, FIBITMAP *image, RGBQUAD colour, int outline, int hatch, int opacity);
 
-
 #ifdef __cplusplus
 }
 #endif
