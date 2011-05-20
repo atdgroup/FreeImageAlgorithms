@@ -1801,6 +1801,65 @@ FIA_GetPixelValue (FIBITMAP * src, int x, int y, double *val)
     return FIA_ERROR;
 }
 
+int DLL_CALLCONV
+FIA_SetPixelValue (FIBITMAP * src, int x, int y, double val)
+{
+	if (src==NULL || !FreeImage_HasPixels(src))
+		return FIA_ERROR;
+
+	if (x<0 || x>=FreeImage_GetWidth(src))
+		return FIA_ERROR;
+	if (y<0 || y>=FreeImage_GetHeight(src))
+		return FIA_ERROR;
+    
+	int bpp = FreeImage_GetBPP (src);
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
+
+    BYTE *line_ptr = FreeImage_GetScanLine (src, y);
+
+    // bpp >> 3;   // Divide by 8
+    switch (bpp)
+    {
+        case 8:
+        {
+            *(line_ptr + x) = val;
+            return FIA_SUCCESS;
+        }
+
+        case 16:
+        {
+            if (type == FIT_INT16)
+                *((short *) line_ptr + x) = val;
+            else if (type == FIT_UINT16)
+                *((unsigned short *) line_ptr + x) = val;
+
+            return FIA_SUCCESS;
+        }
+
+        case 32:
+        {
+            if (type == FIT_FLOAT)
+                *((float *) line_ptr + x) = val;
+			else if(type == FIT_INT32)
+				*((int *) line_ptr + x) = val;
+			else if(type == FIT_UINT32)
+				*((unsigned int *) line_ptr + x) = val;
+
+            return FIA_SUCCESS;
+        }
+
+        case 64:
+        {
+            if (type == FIT_DOUBLE)
+                *((double *) line_ptr + x) = val;
+
+            return FIA_SUCCESS;
+        }
+    }
+
+    return FIA_ERROR;
+}
+
 
 int DLL_CALLCONV
 FIA_GetPixelValueFromTopLeft (FIBITMAP *src, int x, int y, double *val)

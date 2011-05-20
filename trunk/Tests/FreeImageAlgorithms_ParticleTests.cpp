@@ -219,7 +219,7 @@ static void TestFIA_ParticleInfoTest2(CuTest* tc)
 		FIA_DrawColourSolidRect(dst, centre, FIA_RGBQUAD(0,255,0));
 	}
 	
-	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/particlefind.bmp", BIT24);
+	FIA_SaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Particle/particlefind.bmp", BIT24);
 
 	FIA_FreeParticleInfo(info);
 
@@ -228,11 +228,10 @@ static void TestFIA_ParticleInfoTest2(CuTest* tc)
 	FreeImage_Unload(dst);
 }
 
-/*
 static void
-TestFIA_FindImageMaximaTest2(CuTest* tc)
+TestFIA_MultiscaleProductsTest(CuTest* tc)
 {
-    const char *file = IMAGE_DIR "\\timeLapse041.bmp";
+    const char *file = TEST_DATA_DIR "test.tif";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 
@@ -246,18 +245,22 @@ TestFIA_FindImageMaximaTest2(CuTest* tc)
 
 	FIBITMAP *dst = FIA_MultiscaleProducts(dib2, 2, 3);
 
-    FIA_InPlaceThreshold(dst, 0, 5, 0);
-    FIA_InPlaceThreshold(dst, 1, 255, 255);
+// PRB NOt sure what these thresholds are supposed to do!
+//    FIA_InPlaceThreshold(dst, 0, 5, 0);
+  //  FIA_InPlaceThreshold(dst, 1, 255, 255);
+	//	FIA_InPlaceThreshold(dst, 1e-10, 1e10, 1.0);
+//	FIA_InPlaceThreshold(dst, -1e10, -1e-10, 1.0);
 
 	PROFILE_STOP("MultiscaleProducts");
 
-	FIA_SaveFIBToFile(dst, TEMP_DIR "\\find_image_maxima2.bmp", BIT8); 
+	FIA_SetBinaryPalette(dst);
+	FIA_SimpleSaveFIBToFile(dst, TEST_DATA_OUTPUT_DIR "/Particle/multiscaleProducts.bmp"); 
 
 	FreeImage_Unload(dib1);
 	FreeImage_Unload(dib2);
 	FreeImage_Unload(dst);
 }
-*/
+
 
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsParticleSuite(void)
@@ -270,8 +273,7 @@ CuGetFreeImageAlgorithmsParticleSuite(void)
 
 	//SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
-	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
-//	SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest2);
+	SUITE_ADD_TEST(suite, TestFIA_MultiscaleProductsTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);

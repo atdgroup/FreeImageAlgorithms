@@ -647,11 +647,24 @@ FIA_DistanceTransform(FIBITMAP *src);
  *  \param src Image to get pixel value from.
  *  \param x int The x position.
  *  \param y int The y position.
- *  \param val float* The returned value.
+ *  \param val double* The returned value.
  *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
 DLL_API int DLL_CALLCONV
 FIA_GetPixelValue(FIBITMAP *src, int x, int y, double* val);
+
+/** \brief Set the value of a particular pixel.
+ *
+ *	Does check the position is valid. Works with all greyscale types.
+ *
+ *  \param src Image to set pixel value in.
+ *  \param x int The x position.
+ *  \param y int The y position.
+ *  \param val double The value to use.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_SetPixelValue (FIBITMAP * src, int x, int y, double val);
 
 DLL_API int DLL_CALLCONV
 FIA_GetPixelValueFromTopLeft(FIBITMAP *src, int x, int y, double* val);

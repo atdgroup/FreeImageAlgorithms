@@ -694,8 +694,6 @@ FIA_ATrousWaveletTransform (FIBITMAP * src, int levels, FIBITMAP ** W)
 
     A[0] = FIA_ConvertToGreyscaleFloatType (src, FIT_DOUBLE);
 
-    std::ostringstream ss;
-
     for(int i = 1; i <= number_of_resolutions; i++)
     {
         A[i] = GetApproximationImage (A[i - 1], kernels[i - 1], borders[i - 1]);
@@ -704,22 +702,32 @@ FIA_ATrousWaveletTransform (FIBITMAP * src, int levels, FIBITMAP ** W)
         FIA_SubtractGreyLevelImages (W[i - 1], A[i]);
 
 #ifdef VERBOSE_DEBUG
-        ss << "C:\\Temp\\FIA_Tests\\A_" << i << ".bmp";
-        FIA_SaveFIBToFile (A[i - 1], ss.c_str (), BIT8);
+//	    std::ostringstream ss;
+		char ss[512];
 
-        ss << "C:\\Temp\\FIA_Tests\\W_" << i << ".bmp";
-        FIA_SaveFIBToFile (W[i - 1], ss.c_str (), BIT8);
+//		ss << "C:\\Temp\\FIA_Tests\\A_" << i << ".bmp";
+//      FIA_SaveFIBToFile (A[i - 1], ss.c_str (), BIT8);
+		sprintf(ss, "C:\\Temp\\FIA_Tests\\A_%d.bmp", i);
+        FIA_SimpleSaveFIBToFile (A[i - 1], ss);
+
+//        ss << "C:\\Temp\\FIA_Tests\\W_" << i << ".bmp";
+//        FIA_SaveFIBToFile (W[i - 1], ss.c_str (), BIT8);
+		sprintf(ss, "C:\\Temp\\FIA_Tests\\W_%d.bmp", i);
+        FIA_SimpleSaveFIBToFile (W[i - 1], ss);
 #endif
 
         image_thresholds[i - 1] = GetMADValue (W[i - 1]) * k / 0.67;
 
         FIA_FindMinMax (W[i - 1], &min, &max);
 
-        FIA_InPlaceThreshold (W[i - 1], min, image_thresholds[i - 1], 0);
+        FIA_InPlaceThreshold (W[i - 1], min, image_thresholds[i - 1], 1.0);
 
 #ifdef VERBOSE_DEBUG
-        ss << "C:\\Temp\\FIA_Tests\\WThreshold_" << i << ".bmp";
-        FIA_SaveFIBToFile (test, ss.c_str (), BIT8);
+  //      ss << "C:\\Temp\\FIA_Tests\\WThreshold_" << i << ".bmp";
+    //    FIA_SaveFIBToFile (test, ss.c_str (), BIT8);
+		sprintf(ss, "C:\\Temp\\FIA_Tests\\WThreshold_%d.bmp", i);
+		FIA_SetBinaryPalette(W[i - 1]);
+		FIA_SimpleSaveFIBToFile(W[i - 1], ss);
 #endif
     }
 
