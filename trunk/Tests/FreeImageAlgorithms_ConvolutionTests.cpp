@@ -1776,12 +1776,10 @@ TestFIA_SobelAdvancedTest(CuTest* tc)
 static void
 TestFIA_BinningTest(CuTest* tc)
 {
-	const char *file = "c:\\lena.jpg";
+	const char *file = TEST_DATA_DIR "lena.jpg";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	FIBITMAP *converted = NULL;
-
-	//FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(&dib1, FIT_FLOAT);
 
 
 	//FIBITMAP * dib2 = FreeImage_ConvertTo8Bits(dib1);
@@ -1790,6 +1788,8 @@ TestFIA_BinningTest(CuTest* tc)
 
 	
 	//FIA_InPlaceConvertToGreyscaleFloatType(&dib1, FIT_FLOAT);
+
+	//FIA_InPlaceConvertTo8Bit(&dib1);
 
 	//FIBITMAP *dib4 = FIA_StretchImageToType(dib1, FreeImage_GetImageType(dib2), 0.0);
 
@@ -1802,7 +1802,7 @@ TestFIA_BinningTest(CuTest* tc)
 	CuAssertTrue(tc, dib1 != NULL);
 
 	FIA_SimpleSaveFIBToFile(dib1,
-            TEST_DATA_OUTPUT_DIR "/Convolution/binned_square_original.tif");
+            TEST_DATA_OUTPUT_DIR "/Convolution/original.tif");
 
     FIBITMAP* binned_dib = FIA_Binning (dib1, FIA_BINNING_SQUARE, 3);
 
@@ -1881,6 +1881,119 @@ TestFIA_BinningTest(CuTest* tc)
 	FreeImage_Unload(dib1);
 }
 
+static void
+TestFIA_BlurTest(CuTest* tc)
+{
+	const char *file = TEST_DATA_DIR "lena.jpg";
+
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+	FIBITMAP *converted = NULL;
+
+	//BasicWin32Window("Float", 100, 100, 300, 300, dib1);
+
+	CuAssertTrue(tc, dib1 != NULL);
+
+	FIA_SimpleSaveFIBToFile(dib1,
+            TEST_DATA_OUTPUT_DIR "/Convolution/original.tif");
+
+    FIBITMAP* blur_dib = FIA_Blur(dib1, FIA_KERNEL_SQUARE, 3);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_square_3x3.tif");
+	}
+
+    FreeImage_Unload(blur_dib);
+
+	// 8 bit from now on
+	FIA_InPlaceConvertTo8Bit (&dib1);
+
+	blur_dib = FIA_Blur (dib1, FIA_KERNEL_SQUARE, 5);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_square_11x11.tif");
+	}
+
+	FreeImage_Unload(blur_dib);
+
+	// Circular Binning
+
+	blur_dib = FIA_Blur (dib1, FIA_KERNEL_CIRCULAR, 1);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_circular_3x3.tif");
+	}
+
+	FreeImage_Unload(blur_dib);
+
+	blur_dib = FIA_Blur (dib1, FIA_KERNEL_CIRCULAR, 2);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_circular_5x5.tif");
+	}
+
+	FreeImage_Unload(blur_dib);
+
+	// Gaussian Binning
+
+	blur_dib = FIA_Blur (dib1, FIA_KERNEL_GAUSSIAN, 1);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_gaussian_3x3.tif");
+	}
+
+	FreeImage_Unload(blur_dib);
+
+	blur_dib = FIA_Blur (dib1, FIA_KERNEL_GAUSSIAN, 2);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_gaussian_5x5.tif");
+	}
+
+	FreeImage_Unload(blur_dib);
+
+	blur_dib = FIA_Blur (dib1, FIA_KERNEL_GAUSSIAN, 10);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/blur_gaussian_21x21.tif");
+	}
+
+	FreeImage_Unload(blur_dib);
+
+	FreeImage_Unload(dib1);
+}
+
+static void
+TestFIA_UnsharpMaskTest(CuTest* tc)
+{
+	//const char *file = TEST_DATA_DIR "lena.jpg";
+	const char *file = TEST_DATA_DIR "testcard.jpg";
+
+	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
+
+	//BasicWin32Window("Float", 100, 100, 300, 300, dib1);
+
+	CuAssertTrue(tc, dib1 != NULL);
+
+	FIBITMAP* blur_dib = FIA_UnsharpMask (dib1, 3.0, 5.0, 10.0);
+
+    if(blur_dib != NULL) {
+	    FIA_SimpleSaveFIBToFile(blur_dib,
+            TEST_DATA_OUTPUT_DIR "/Convolution/unsharpMask.tif");
+	}
+
+    FreeImage_Unload(blur_dib);
+
+
+	FreeImage_Unload(dib1);
+}
+
 
 CuSuite* DLL_CALLCONV
 CuGetFreeImageAlgorithmsConvolutionSuite(void)
@@ -1891,9 +2004,11 @@ CuGetFreeImageAlgorithmsConvolutionSuite(void)
 
 	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
 	//SUITE_ADD_TEST(suite, TestFIA_BinningTest);
+	//SUITE_ADD_TEST(suite, TestFIA_BlurTest);
+	SUITE_ADD_TEST(suite, TestFIA_UnsharpMaskTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelTest);
 	//SUITE_ADD_TEST(suite, TestFIA_SobelAdvancedTest);
-	SUITE_ADD_TEST(suite, TestFIA_ConvolutionTest);
+	//SUITE_ADD_TEST(suite, TestFIA_ConvolutionTest);
 	//SUITE_ADD_TEST(suite, TestFIA_MedianFilterTest);
 
 	//SUITE_ADD_TEST(suite, TestFIA_CorrelateSpiceSection1);

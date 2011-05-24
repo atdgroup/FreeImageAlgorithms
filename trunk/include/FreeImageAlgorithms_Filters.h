@@ -35,6 +35,14 @@ typedef enum
 
 } FIA_BINNING_TYPE;
 
+typedef enum
+{
+	FIA_KERNEL_SQUARE,
+	FIA_KERNEL_CIRCULAR,
+	FIA_KERNEL_GAUSSIAN
+
+} FIA_KERNEL_TYPE;
+
 /*! \file 
  *	Provides a median filter function.
  *
@@ -74,8 +82,44 @@ FIA_SobelAdvanced(FIBITMAP *src,
                                   FIBITMAP** horizontal,
                                   FIBITMAP** magnitude);
 
+/** \brief Perform a binning operation where pixel values are added into the central pixel of a kernel.
+ *	Returns a float greyscale image.
+ *  Return images can be NULL. If not the image has to be freed by the user.
+ *
+ *  \param src FIBITMAP bitmap to perform the filter on.
+ *  \param type FIA_BINNING_TYPE The type of binning to perform: FIA_BINNING_SQUARE, FIA_BINNING_CIRCULAR or FIA_BINNING_GAUSSIAN.
+ *  \param radius int size of the binning kernel.
+ *  \return FIBITMAP on success or NULL on error.
+*/
 DLL_API FIBITMAP* DLL_CALLCONV
-FIA_Binning (FIBITMAP * src, FIA_BINNING_TYPE, int radius);
+FIA_Binning (FIBITMAP * src, FIA_BINNING_TYPE type, int radius);
+
+/** \brief Perform a blur convolution operation.
+ *	Returns a 8bit if src is 8bit, colour if src is colour, else a float greyscale image.
+ *  Return images can be NULL. If not the image has to be freed by the user.
+ *
+ *  \param src FIBITMAP bitmap to perform the filter on.
+ *  \param type FIA_BINNING_TYPE The type of blur to perform: FIA_KERNEL_SQUARE, FIA_KERNEL_CIRCULAR or FIA_KERNEL_GAUSSIAN.
+ *  \param radius int size of the kernel.
+ *  \return FIBITMAP on success or NULL on error.
+*/
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_Blur (FIBITMAP * src, FIA_KERNEL_TYPE type, int radius);
+
+
+/** \brief Perform a unsharp mask operation.
+ *	
+ *  Return images can be NULL. If not the image has to be freed by the user.
+ *
+ *  \param src FIBITMAP bitmap to perform the filter on.
+ *  \param radius double Radius affects the size of the edges to be enhanced or how wide the edge rims become, so a smaller radius enhances smaller-scale detail.
+ *  \param amount double How much contrast is added at the edges.
+ *  \param threshold double Threshold controls the minimum brightness change that will be sharpened
+ *  \return FIBITMAP on success or NULL on error.
+*/
+DLL_API FIBITMAP* DLL_CALLCONV
+FIA_UnsharpMask (FIBITMAP *src, double radius, double amount, double threshold);
+
 
 #ifdef __cplusplus
 }

@@ -595,8 +595,10 @@ FIA_InPlaceConvertTo32Bit (FIBITMAP ** src);
 DLL_API FIBITMAP *DLL_CALLCONV
 FIA_ConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP *src, FREE_IMAGE_TYPE type);
 
+/* non-existant
 DLL_API int DLL_CALLCONV
 FIA_InPlaceConvertToGreyscaleFloatTypeWithUntouchedRange(FIBITMAP **src, FREE_IMAGE_TYPE type);
+*/
 
 DLL_API FIBITMAP *DLL_CALLCONV
 FIA_ConvertFloatTypeToType(FIBITMAP *src, FREE_IMAGE_TYPE type, BOOL scale_linear);
