@@ -425,7 +425,7 @@ DrawLine (RendererType& renderer, FIBITMAP * src, FIAPOINT p1, FIAPOINT p2, RGBQ
 
 template<typename RendererType, typename ColorT>
 static int
-DrawEllipse (RendererType& renderer, FIBITMAP * src, FIARECT rect, const ColorT& colour, int solid, int line_width, int antialiased)
+DrawEllipse (RendererType& renderer, FIBITMAP * src, FIARECT rect, const ColorT& colour, int solid, double line_width, int antialiased)
 {
     int width = FreeImage_GetWidth (src);
     int height = FreeImage_GetHeight (src);
@@ -591,6 +591,82 @@ FIA_DrawSolidGreyscaleEllipse (FIBITMAP * src, FIARECT rect, unsigned char value
     return FIA_ERROR;
 }
 
+
+int DLL_CALLCONV
+FIA_DrawGreyscaleEllipse (FIBITMAP * src, FIARECT rect, unsigned char value, int antialiased)
+{
+    int width = FreeImage_GetWidth (src);
+    int height = FreeImage_GetHeight (src);
+
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (src);
+
+    // Allocate the framebuffer
+    unsigned char *buf = FreeImage_GetBits (src);
+
+    switch (type)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src) == 8) {
+                
+                typedef agg::pixfmt_gray8                        pixfmt_type;
+                typedef agg::renderer_base < pixfmt_type >       renbase_type;
+
+                // Create the rendering buffer
+                agg::rendering_buffer rbuf (buf, width, height, FreeImage_GetPitch (src));
+
+                pixfmt_type pixf(rbuf);
+                renbase_type rbase(pixf);
+
+                RGBQUAD colour = FIA_RGBQUAD ((unsigned char) value, (unsigned char) value, (unsigned char) value);
+
+                return DrawEllipse (rbase, src, rect, agg::rgba8 (colour.rgbRed, colour.rgbGreen, colour.rgbBlue), 0, 0.1, antialiased);
+            }
+
+            break;
+        }
+        case FIT_UINT16:
+        {      
+            typedef agg::pixfmt_gray16                       pixfmt_type;
+            typedef agg::renderer_base < pixfmt_type >       renbase_type;
+
+            // Create the rendering buffer
+            agg::rendering_buffer rbuf (buf, width, height, FreeImage_GetPitch (src));
+
+            pixfmt_type pixf(rbuf);
+            renbase_type rbase(pixf);
+
+            return DrawEllipse (rbase, src, rect, agg::gray16(value), 0, 0.1, antialiased);
+
+       }
+        case FIT_INT16:
+        {   
+            break;
+        }
+        case FIT_UINT32:
+        {             
+            break;
+        }
+        case FIT_INT32:
+        {
+            break;
+        }
+        case FIT_FLOAT:
+        {
+            break;
+        }
+        case FIT_DOUBLE:
+        { 
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
 
 
 template<typename RendererType, typename ColorT>

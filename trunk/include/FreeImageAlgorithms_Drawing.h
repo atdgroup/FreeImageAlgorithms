@@ -205,6 +205,9 @@ DLL_API int DLL_CALLCONV
 FIA_DrawSolidGreyscaleEllipse (FIBITMAP *src, FIARECT rect, unsigned char value, int antialiased);
 
 DLL_API int DLL_CALLCONV
+FIA_DrawGreyscaleEllipse (FIBITMAP * src, FIARECT rect, unsigned char value, int antialiased);
+
+DLL_API int DLL_CALLCONV
 FIA_DrawColourSolidEllipse (FIBITMAP * src, FIARECT rect, RGBQUAD colour, int antialiased);
 
 DLL_API int DLL_CALLCONV

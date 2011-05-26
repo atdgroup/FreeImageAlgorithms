@@ -307,20 +307,42 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::MultiplyImages (FIBITMAP * dst,
 
     // Make dst a double so it can hold all the results of
     // the arithmetic.
-    if (FreeImage_GetImageType (dst) != FIT_DOUBLE && FreeImage_GetImageType (dst) != FIT_FLOAT)
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (dst);
+
+    if (type != FIT_DOUBLE && type != FIT_FLOAT)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination was not a FIT_FLOAT or FIT_DOUBLE");
         return FIA_ERROR;
     }
 
-    for(register int y = 0; y < height; y++)
+    Tsrc *src_ptr;
+	
+	if (type == FIT_DOUBLE)
     {
-        Tsrc *src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
-        double *dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+        double *dst_ptr;
 
-        for(register int x = 0; x < width; x++)
-            dst_ptr[x] *= src_ptr[x];
+        for(register int y = 0; y < height; y++)
+        {
+            dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+            src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
+                dst_ptr[x] = (double) (dst_ptr[x] * src_ptr[x]);
+        }
+    }
+    else if (type == FIT_FLOAT)
+    {
+        float *dst_ptr;
+
+        for(register int y = 0; y < height; y++)
+        {
+            dst_ptr = (float *) FreeImage_GetScanLine (dst, y);
+            src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
+                dst_ptr[x] = (float) (dst_ptr[x] * src_ptr[x]);
+        }
     }
 
     return FIA_SUCCESS;
@@ -340,30 +362,44 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::DivideImages (FIBITMAP * dst, F
 
     // Make dst a double so it can hold all the results of
     // the arithmetic.
-    if (FreeImage_GetImageType (dst) != FIT_DOUBLE && FreeImage_GetImageType (dst) != FIT_FLOAT)
+    FREE_IMAGE_TYPE type = FreeImage_GetImageType (dst);
+
+    if (type != FIT_DOUBLE && type != FIT_FLOAT)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Image destination was not a FIT_FLOAT or FIT_DOUBLE");
         return FIA_ERROR;
     }
 
-    double *dst_ptr = (double *) FreeImage_GetBits (dst);
-    Tsrc *src_ptr = (Tsrc *) FreeImage_GetBits (src);
-
-    if (dst_ptr == NULL || src_ptr == NULL)
-        return FIA_ERROR;
-
     int width = FreeImage_GetWidth (src);
     int height = FreeImage_GetHeight (src);
 
-    for(register int y = 0; y < height; y++)
+    Tsrc *src_ptr;
+	
+	if (type == FIT_DOUBLE)
     {
-        dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
-        src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+        double *dst_ptr;
 
-        for(register int x = 0; x < width; x++)
+        for(register int y = 0; y < height; y++)
         {
-            dst_ptr[x] = (double) dst_ptr[x] / src_ptr[x];
+            dst_ptr = (double *) FreeImage_GetScanLine (dst, y);
+            src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+			for(register int x = 0; x < width; x++)
+                dst_ptr[x] = (double) (dst_ptr[x] / (src_ptr[x]+1.0e-10));
+        }
+    }
+    else if (type == FIT_FLOAT)
+    {
+        float *dst_ptr;
+
+        for(register int y = 0; y < height; y++)
+        {
+            dst_ptr = (float *) FreeImage_GetScanLine (dst, y);
+            src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
+
+            for(register int x = 0; x < width; x++)
+                dst_ptr[x] = (float) (dst_ptr[x] / (src_ptr[x]+1.0e-10));
         }
     }
 
@@ -757,6 +793,9 @@ template < class Tsrc > int ARITHMATIC < Tsrc >::DivideGreyLevelImageConstant (F
                                                                                double constant)
 {
     if (dst == NULL)
+        return FIA_ERROR;
+
+	if (constant==0.0)
         return FIA_ERROR;
 
     // Make sure dst is a double or float so it can hold all the results of

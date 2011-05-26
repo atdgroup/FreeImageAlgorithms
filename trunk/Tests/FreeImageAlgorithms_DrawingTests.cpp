@@ -30,8 +30,8 @@ TestFIA_GreyscaleElipseTest(CuTest* tc)
     rect2.bottom = 200;
     rect2.right = 300;
 
-    FIA_DrawSolidGreyscaleEllipse (src, rect, 200, 1);
-    FIA_DrawSolidGreyscaleEllipse (src, rect2, 200, 0);
+    FIA_DrawSolidGreyscaleEllipse (src, rect2, 200, 1);
+    FIA_DrawGreyscaleEllipse (src, rect, 200, 0);
     FIA_DrawGreyscaleRect (src, rect, 200, 2);
 
     FIA_SaveFIBToFile(src, TEST_DATA_OUTPUT_DIR "Drawing/TestFIA_GreyscaleElipseTest.bmp", BIT8);
@@ -1333,8 +1333,8 @@ CuGetFreeImageAlgorithmsDrawingSuite(void)
     //SUITE_ADD_TEST(suite, TestFIA_SolidGSRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_SolidRectTest);
     //SUITE_ADD_TEST(suite, TestFIA_ConvexHullTest);
-
-    SUITE_ADD_TEST(suite, TestFIA_GSLineTest);
+    SUITE_ADD_TEST(suite, TestFIA_GreyscaleElipseTest);
+    //SUITE_ADD_TEST(suite, TestFIA_GSLineTest);
 /*
     SUITE_ADD_TEST(suite, TestFIA_Colour24bitLineTest);
     SUITE_ADD_TEST(suite, TestFIA_Colour32bitLineTest);
