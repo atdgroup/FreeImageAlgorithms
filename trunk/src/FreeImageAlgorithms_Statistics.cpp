@@ -20,6 +20,7 @@
 
 #include "FreeImageAlgorithms.h"
 #include "FreeImageAlgorithms_Statistics.h"
+#include "FreeImageAlgorithms_Colour.h"
 #include "FreeImageAlgorithms_Palettes.h"
 #include "FreeImageAlgorithms_Utilities.h"
 #include "FreeImageAlgorithms_Utils.h"
@@ -601,6 +602,86 @@ FIA_StatisticReportWithMask (FIBITMAP * src, FIBITMAP * mask, StatisticReport * 
 
         default:
         {                       // array of FICOMPLEX: 2 x 64-bit
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_StatisticReportColour (FIBITMAP * src, StatisticReport * Rreport, StatisticReport * Greport, StatisticReport * Breport)
+{
+    if (!src)
+        return FIA_ERROR;
+
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src) > 8)
+            {
+				FIBITMAP *R, *G, *B;
+
+				FIA_ExtractColourPlanes(src, &R, &G, &B);
+
+				statisticUCharImage.CalculateStatisticReport (R, NULL, Rreport);
+				statisticUCharImage.CalculateStatisticReport (G, NULL, Greport);
+				statisticUCharImage.CalculateStatisticReport (B, NULL, Breport);
+
+				FreeImage_Unload(R);
+				FreeImage_Unload(G);
+				FreeImage_Unload(B);
+
+                return FIA_SUCCESS;
+            }
+            break;
+        }
+
+        default:
+        {     
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
+
+int DLL_CALLCONV
+FIA_StatisticReportColourWithMask (FIBITMAP * src, FIBITMAP * mask, StatisticReport * Rreport, StatisticReport * Greport, StatisticReport * Breport)
+{
+    if (!src)
+        return FIA_ERROR;
+
+    FREE_IMAGE_TYPE src_type = FreeImage_GetImageType (src);
+
+    switch (src_type)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src) > 8)
+            {
+				FIBITMAP *R, *G, *B;
+
+				FIA_ExtractColourPlanes(src, &R, &G, &B);
+
+				statisticUCharImage.CalculateStatisticReport (R, mask, Rreport);
+				statisticUCharImage.CalculateStatisticReport (G, mask, Greport);
+				statisticUCharImage.CalculateStatisticReport (B, mask, Breport);
+
+				FreeImage_Unload(R);
+				FreeImage_Unload(G);
+				FreeImage_Unload(B);
+
+                return FIA_SUCCESS;
+            }
+            break;
+        }
+
+        default:
+        {     
             break;
         }
     }

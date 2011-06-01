@@ -140,7 +140,7 @@ DLL_API int DLL_CALLCONV
 FIA_MonoTrueFalsePositiveComparison(FIBITMAP *src, FIBITMAP *result,
 													int *tp, int *tn, int *fp, int *fn);
 
-/** \brief This function determines how a detail is present though two images.
+/** \brief This function measures statistics on an image.
  *
  *  \param src FIBITMAP bitmap to perform the computation on.
  *  \param report StatisticReport * Report describing the statistics of the image.
@@ -151,6 +151,20 @@ FIA_StatisticReport(FIBITMAP *src, StatisticReport *report);
 
 DLL_API int DLL_CALLCONV
 FIA_StatisticReportWithMask (FIBITMAP * src, FIBITMAP * mask, StatisticReport * report);
+
+/** \brief This function measures statistics on an image.
+ *
+ *  \param src FIBITMAP bitmap to perform the computation on.
+ *  \param Rreport StatisticReport * Report describing the statistics of the Red plane.
+ *  \param Greport StatisticReport * Report describing the statistics of the Green plane.
+ *  \param Breport StatisticReport * Report describing the statistics of the Blue plane.
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+ */
+DLL_API int DLL_CALLCONV
+FIA_StatisticReportColour (FIBITMAP * src, StatisticReport * Rreport, StatisticReport * Greport, StatisticReport * Breport);
+
+DLL_API int DLL_CALLCONV
+FIA_StatisticReportColourWithMask (FIBITMAP * src, FIBITMAP * mask, StatisticReport * Rreport, StatisticReport * Greport, StatisticReport * Breport);
 
 /** \brief This function determines the center of pixel energy of an image.
  *
