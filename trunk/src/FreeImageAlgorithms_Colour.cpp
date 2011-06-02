@@ -311,3 +311,52 @@ FIA_ReplaceColourPlanes (FIBITMAP **src, FIBITMAP *R, FIBITMAP *G, FIBITMAP *B)
 		
 	return FIA_SUCCESS;
 }
+
+FIBITMAP* DLL_CALLCONV 
+FIA_ColourConvertBGRtoRGB (FIBITMAP * src)
+{
+    FIBITMAP *dst = NULL;
+	int x, y, bytespp;
+
+    if (!src)
+        return NULL;
+	
+	if (FIA_IsGreyScale(src)==1)
+		return NULL;
+
+	dst = FreeImage_Clone(src);
+
+	// Calculate the number of bytes per pixel (3 for 24-bit or 4 for 32-bit)
+	bytespp = FreeImage_GetLine(src) / FreeImage_GetWidth(src);
+ 
+	for(y = 0; y < FreeImage_GetHeight(src); y++) {
+		BYTE *src_bits = FreeImage_GetScanLine(src, y);
+		BYTE *dst_bits = FreeImage_GetScanLine(dst, y);
+		
+		for(x = 0; x < FreeImage_GetWidth(src); x++) {
+			// reverse colour bytes
+			dst_bits[FI_RGBA_RED]   = src_bits[FI_RGBA_BLUE];
+			dst_bits[FI_RGBA_GREEN] = src_bits[FI_RGBA_GREEN];
+			dst_bits[FI_RGBA_BLUE]  = src_bits[FI_RGBA_RED];
+			dst_bits[FI_RGBA_ALPHA] = 0;
+
+			// jump to next pixel
+			src_bits += bytespp;
+			dst_bits += bytespp;
+		 }
+	}
+
+    return dst;
+}
+
+int DLL_CALLCONV
+FIA_InplaceColourConvertBGRtoRGB (FIBITMAP ** src)
+{
+    FIBITMAP *dst = FIA_ColourConvertBGRtoRGB (*src);
+
+    FreeImage_Unload (*src);
+    *src = dst;
+
+    return FIA_SUCCESS;
+}
+

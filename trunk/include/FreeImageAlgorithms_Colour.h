@@ -111,6 +111,22 @@ FIA_ExtractColourPlanes (FIBITMAP *src, FIBITMAP **R, FIBITMAP **G, FIBITMAP **B
 DLL_API int DLL_CALLCONV
 FIA_ReplaceColourPlanes (FIBITMAP **src, FIBITMAP *R, FIBITMAP *G, FIBITMAP *B);
 
+/** \brief Change the order of the colour bytes.
+ *
+ *  \param src The colour image
+ *  \return FIBITMAP* Resulting image.
+*/
+DLL_API FIBITMAP* DLL_CALLCONV 
+FIA_ColourConvertBGRtoRGB (FIBITMAP * src);
+
+/** \brief Change the order of the colour bytes.
+ *
+ *  \param src The colour image
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_InplaceColourConvertBGRtoRGB (FIBITMAP ** src);
+
 #ifdef __cplusplus
 }
 #endif
