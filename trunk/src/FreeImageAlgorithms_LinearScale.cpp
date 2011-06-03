@@ -157,10 +157,10 @@ template < class Tsrc > FIBITMAP * LINEAR_SCALE < Tsrc >::convert (FIBITMAP * sr
         FIA_FindMinMax (src, &min_found, &max_found);
     }
 
-    // We can scale as only one value present - return a clone
+    // We cannot scale as only one value present - just convert
     if (min_found == max_found)
     {
-        return FreeImage_Clone (src);
+		return FreeImage_ConvertToStandardType (src, 0);
     }
 
     if (min_within_image != NULL)
