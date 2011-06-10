@@ -104,6 +104,16 @@ typedef enum _FIA_MatrixOrder {FIA_MatrixOrderPrepend = 0, FIA_MatrixOrderAppend
 
 typedef enum {BIT_NONE=-1, BIT8, BIT16, BIT24, BIT32} FREEIMAGE_ALGORITHMS_SAVE_BITDEPTH;
 
+
+/** \brief Allows any function that returns a FIBITMAP* to be used in place
+ *
+ *  e.g. FIA_InPlace (image1, FIA_BinaryAnd(image1, image2, 0));
+ *
+ *  \param a The FIABITMAP* bitmap to be processed in place.
+ *  \param b The new FIABITMAP* bitmap.
+*/
+#define FIA_InPlace(a, b) {FIBITMAP *c; c=b; FreeImage_Unload(a); a=c;}
+
 /** \brief Disposes of FIABITMAP's.
  *
  *  Disposes of FIABITMAP's (which have a border added to an image).
