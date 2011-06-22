@@ -4,6 +4,8 @@
 #include "FreeImageAlgorithms.h"
 #include "FreeImageAlgorithms_IO.h"
 #include "FreeImageAlgorithms_Statistics.h"
+#include "FreeImageAlgorithms_Utilities.h"
+#include "FreeImageAlgorithms_Arithmetic.h"
 
 #include "FreeImageAlgorithms_Testing.h"
 
@@ -37,19 +39,43 @@ static void TestFIA_StatisticsTest(CuTest* tc)
 {
     const char *file= TEST_DATA_DIR "drone-bee-greyscale.jpg";
     
-    FIBITMAP *dib = FIA_LoadFIBFromFile(file);
+    FIBITMAP *dib = FIA_LoadFIBFromFile(file), *mask=NULL;
     
     CuAssertTrue(tc, dib != NULL);
     
     StatisticReport report;
     
-    PROFILE_START("FreeImageAlgorithms_StatisticReport");
+	memset(&report, 0, sizeof(StatisticReport));
+
+	// run as 8 bit
+	PROFILE_START("FreeImageAlgorithms_StatisticReport");
     
     if (FIA_StatisticReport(dib, &report) == FIA_ERROR) {
         CuFail(tc, "Failed");
     }
     
     PROFILE_STOP("FreeImageAlgorithms_StatisticReport");
+
+	printf("area\t%d\nmin\t%f\nmax\t%f\nmean\t%f\nstdDev\t%f\n", report.area, report.minValue, report.maxValue, report.mean, report.stdDeviation);
+
+	// run as float, with a mask
+	mask = FIA_Threshold(dib, 250.0, 255.0, 1.0);
+	FIA_InPlaceConvertToGreyscaleFloatType(&dib, FIT_FLOAT);
+//	FIA_AddGreyLevelImageConstant(dib, 1000.0);
+
+	memset(&report, 0, sizeof(StatisticReport));
+    
+    PROFILE_START("FreeImageAlgorithms_StatisticReport");
+    
+//    if (FIA_StatisticReport(dib, &report) == FIA_ERROR) {
+    if (FIA_StatisticReportWithMask(dib, mask, &report) == FIA_ERROR) {
+        CuFail(tc, "Failed");
+    }
+    
+    PROFILE_STOP("FreeImageAlgorithms_StatisticReport");
+
+	printf("\n");
+	printf("area\t%d\nmin\t%f\nmax\t%f\nmean\t%f\nstdDev\t%f\n", report.area, report.minValue, report.maxValue, report.mean, report.stdDeviation);
     
     FreeImage_Unload(dib);
 }
@@ -140,8 +166,8 @@ CuGetFreeImageAlgorithmsStatisticSuite(void)
 
     //SUITE_ADD_TEST(suite, TestFIA_MonoAreaTest);
     //SUITE_ADD_TEST(suite, TestFIA_MonoComparisonTest);
-    SUITE_ADD_TEST(suite, TestFIA_HistogramTest);
-    //SUITE_ADD_TEST(suite, TestFIA_StatisticsTest);
+    //SUITE_ADD_TEST(suite, TestFIA_HistogramTest);
+    SUITE_ADD_TEST(suite, TestFIA_StatisticsTest);
     //SUITE_ADD_TEST(suite, TestFIA_CentroidTest);
 
     return suite;

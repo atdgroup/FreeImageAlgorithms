@@ -213,7 +213,9 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
     FIA_GetMinPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &min_possible_for_type);
     FIA_GetMaxPosibleValueForGreyScaleType (FreeImage_GetImageType(src), &max_possible_for_type);
 
-    report->maxValue = report->minValue = FreeImage_GetBits (src)[0];
+    // start min at the highest val, max at the lowest.
+	report->maxValue = min_possible_for_type;
+	report->minValue = max_possible_for_type;
 
     if (mask != NULL)
     {
