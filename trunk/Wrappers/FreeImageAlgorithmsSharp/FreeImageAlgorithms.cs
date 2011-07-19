@@ -366,12 +366,19 @@ namespace FreeImageAPI
              this.ReplaceDib(tmp_dib);
         }
 
-        public void ConvertToGreyscale()
-        {
-            FIBITMAP tmp_dib = FreeImage.ConvertToGreyscale(this.Dib);
+         public void ConvertToGreyscale()
+         {
+             FIBITMAP tmp_dib = FreeImage.ConvertToGreyscale(this.Dib);
 
-            this.ReplaceDib(tmp_dib);
-        }
+             this.ReplaceDib(tmp_dib);
+         }
+
+         public void GetChannel(FREE_IMAGE_COLOR_CHANNEL ficc)
+         {
+             FIBITMAP tmp_dib = FreeImage.GetChannel(this.Dib, ficc);
+
+             this.ReplaceDib(tmp_dib);
+         }
 
         public void VerticalFlip()
         {
