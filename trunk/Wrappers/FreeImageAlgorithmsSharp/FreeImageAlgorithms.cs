@@ -558,6 +558,16 @@ namespace FreeImageAPI
             return result;
         }
 
+        public void Crop(int left, int top, int right, int bottom)
+        {
+            EnsureNotDisposed();
+            FIBITMAP tmp_dib = FreeImage.Copy(this.Dib, left, top, right, bottom);
+            if (!tmp_dib.IsNull)
+            {
+                this.ReplaceDib(tmp_dib);
+            }
+        }
+
         public bool Paste(FreeImageBitmap src, Point location)
         {
             return FreeImage.Paste(this.Dib, src.Dib, location.X, location.Y);
