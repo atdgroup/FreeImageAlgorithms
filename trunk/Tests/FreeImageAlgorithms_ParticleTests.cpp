@@ -16,13 +16,14 @@
 static void
 TestFIA_FillholeTest(CuTest* tc)
 {
-	const char *file = TEST_DATA_DIR "fillhole.bmp";
+	const char *file = TEST_DATA_DIR "fillhole2.bmp";
 
 	FIBITMAP *dib1 = FIA_LoadFIBFromFile(file);
 	
 	CuAssertTrue(tc, dib1 != NULL);
 	
-	FIBITMAP *threshold_dib = FreeImage_Threshold(dib1, 20);
+//	FIBITMAP *threshold_dib = FreeImage_Threshold(dib1, 20);
+	FIBITMAP *threshold_dib = FreeImage_Threshold(dib1, 1);
 
 	CuAssertTrue(tc, threshold_dib != NULL);
 
@@ -271,9 +272,9 @@ CuGetFreeImageAlgorithmsParticleSuite(void)
 
 	FIA_EnableOldBrokenCodeCompatibility();
 
-	//SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
+	SUITE_ADD_TEST(suite, TestFIA_FillholeTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest);
-	SUITE_ADD_TEST(suite, TestFIA_MultiscaleProductsTest);
+	//SUITE_ADD_TEST(suite, TestFIA_MultiscaleProductsTest);
 	//SUITE_ADD_TEST(suite, TestFIA_ParticleInfoTest2);
 
 	//SUITE_ADD_TEST(suite, TestFIA_FindImageMaximaTest);
