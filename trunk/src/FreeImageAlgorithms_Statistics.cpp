@@ -39,6 +39,12 @@ template < class Tsrc > class Statistic
     int Centroid (FIBITMAP * src, float *x_centroid, float *y_centroid);
 
     double CalculateGreyLevelAverage (FIBITMAP * src);
+
+    int Calculate2dHistogram (FIBITMAP * src_x, FIBITMAP * src_y,
+                              FIBITMAP * mask_x, FIBITMAP * mask_y,
+                              double min_x, double max_x, int number_of_bins_x,
+                              double min_y, double max_y, int number_of_bins_y,
+                              unsigned long **hist);
 };
 
 template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * src, FIBITMAP * mask, double min,
@@ -382,6 +388,222 @@ template < class Tsrc > double Statistic < Tsrc >::CalculateGreyLevelAverage (FI
     return sum / total;
 }
 
+template < class Tsrc > int Statistic < Tsrc >::Calculate2dHistogram (FIBITMAP * src_x, FIBITMAP * src_y,
+                                                                      FIBITMAP * mask_x, FIBITMAP * mask_y,
+                                                                      double min_x, double max_x, int number_of_bins_x,
+                                                                      double min_y, double max_y, int number_of_bins_y,
+                                                                      unsigned long **hist)
+{
+    if (hist == NULL)
+    {
+        return FIA_ERROR;
+    }
+
+    FREE_IMAGE_TYPE src_type_x = FreeImage_GetImageType (src_x);
+    FREE_IMAGE_TYPE src_type_y = FreeImage_GetImageType (src_y);
+
+    if ((!src_type_x) || (!src_type_y))
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Source images are of different types");
+        return FIA_ERROR;
+    }
+
+    if ((FreeImage_HasPixels(src_x)==FALSE) || (FreeImage_HasPixels(src_y)==FALSE))
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Source image has no pixels");
+        return FIA_ERROR;
+    }
+
+    if (FIA_CheckDimensions (src_x, src_y) == FIA_ERROR)
+    {
+        // Source images must be of same size
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Images have different dimensions");
+        return FIA_ERROR;
+    }
+
+    if (mask_x != NULL)
+    {
+        // Mask has to be the same size
+        if (FIA_CheckDimensions (src_x, mask_x) == FIA_ERROR)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "Image source and mask have different dimensions");
+            return FIA_ERROR;
+        }
+
+        // Mask has to be 8 bit 
+        if (FreeImage_GetBPP (mask_x) != 8 || FreeImage_GetImageType (mask_x) != FIT_BITMAP)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask must be an 8bit FIT_BITMAP");
+            return FIA_ERROR;
+        }
+    }
+
+    if (mask_y != NULL)
+    {
+        // Mask has to be the same size
+        if (FIA_CheckDimensions (src_y, mask_y) == FIA_ERROR)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                         "Image source and mask have different dimensions");
+            return FIA_ERROR;
+        }
+
+        // Mask has to be 8 bit 
+        if (FreeImage_GetBPP (mask_y) != 8 || FreeImage_GetImageType (mask_y) != FIT_BITMAP)
+        {
+            FreeImage_OutputMessageProc (FIF_UNKNOWN, "Mask must be an 8bit FIT_BITMAP");
+            return FIA_ERROR;
+        }
+    }
+
+    if ((number_of_bins_x < 1) || (number_of_bins_y < 1))
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN, "Error number of bins less than 1");
+        return FIA_ERROR;
+    }
+
+    // We need to find the min and max in the images.
+    if (min_x == 0 && max_x == 0)
+    {
+        FIA_FindMinMax (src_x, &min_x, &max_x);
+    }
+
+    if (min_y == 0 && max_y == 0)
+    {
+        FIA_FindMinMax (src_y, &min_y, &max_y);
+    }
+
+    if ((min_x >= max_x) || (min_y >= max_y))
+    {
+        FreeImage_OutputMessageProc (FIF_UNKNOWN,
+                                     "Error minimum specified is greater than the maximum");
+        return FIA_ERROR;
+    }
+
+    // Clear histogram array
+    for(register int i = 0; i < number_of_bins_x; i++)
+        for(register int j = 0; j < number_of_bins_y; j++)
+            hist[i][j] = 0;
+//    memset (hist, 0, number_of_bins * sizeof (unsigned long));
+
+    Tsrc tmp_min_x = (Tsrc) min_x;
+    Tsrc tmp_max_x = (Tsrc) max_x;
+    Tsrc range_x   = tmp_max_x - tmp_min_x;
+    Tsrc tmp_min_y = (Tsrc) min_y;
+    Tsrc tmp_max_y = (Tsrc) max_y;
+    Tsrc range_y   = tmp_max_y - tmp_min_y;
+
+    // bins-1 as we need the histogram range to exceed the image range
+    // by one extra bin to accomodate the pixels with max intensity
+    double range_per_bin_x = (double) range_x / (double) (number_of_bins_x - 1);
+    double range_per_bin_y = (double) range_y / (double) (number_of_bins_y - 1);
+
+    int width = FreeImage_GetWidth (src_x);
+    int height = FreeImage_GetHeight (src_x);
+
+    Tsrc *bits_x = NULL, *bits_y = NULL;
+    Tsrc pixel_x, pixel_y;
+    unsigned int bin_x, bin_y;
+
+    if ((mask_x != NULL) || (mask_y != NULL))
+    {
+		for(register int j = 0; j < height; j++)
+		{
+			bits_x           = (Tsrc *) FreeImage_GetScanLine (src_x, j);
+			bits_y           = (Tsrc *) FreeImage_GetScanLine (src_y, j);
+            BYTE *mask_ptr_x, *mask_ptr_y;
+
+            if (mask_x != NULL)
+                mask_ptr_x = (BYTE *) FreeImage_GetScanLine (mask_x, j);
+            else
+                mask_ptr_x = NULL;
+
+            if (mask_y != NULL)
+                mask_ptr_y = (BYTE *) FreeImage_GetScanLine (mask_y, j);
+            else
+                mask_ptr_y = NULL;
+
+            for(register int i = 0; i < width; i++)
+            {
+                if (mask_ptr_x != NULL)
+                    if (mask_ptr_x[i] == 0)
+                        continue;
+
+                if (mask_ptr_y != NULL)
+                    if (mask_ptr_y[i] == 0)
+                        continue;
+
+				pixel_x = bits_x[i];
+                pixel_y = bits_y[i];
+
+				if (pixel_x >= tmp_min_x && pixel_x <= tmp_max_x && pixel_y >= tmp_min_y && pixel_y <= tmp_max_y)
+				{
+					// If range_per_bin == 1 with dont need the divide. The divide is very slow.
+					if (range_per_bin_x == 1)
+					{
+						bin_x = (int) (pixel_x - tmp_min_x);
+					}
+					else
+					{
+						bin_x = (int) ((pixel_x - tmp_min_x) / range_per_bin_x);
+					}
+
+                    if (range_per_bin_y == 1)
+					{
+						bin_y = (int) (pixel_y - tmp_min_y);
+					}
+					else
+					{
+						bin_y = (int) ((pixel_y - tmp_min_y) / range_per_bin_y);
+					}
+
+					hist[bin_x][bin_y]++;
+				}
+			}
+		}
+	} 
+	else {
+		for(register int j = 0; j < height; j++)
+		{
+			bits_x = (Tsrc *) FreeImage_GetScanLine (src_x, j);
+            bits_y = (Tsrc *) FreeImage_GetScanLine (src_y, j);
+
+			for(register int i = 0; i < width; i++)
+			{
+				pixel_x = bits_x[i];
+                pixel_y = bits_y[i];
+
+				if (pixel_x >= tmp_min_x && pixel_x <= tmp_max_x && pixel_y >= tmp_min_y && pixel_y <= tmp_max_y)
+				{
+					// If range_per_bin == 1 with dont need the divide. The divide is very slow.
+					if (range_per_bin_x == 1)
+					{
+						bin_x = (int) (pixel_x - tmp_min_x);
+					}
+					else
+					{
+						bin_x = (int) ((pixel_x - tmp_min_x) / range_per_bin_x);
+					}
+
+                    if (range_per_bin_y == 1)
+					{
+						bin_y = (int) (pixel_y - tmp_min_y);
+					}
+					else
+					{
+						bin_y = (int) ((pixel_y - tmp_min_y) / range_per_bin_y);
+					}
+
+					hist[bin_x][bin_y]++;
+				}
+			}
+		}
+	}
+    return FIA_SUCCESS;
+}
+
 Statistic < unsigned char >statisticUCharImage;
 Statistic < unsigned short >statisticUShortImage;
 Statistic < short >statisticShortImage;
@@ -494,7 +716,155 @@ FIA_HistogramWithMask (FIBITMAP * src, FIBITMAP * mask, double min, double max, 
 
     return FIA_ERROR;
 }
+DLL_API int DLL_CALLCONV
+FIA_2dHistogram(FIBITMAP * src_x, FIBITMAP * src_y,
+                double min_x, double max_x, int number_of_bins_x,
+                double min_y, double max_y, int number_of_bins_y,
+                unsigned long **hist)
+{
+    if ((!src_x) || (!src_y))
+        return FIA_ERROR;
 
+    FREE_IMAGE_TYPE src_type_x = FreeImage_GetImageType (src_x);
+
+    switch (src_type_x)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src_x) == 8)
+            {
+                return statisticUCharImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                                 min_x, max_x, number_of_bins_x,
+                                                                 min_y, max_y, number_of_bins_y,
+                                                                 hist);
+            }
+            break;
+        }
+        case FIT_UINT16:
+        {                       // array of unsigned short: unsigned 16-bit
+            return statisticUShortImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                              min_x, max_x, number_of_bins_x,
+                                                              min_y, max_y, number_of_bins_y,
+                                                              hist);
+        }
+        case FIT_INT16:
+        {                       // array of short: signed 16-bit
+            return statisticShortImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                             min_x, max_x, number_of_bins_x,
+                                                             min_y, max_y, number_of_bins_y,
+                                                             hist);
+        }
+        case FIT_UINT32:
+        {                       // array of unsigned long: unsigned 32-bit
+            return statisticULongImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                             min_x, max_x, number_of_bins_x,
+                                                             min_y, max_y, number_of_bins_y,
+                                                             hist);
+        }
+        case FIT_INT32:
+        {                       // array of long: signed 32-bit
+            return statisticLongImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                            min_x, max_x, number_of_bins_x,
+                                                            min_y, max_y, number_of_bins_y,
+                                                            hist);
+        }
+        case FIT_FLOAT:
+        {                       // array of float: 32-bit
+            return statisticFloatImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                             min_x, max_x, number_of_bins_x,
+                                                             min_y, max_y, number_of_bins_y,
+                                                             hist);
+        }
+        case FIT_DOUBLE:
+        {                       // array of double: 64-bit
+            return statisticDoubleImage.Calculate2dHistogram (src_x, src_y, NULL, NULL,
+                                                              min_x, max_x, number_of_bins_x,
+                                                              min_y, max_y, number_of_bins_y,
+                                                              hist);
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
+int DLL_CALLCONV
+FIA_2dHistogramWithMask (FIBITMAP * src_x, FIBITMAP * src_y,
+                         FIBITMAP * mask_x, FIBITMAP * mask_y,
+                         double min_x, double max_x, int number_of_bins_x,
+                         double min_y, double max_y, int number_of_bins_y,
+                         unsigned long **hist)
+{
+    if ((!src_x) || (!src_y))
+        return FIA_ERROR;
+
+    FREE_IMAGE_TYPE src_type_x = FreeImage_GetImageType (src_x);
+
+    switch (src_type_x)
+    {
+        case FIT_BITMAP:
+        {                       // standard image: 1-, 4-, 8-, 16-, 24-, 32-bit
+            if (FreeImage_GetBPP (src_x) == 8)
+            {
+                return statisticUCharImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                                 min_x, max_x, number_of_bins_x,
+                                                                 min_y, max_y, number_of_bins_y,
+                                                                 hist);
+            }
+            break;
+        }
+        case FIT_UINT16:
+        {                       // array of unsigned short: unsigned 16-bit
+            return statisticUShortImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                              min_x, max_x, number_of_bins_x,
+                                                              min_y, max_y, number_of_bins_y,
+                                                              hist);
+        }
+        case FIT_INT16:
+        {                       // array of short: signed 16-bit
+            return statisticShortImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                             min_x, max_x, number_of_bins_x,
+                                                             min_y, max_y, number_of_bins_y,
+                                                             hist);
+        }
+        case FIT_UINT32:
+        {                       // array of unsigned long: unsigned 32-bit
+            return statisticULongImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                             min_x, max_x, number_of_bins_x,
+                                                             min_y, max_y, number_of_bins_y,
+                                                             hist);
+        }
+        case FIT_INT32:
+        {                       // array of long: signed 32-bit
+            return statisticLongImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                            min_x, max_x, number_of_bins_x,
+                                                            min_y, max_y, number_of_bins_y,
+                                                            hist);
+        }
+        case FIT_FLOAT:
+        {                       // array of float: 32-bit
+            return statisticFloatImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                             min_x, max_x, number_of_bins_x,
+                                                             min_y, max_y, number_of_bins_y,
+                                                             hist);
+        }
+        case FIT_DOUBLE:
+        {                       // array of double: 64-bit
+            return statisticDoubleImage.Calculate2dHistogram (src_x,src_y, mask_x, mask_y,
+                                                              min_x, max_x, number_of_bins_x,
+                                                              min_y, max_y, number_of_bins_y,
+                                                              hist);
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return FIA_ERROR;
+}
 int DLL_CALLCONV
 FIA_StatisticReport (FIBITMAP * src, StatisticReport * report)
 {

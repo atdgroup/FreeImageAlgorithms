@@ -86,6 +86,18 @@ FIA_Histogram(FIBITMAP *src, double min, double max,
 DLL_API int DLL_CALLCONV
 FIA_HistogramWithMask(FIBITMAP *src, FIBITMAP * mask, double min, double max,
 							  int number_of_bins, unsigned long *hist);
+DLL_API int DLL_CALLCONV
+FIA_2dHistogram(FIBITMAP * src_x, FIBITMAP * src_y,
+                double min_x, double max_x, int number_of_bins_x,
+                double min_y, double max_y, int number_of_bins_y,
+                unsigned long **hist);
+
+DLL_API int DLL_CALLCONV
+FIA_2dHistogramWithMask(FIBITMAP * src_x, FIBITMAP * src_y,
+                        FIBITMAP * mask_x, FIBITMAP * mask_y,
+                        double min_x, double max_x, int number_of_bins_x,
+                        double min_y, double max_y, int number_of_bins_y,
+                        unsigned long **hist);
 
 /** \brief Return the histogram for a rgb image.
  *
@@ -101,6 +113,7 @@ FIA_HistogramWithMask(FIBITMAP *src, FIBITMAP * mask, double min, double max,
  *  \param bhist Long pointer to the blue histogram data.
  *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
 */
+
 DLL_API int DLL_CALLCONV
 FIA_RGBHistogram(FIBITMAP *src,
 			unsigned char  min, unsigned char  max, int number_of_bins,
