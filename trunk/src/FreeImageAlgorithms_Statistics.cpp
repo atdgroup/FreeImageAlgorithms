@@ -80,7 +80,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateHistogram (FIBITMAP * s
         FIA_FindMinMax (src, &min, &max);
     }
 
-    if (min >= max)
+    if (min > max)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Error minimum specified is greater than the maximum");
@@ -475,7 +475,7 @@ template < class Tsrc > int Statistic < Tsrc >::Calculate2dHistogram (FIBITMAP *
         FIA_FindMinMax (src_y, &min_y, &max_y);
     }
 
-    if ((min_x >= max_x) || (min_y >= max_y))
+    if ((min_x > max_x) || (min_y >= max_y))
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Error minimum specified is greater than the maximum");
@@ -1187,7 +1187,7 @@ FIA_RGBHistogram (FIBITMAP * src, unsigned char min, unsigned char max,
         return FIA_ERROR;
     }
 
-    if (min >= max)
+    if (min > max)
     {
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Error minimum specified is greater than the maximum");
