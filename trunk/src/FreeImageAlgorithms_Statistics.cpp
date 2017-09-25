@@ -207,7 +207,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
     int width = FreeImage_GetWidth (src);
     int height = FreeImage_GetHeight (src);
 
-    double sum = 0.0, sd_sum = 0.0;
+    double sum = 0.0, sd_sum = 0.0, skew_sum = 0.0, kurt_sum = 0.0;
     Tsrc *bits;
 	int number_of_pixels = 0;
     int	amount_of_overloaded_pixels = 0;
@@ -299,6 +299,7 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
     report->percentage_underloaded = (float) amount_of_underloaded_pixels / report->area;
     report->percentage_overloaded = (float) amount_of_overloaded_pixels / report->area;
 
+	// Calc SD, skewness and kurtosis
     if (mask != NULL)
     {
         for(register int y = 0; y < height; y++)
@@ -312,6 +313,8 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
                     continue;
 
                 sd_sum += ((bits[x] - report->mean) * (bits[x] - report->mean));
+                skew_sum += ((bits[x] - report->mean) * (bits[x] - report->mean) * (bits[x] - report->mean));
+                kurt_sum += ((bits[x] - report->mean) * (bits[x] - report->mean) * (bits[x] - report->mean) * (bits[x] - report->mean));
             }
         }
     }
@@ -324,11 +327,15 @@ template < class Tsrc > int Statistic < Tsrc >::CalculateStatisticReport (FIBITM
             for(register int x = 0; x < width; x++)
             {
                 sd_sum += ((bits[x] - report->mean) * (bits[x] - report->mean));
+                skew_sum += ((bits[x] - report->mean) * (bits[x] - report->mean) * (bits[x] - report->mean));
+                kurt_sum += ((bits[x] - report->mean) * (bits[x] - report->mean) * (bits[x] - report->mean) * (bits[x] - report->mean));
             }
         }
     }
 
     report->stdDeviation = sqrt ((double) sd_sum / (report->area - 1));
+    report->skewness     = (double) skew_sum / (report->area) / pow(report->stdDeviation, 3.0);
+    report->kurtosis     = (double) kurt_sum / (report->area) / pow(report->stdDeviation, 4.0) - 3.0;
 
     return FIA_SUCCESS;
 }

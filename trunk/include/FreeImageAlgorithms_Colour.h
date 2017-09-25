@@ -111,6 +111,19 @@ FIA_ExtractColourPlanes (FIBITMAP *src, FIBITMAP **R, FIBITMAP **G, FIBITMAP **B
 DLL_API int DLL_CALLCONV
 FIA_ReplaceColourPlanes (FIBITMAP **src, FIBITMAP *R, FIBITMAP *G, FIBITMAP *B);
 
+/** \brief Replace the colour planes in an image from HSV images.
+ *   Will allocate src if src is NULL. Otherwise it must be of the correct size and type.
+ *   WARNING: This function will replace any palette on R, G and B with a standard grey palette.
+ *
+ *  \param src The colour image
+ *  \param H returned pointer to the hue FIBITMAP (val 0 = 0 deg, 255 = 360 deg)
+ *  \param S returned pointer to the saturation FIBITMAP (val 0 = 0, 255 = 1.0)
+ *  \param V returned pointer to the value FIBITMAP (val 0 = 0, 255 = 1.0)
+ *  \return int FIA_SUCCESS on success or FIA_ERROR on error.
+*/
+DLL_API int DLL_CALLCONV
+FIA_ReplaceColourPlanesHSV (FIBITMAP **src, FIBITMAP *H, FIBITMAP *S, FIBITMAP *V);
+
 /** \brief Change the order of the colour bytes.
  *
  *  \param src The colour image

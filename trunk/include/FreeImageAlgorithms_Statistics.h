@@ -33,6 +33,8 @@ typedef struct
    double  maxValue;					// maximum pixel value found 
    double  mean;						// mean value				
    double  stdDeviation;				// standard deviation		
+   double  skewness;	  			    // skewness
+   double  kurtosis;					// kurtosis/peakedness
    float   percentage_overloaded;		// amount of overloaded pixels
    float   percentage_underloaded;	    // amount of underloaded pixels
    int	   area;						// number of pixel scanned	

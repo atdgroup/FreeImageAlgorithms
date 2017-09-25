@@ -892,6 +892,7 @@ FIA_BinaryInnerBorder (FIBITMAP * src)
 //	FIA_SubtractGreyLevelImages(dst2, dst);
 //	FIA_InPlaceConvertToStandardType(&dst2, 0);
 	FIA_Subtract(dst2, dst);
+	FreeImage_Unload(dst);
 
 	return dst2;
 }

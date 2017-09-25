@@ -73,18 +73,18 @@ FIA_RGBToHSV (unsigned char red, unsigned char green, unsigned char blue,
 }
 
 // Red, Green and Blue are between 0 and 255
-// Hue varies betww=een 0 and 360
+// Hue varies between 0 and 360
 // Satuation between 0 and 1
 // Value between 0 and 1
 int DLL_CALLCONV
-FIA_HSVToRGB (double hue, double satuation, double value,
+FIA_HSVToRGB (double hue, double saturation, double value,
               unsigned char *red, unsigned char *green, unsigned char *blue)
 {
     unsigned int h, p, q, t, v;
     double temp_hue, f;
 
-    if (satuation == 0.0)
-        return FIA_SUCCESS;
+//    if (saturation == 0.0)  // why this test? seems to work as expected
+  //      return FIA_SUCCESS;
 
     // The if statement is here as the % operator requires integers
     // and thus looses some accuracy.
@@ -104,9 +104,9 @@ FIA_HSVToRGB (double hue, double satuation, double value,
 
     h = (unsigned int) (temp_hue / 60);
     f = (double) (temp_hue / 60.0) - h;
-    p = (unsigned int) floor ((value * (1 - satuation) * 255) + 0.5);
-    q = (unsigned int) floor ((value * (1 - f * satuation) * 255) + 0.5);
-    t = (unsigned int) floor ((value * (1 - (1 - f) * satuation) * 255) + 0.5);
+    p = (unsigned int) floor ((value * (1 - saturation) * 255) + 0.5);
+    q = (unsigned int) floor ((value * (1 - f * saturation) * 255) + 0.5);
+    t = (unsigned int) floor ((value * (1 - (1 - f) * saturation) * 255) + 0.5);
 
     v = (unsigned int) (value * 255.0);
 
@@ -309,6 +309,67 @@ FIA_ReplaceColourPlanes (FIBITMAP **src, FIBITMAP *R, FIBITMAP *G, FIBITMAP *B)
 		FreeImage_SetChannel(*src, B, FICC_BLUE);
 	}
 		
+	return FIA_SUCCESS;
+}
+
+int DLL_CALLCONV
+FIA_ReplaceColourPlanesHSV (FIBITMAP **src, FIBITMAP *H, FIBITMAP *S, FIBITMAP *V)
+{
+	// HSV source images must all be the same size
+	FIBITMAP *R=NULL, *G=NULL, *B=NULL;
+	int x, y;
+	double h, s, v;
+
+	// Check we have valid images
+	if (!FreeImage_HasPixels(H) || !FIA_Is8Bit(H) ||
+		!FreeImage_HasPixels(S) || !FIA_Is8Bit(S) ||
+		!FreeImage_HasPixels(V) || !FIA_Is8Bit(V)) {
+			return FIA_ERROR;
+	}
+
+	// alloc RGB to something the same size as the source images
+	R = FreeImage_Clone(H);
+	G = FreeImage_Clone(H);
+	B = FreeImage_Clone(H);
+ 
+	// Convert the HSV values to RGB and store
+	for(y = 0; y < FreeImage_GetHeight(H); y++) {
+		BYTE *src_h = FreeImage_GetScanLine(H, y);
+		BYTE *src_s = FreeImage_GetScanLine(S, y);
+		BYTE *src_v = FreeImage_GetScanLine(V, y);
+		BYTE *dst_r = FreeImage_GetScanLine(R, y);
+		BYTE *dst_g = FreeImage_GetScanLine(G, y);
+		BYTE *dst_b = FreeImage_GetScanLine(B, y);
+		
+		for(x = 0; x < FreeImage_GetWidth(H); x++) {
+
+			// Red, Green and Blue are between 0 and 255
+			// Hue varies between 0 and 360
+			// Satuation between 0 and 1
+			// Value between 0 and 1
+
+			h = ((double)(*src_h))/255.0 * 360.0;
+			s = ((double)(*src_s))/255.0;
+			v = ((double)(*src_v))/255.0;
+
+			FIA_HSVToRGB (h, s, v, dst_r, dst_g, dst_b);
+
+			// jump to next pixel
+			src_h ++;
+			src_s ++;
+			src_v ++;
+			dst_r ++;
+			dst_g ++;
+			dst_b ++;
+		 }
+	}
+
+	FIA_ReplaceColourPlanes (src, R, G, B);
+
+	FreeImage_Unload(R);
+	FreeImage_Unload(G);
+	FreeImage_Unload(B);
+
 	return FIA_SUCCESS;
 }
 

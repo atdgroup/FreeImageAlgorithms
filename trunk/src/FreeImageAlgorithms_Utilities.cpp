@@ -3155,6 +3155,8 @@ FIA_BlendMaskWithImage(FIBITMAP *mask, FIBITMAP *src, RGBQUAD colour, int outlin
 		FreeImage_Unload (g);
 		FreeImage_Unload (b);
 	}
+
+	FreeImage_Unload (image);
 	
 	return (maskedInner);
 }
