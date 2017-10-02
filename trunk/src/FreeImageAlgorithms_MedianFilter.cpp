@@ -21,6 +21,7 @@
 #include "FreeImageAlgorithms_Utils.h"
 #include "FreeImageAlgorithms_Filters.h"
 #include "FreeImageAlgorithms_Utilities.h"
+#include "FreeImageAlgorithms_Statistics.h"  // Required because FIA_GetMedianFromImage is declared there (without this it does not get exported to dll)
 
 #define BLOCKSIZE 8
 
@@ -52,15 +53,17 @@ template < typename Tsrc > inline Tsrc FILTER < Tsrc >::GetMedianFromImage (FIBI
     int height = FreeImage_GetHeight (src);
     int total = width * height;
 
-    Tsrc *data = new Tsrc[total];
+    Tsrc *data = new Tsrc[total], *data_ptr;
 
     register Tsrc *src_ptr;
 
+	data_ptr = data;
     for(register int y = 0; y < height; y++)
     {
         src_ptr = (Tsrc *) FreeImage_GetScanLine (src, y);
 
-        memcpy (data, src_ptr, sizeof (Tsrc) * width);
+        memcpy (data_ptr, src_ptr, sizeof (Tsrc) * width);
+		data_ptr += width;
     }
 
     Tsrc ret = quick_select_median (data, total);

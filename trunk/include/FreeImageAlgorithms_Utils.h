@@ -151,13 +151,14 @@ ArrayReverse(T *array, long size)
 * This code by Nicolas Devillard - 1998. Public domain.
 */
 template<typename Tsrc>
-Tsrc quick_select_median(Tsrc arr[], int n)
+Tsrc quick_select_index(int k, Tsrc arr[], int n)
 {
 	int low, high;
 	int median;
 	int middle, ll, hh;
 
-	low = 0 ; high = n-1 ; median = (low + high) / 2;
+	low = 0 ; high = n-1 ; 
+	median = k;
 
 	for (;;) {
 
@@ -213,6 +214,23 @@ Tsrc quick_select_median(Tsrc arr[], int n)
 
 		if (hh >= median)
 			high = hh - 1;
+	}
+}
+
+template<typename Tsrc>
+Tsrc quick_select_median(Tsrc arr[], int n)
+{
+	double v1, v2;
+
+	v1 = quick_select_index((n-1)/2, arr, n);
+
+	// if n is even we need to average this with the n/2 value (remember (n-1)/2 will round down)
+	if(n%2==0){
+		v2 = quick_select_index(n/2, arr, n);
+		return ((v1+v1)/2.0);
+	}
+	else{
+		return v1;
 	}
 }
 

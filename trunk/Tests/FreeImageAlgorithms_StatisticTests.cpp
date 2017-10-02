@@ -37,26 +37,49 @@ static void TestFIA_HistogramTest(CuTest* tc)
 
 static void TestFIA_StatisticsTest(CuTest* tc)
 {
-    const char *file= TEST_DATA_DIR "drone-bee-greyscale.jpg";
+	// To check in matlab use: I=imread('<filename>'); median(double(I(:))) or prctile(double(I(:)), [25 50 75])
+//    const char *file= TEST_DATA_DIR "fibres_greyscale.jpg"; double median_target=118.0;  // Target checked in MATLAB LQ=85, median=118, UQ=151
+    const char *file= TEST_DATA_DIR "drone-bee-greyscale.jpg"; double median_target=188.0;  // Target checked in MATLAB LQ=110, median=188, UQ=202
+//    const char *file= TEST_DATA_DIR "test.bmp"; double median_target=0.0;  // Target checked in MATLAB LQ=0, median=0, UQ=168
+	double median=0;
     
-    FIBITMAP *dib = FIA_LoadFIBFromFile(file), *mask=NULL;
-    
+	FIBITMAP *mask=NULL;
+    FIBITMAP *dib = FIA_LoadFIBFromFile(file);
+
     CuAssertTrue(tc, dib != NULL);
     
     StatisticReport report;
     
 	memset(&report, 0, sizeof(StatisticReport));
 
+	printf("%s\n", file);
+
 	// run as 8 bit
-	PROFILE_START("FreeImageAlgorithms_StatisticReport");
+	PROFILE_START("FIA_StatisticReport");
     
     if (FIA_StatisticReport(dib, &report) == FIA_ERROR) {
         CuFail(tc, "Failed");
     }
     
-    PROFILE_STOP("FreeImageAlgorithms_StatisticReport");
+    PROFILE_STOP("FIA_StatisticReport");
 
-	printf("area\t%d\nmin\t%f\nmax\t%f\nmean\t%f\nstdDev\t%f\n", report.area, report.minValue, report.maxValue, report.mean, report.stdDeviation);
+	printf("area\t%d\nmin\t%f\nmax\t%f\nmean\t%f\nstdDev\t%f\nSkew\t%f\nKurt\t%f\n", report.area, report.minValue, report.maxValue, 
+		report.mean, report.stdDeviation, report.skewness, report.kurtosis);
+
+
+	// run median test
+	PROFILE_START("FIA_GetMedianFromImage");
+    
+	median = FIA_GetMedianFromImage(dib);
+    
+    PROFILE_STOP("FIA_GetMedianFromImage");
+
+	printf("\n");
+	printf("median\t%f\n", median);
+
+	if (median != median_target) {
+        CuFail(tc, "Failed");
+    }
 
 	// run as float, with a mask
 	mask = FIA_Threshold(dib, 250.0, 255.0, 1.0);
@@ -65,17 +88,18 @@ static void TestFIA_StatisticsTest(CuTest* tc)
 
 	memset(&report, 0, sizeof(StatisticReport));
     
-    PROFILE_START("FreeImageAlgorithms_StatisticReport");
+    PROFILE_START("FIA_StatisticReportWithMask");
     
 //    if (FIA_StatisticReport(dib, &report) == FIA_ERROR) {
     if (FIA_StatisticReportWithMask(dib, mask, &report) == FIA_ERROR) {
         CuFail(tc, "Failed");
     }
     
-    PROFILE_STOP("FreeImageAlgorithms_StatisticReport");
+    PROFILE_STOP("FIA_StatisticReportWithMask");
 
 	printf("\n");
-	printf("area\t%d\nmin\t%f\nmax\t%f\nmean\t%f\nstdDev\t%f\n", report.area, report.minValue, report.maxValue, report.mean, report.stdDeviation);
+	printf("area\t%d\nmin\t%f\nmax\t%f\nmean\t%f\nstdDev\t%f\nSkew\t%f\nKurt\t%f\n", report.area, report.minValue, report.maxValue, 
+		report.mean, report.stdDeviation, report.skewness, report.kurtosis);
     
     FreeImage_Unload(dib);
 }
