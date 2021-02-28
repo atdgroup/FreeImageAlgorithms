@@ -1751,7 +1751,7 @@ FIA_Is8Bit (FIBITMAP * src)
     return 0;
 }
 
-void
+int
 CheckMemory (void *ptr)
 {
     if (ptr == NULL)
@@ -1759,7 +1759,8 @@ CheckMemory (void *ptr)
 
         FreeImage_OutputMessageProc (FIF_UNKNOWN,
                                      "Memory allocation failed this is most likely a freeimagealgorithms bug.");
-        exit (-1);
+        //exit(-1);
+        return(-1);
     }
 }
 

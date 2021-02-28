@@ -117,7 +117,7 @@ template < typename Tsrc >
 
     FIABITMAP *dst = (FIABITMAP *) malloc (sizeof (FIABITMAP));
 
-    CheckMemory (dst);
+    if (CheckMemory(dst) < 0) return NULL;
     dst->fib = FIA_CloneImageType (src, dst_width, dst_height);
     dst->xborder = xborder;
     dst->yborder = yborder;

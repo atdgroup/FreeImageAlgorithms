@@ -261,7 +261,7 @@ template < typename Tsrc > FIBITMAP * FILTER < Tsrc >::MedianFilter (FIABITMAP *
     this->kernel_tmp_array
         = (Tsrc *) malloc (sizeof (Tsrc) * this->kernel_width * this->kernel_height);
 
-    CheckMemory (this->kernel_tmp_array);
+    if (CheckMemory(this->kernel_tmp_array) < 0) return NULL;
 
     register Tsrc *dst_ptr;
     register Tsrc *src_row_ptr;

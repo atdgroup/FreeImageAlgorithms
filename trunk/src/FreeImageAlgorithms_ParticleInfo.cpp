@@ -63,11 +63,11 @@ UnionFindInit (int size)
 {
     BLOBPOOL *pool = (BLOBPOOL *) malloc (sizeof (BLOBPOOL));
 
-    CheckMemory (pool);
+    if (CheckMemory(pool) < 0) return NULL;
 
     pool->blobpool_start_ptr = (Blob *) malloc (size * sizeof (Blob));
 
-    CheckMemory (pool->blobpool_start_ptr);
+    if (CheckMemory(pool->blobpool_start_ptr) < 0) return NULL;
 
     pool->blobpool_ptr = pool->blobpool_start_ptr;
     pool->blobpool_blobcount = 0;
@@ -200,11 +200,11 @@ FIA_ParticleInfo (FIBITMAP * src, PARTICLEINFO ** info, unsigned char white_on_b
 
     Run *current_runs = (Run *) malloc (sizeof (Run) * width / 2);      // Array of all runs
 
-    CheckMemory (current_runs);
+    if (CheckMemory(current_runs) < 0) return FIA_ERROR;
 
     Run *last_runs = (Run *) malloc (sizeof (Run) * width / 2);
 
-    CheckMemory (last_runs);
+    if (CheckMemory(last_runs) < 0) return FIA_ERROR;
 
     Run *last_runs_ptr = last_runs, *current_runs_ptr = current_runs;
 
@@ -353,11 +353,12 @@ FIA_ParticleInfo (FIBITMAP * src, PARTICLEINFO ** info, unsigned char white_on_b
 
     // Create PARTICLEINFO/BLOBINFO array
     *info = (PARTICLEINFO *) malloc (sizeof (PARTICLEINFO));
-    CheckMemory (*info);
+    if (CheckMemory(*info) < 0) return FIA_ERROR;
 
     (*info)->number_of_blobs = pool->real_blobcount;
     (*info)->blobs = (BLOBINFO *) malloc (sizeof (BLOBINFO) * pool->real_blobcount);
-    CheckMemory ((*info)->blobs);
+
+    if (CheckMemory((*info)->blobs) < 0) return FIA_ERROR;
 
     // Get blobs
     for(int i = 0, j = 0; i < pool->blobpool_blobcount; i++)

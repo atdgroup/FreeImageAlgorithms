@@ -492,7 +492,7 @@ FindMaxima::StoreBrightestPeaks (int number, FIAPeak ** peaks_ref)
     if (*peaks_ref == NULL)
     {
         *peaks_ref = (FIAPeak *) malloc (number * sizeof (FIAPeak));
-        CheckMemory (*peaks_ref);
+        if (CheckMemory(*peaks_ref) < 0) return -1;
     }
     else
     {

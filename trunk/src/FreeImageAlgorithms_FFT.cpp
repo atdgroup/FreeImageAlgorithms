@@ -123,8 +123,8 @@ FFT2D<Tsrc>::FFT(FIBITMAP *src)
 	fftbuf = (kiss_fft_cpx*) malloc(bufsize);
 	tmp_fftoutbuf = fftoutbuf = (kiss_fft_cpx*) malloc(bufsize); 
 	
-    CheckMemory(fftbuf);
-    CheckMemory(fftoutbuf);
+	if (CheckMemory(fftbuf) < 0) return NULL;
+	if (CheckMemory(fftoutbuf) < 0) return NULL;
 
 	memset(fftbuf,0,bufsize);
     memset(tmp_fftoutbuf,0,bufsize);

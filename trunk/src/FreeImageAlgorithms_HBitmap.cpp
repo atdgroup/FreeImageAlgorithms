@@ -136,7 +136,7 @@ FIA_GetDibSection (FIBITMAP * src, HDC hdc, int left, int top, int right, int bo
     BITMAPINFO *info = (BITMAPINFO *) malloc (sizeof (BITMAPINFO) +
                                               (FreeImage_GetColorsUsed (src) * sizeof (RGBQUAD)));
 
-    CheckMemory (info);
+    if (CheckMemory(info) < 0) return NULL;
 
     BITMAPINFOHEADER *bih = (BITMAPINFOHEADER *) info;
 
@@ -281,7 +281,7 @@ FIA_CreateDibSection (HDC hdc, int width, int height, int bpp, int colours_used,
 
     info = (BITMAPINFO *) malloc (sizeof (BITMAPINFO) + (colours_used * sizeof (RGBQUAD)));
 
-    CheckMemory (info);
+    if (CheckMemory(info) < 0) return NULL;
 
     bih = (BITMAPINFOHEADER *) info;
 

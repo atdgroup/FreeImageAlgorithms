@@ -24,7 +24,7 @@
 
 
 
-void CheckMemory(void *ptr);
+int CheckMemory(void *ptr);
 
 /// Max function
 template <class T> inline T
